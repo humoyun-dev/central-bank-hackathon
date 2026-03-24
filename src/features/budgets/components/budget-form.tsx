@@ -40,23 +40,34 @@ function getDefaultValues(categories: Category[]): UpsertBudgetFormValues {
   }
 }
 
+function getBudgetValues(budget: Budget): UpsertBudgetFormValues {
+  return {
+    categoryId: budget.categoryId,
+    period: budget.period,
+    amount: (budget.limitMinor / 100).toFixed(2),
+    effectiveFromLocalDate: budget.effectiveFromLocalDate,
+  }
+}
+
 export function BudgetForm({
   householdId,
   categories,
   budgets,
+  initialBudget,
   onCancel,
   onSuccess,
 }: {
   householdId: string
   categories: Category[]
   budgets: Budget[]
+  initialBudget?: Budget | undefined
   onCancel?: (() => void) | undefined
   onSuccess?: (() => void) | undefined
 }) {
   const [formError, setFormError] = useState("")
   const form = useForm<UpsertBudgetFormValues>({
     resolver: zodResolver(upsertBudgetFormSchema),
-    defaultValues: getDefaultValues(categories),
+    defaultValues: initialBudget ? getBudgetValues(initialBudget) : getDefaultValues(categories),
   })
 
   const selectedCategoryId = useWatch({
@@ -71,7 +82,16 @@ export function BudgetForm({
     budgets.find(
       (budget) =>
         budget.categoryId === selectedCategoryId && budget.period === selectedPeriod,
-    ) ?? null
+    ) ?? initialBudget ?? null
+
+  useEffect(() => {
+    if (initialBudget) {
+      form.reset(getBudgetValues(initialBudget))
+      return
+    }
+
+    form.reset(getDefaultValues(categories))
+  }, [categories, form, initialBudget])
 
   useEffect(() => {
     if (!matchingBudget) {

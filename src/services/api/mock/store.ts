@@ -86,6 +86,34 @@ interface UpsertBudgetRecordInput {
   effectiveFromLocalDate: string
 }
 
+interface CreateAccountRecordInput {
+  householdId: string
+  name: string
+  institutionName: string
+  kind: AccountDto["type"]
+  currencyCode: string
+  openingBalanceMinor: number
+  maskedNumber: string | null
+  isPrimary: boolean
+}
+
+interface UpdateAccountRecordInput {
+  householdId: string
+  accountId: string
+  name: string
+  institutionName: string
+  maskedNumber: string | null
+  isPrimary: boolean
+  status: AccountDto["status"]
+  disabledReason: string | null
+}
+
+interface UpdateCategoryRecordInput {
+  householdId: string
+  categoryId: string
+  name: string
+}
+
 declare global {
   var __centralBankMockStore: MockStoreState | undefined
 }
@@ -203,6 +231,10 @@ function createHouseholdId() {
 
 function createHouseholdInviteId() {
   return `invite-${crypto.randomUUID()}`
+}
+
+function createAccountId() {
+  return `account-${crypto.randomUUID()}`
 }
 
 function buildDefaultCategories(): CategoryDto[] {
@@ -393,6 +425,86 @@ export function getMockAccountsByHousehold(householdId: string) {
   return cloneValue(getStore().accountsByHousehold[householdId] ?? [])
 }
 
+export function createMockAccount(input: CreateAccountRecordInput) {
+  const store = getStore()
+  const household = ensureHousehold(store, input.householdId)
+  const accounts = store.accountsByHousehold[input.householdId] ?? []
+
+  const account: AccountDto = {
+    id: createAccountId(),
+    name: input.name.trim(),
+    institution_name: input.institutionName.trim(),
+    type: input.kind,
+    currency_code: input.currencyCode,
+    balance_minor: input.openingBalanceMinor,
+    available_balance_minor: input.openingBalanceMinor,
+    masked_number: input.maskedNumber,
+    is_primary: input.isPrimary || accounts.length === 0,
+    status: "ACTIVE",
+    archived_at_utc: null,
+    disabled_reason: null,
+  }
+
+  if (account.is_primary) {
+    accounts.forEach((item) => {
+      item.is_primary = false
+    })
+  }
+
+  accounts.unshift(account)
+  store.accountsByHousehold[input.householdId] = accounts
+  adjustHouseholdMetrics(household, {
+    availableDeltaMinor: input.openingBalanceMinor,
+  })
+
+  return cloneValue(account)
+}
+
+export function updateMockAccount(input: UpdateAccountRecordInput) {
+  const store = getStore()
+  const account = ensureAccount(store, input.householdId, input.accountId)
+  const accounts = store.accountsByHousehold[input.householdId] ?? []
+
+  if (account.status === "ARCHIVED" && input.status !== "ARCHIVED") {
+    account.archived_at_utc = null
+  }
+
+  account.name = input.name.trim()
+  account.institution_name = input.institutionName.trim()
+  account.masked_number = input.maskedNumber
+  account.status = input.status
+  account.disabled_reason =
+    input.status === "RESTRICTED" ? input.disabledReason : null
+  account.archived_at_utc =
+    input.status === "ARCHIVED" ? account.archived_at_utc ?? new Date().toISOString() : null
+
+  if (input.isPrimary && input.status !== "ARCHIVED") {
+    accounts.forEach((item) => {
+      item.is_primary = item.id === account.id
+    })
+  } else if (account.is_primary && input.status === "ARCHIVED") {
+    const replacement = accounts.find(
+      (item) => item.id !== account.id && item.status !== "ARCHIVED",
+    )
+
+    account.is_primary = false
+
+    if (replacement) {
+      replacement.is_primary = true
+    }
+  }
+
+  if (account.status !== "ARCHIVED" && !accounts.some((item) => item.is_primary)) {
+    account.is_primary = true
+  }
+
+  if (account.status === "ARCHIVED" && account.disabled_reason === null) {
+    account.disabled_reason = "Archived accounts are hidden from new finance actions."
+  }
+
+  return cloneValue(account)
+}
+
 export function getMockCategoriesByHousehold(householdId: string) {
   return cloneValue(getStore().categoriesByHousehold[householdId] ?? [])
 }
@@ -433,6 +545,55 @@ export function createMockCategory({
   return cloneValue(category)
 }
 
+export function updateMockCategory(input: UpdateCategoryRecordInput) {
+  const store = getStore()
+  ensureHousehold(store, input.householdId)
+
+  const categories = store.categoriesByHousehold[input.householdId] ?? []
+  const category = categories.find((item) => item.id === input.categoryId)
+
+  if (!category) {
+    throw new Error("Category not found in mock store.")
+  }
+
+  if (category.is_system) {
+    throw new Error("System categories cannot be edited from the household workspace.")
+  }
+
+  const normalizedName = input.name.trim().toLowerCase()
+  const existingCategory = categories.find(
+    (item) =>
+      item.id !== category.id &&
+      item.kind === category.kind &&
+      item.name.trim().toLowerCase() === normalizedName,
+  )
+
+  if (existingCategory) {
+    throw new Error("A category with this name already exists for the selected kind.")
+  }
+
+  const previousName = category.name
+  category.name = input.name.trim()
+
+  const transactions = store.transactionsByHousehold[input.householdId] ?? []
+  transactions.forEach((transaction) => {
+    if (transaction.category_name === previousName) {
+      transaction.category_name = category.name
+    }
+  })
+
+  const budgets = store.budgetsByHousehold[input.householdId] ?? []
+  budgets.forEach((budget) => {
+    if (budget.category_id === category.id) {
+      budget.category_name = category.name
+    }
+  })
+
+  recomputeBudgetProgress(store, input.householdId)
+
+  return cloneValue(category)
+}
+
 export function getMockTransactionsByHousehold(householdId: string) {
   return cloneValue(
     [...(getStore().transactionsByHousehold[householdId] ?? [])].sort((left, right) =>
@@ -466,40 +627,79 @@ export function getMockPendingInvitesByEmail(email: string) {
   )
 }
 
-export function getMockAnalyticsPreviewDto(householdId: string) {
+export function getMockAnalyticsPreviewDto(
+  householdId: string,
+  period: "weekly" | "monthly" = "weekly",
+) {
   const store = getStore()
   const household = ensureHousehold(store, householdId)
   const transactions = store.transactionsByHousehold[householdId] ?? []
-  const startDate = startOfWeek(new Date(), { weekStartsOn: 1 })
+  const points =
+    period === "weekly"
+      ? Array.from({ length: 7 }).map((_, index) => {
+          const startDate = startOfWeek(new Date(), { weekStartsOn: 1 })
+          const pointDate = addDays(startDate, index)
+          const incomeMinor = transactions
+            .filter(
+              (transaction) =>
+                transaction.kind === "INCOME" &&
+                format(parseISO(transaction.occurred_at_utc), "yyyy-MM-dd") ===
+                  format(pointDate, "yyyy-MM-dd"),
+            )
+            .reduce((sum, transaction) => sum + transaction.amount_minor, 0)
+          const expenseMinor = transactions
+            .filter(
+              (transaction) =>
+                transaction.kind === "EXPENSE" &&
+                format(parseISO(transaction.occurred_at_utc), "yyyy-MM-dd") ===
+                  format(pointDate, "yyyy-MM-dd"),
+            )
+            .reduce((sum, transaction) => sum + transaction.amount_minor, 0)
 
-  const points = Array.from({ length: 7 }).map((_, index) => {
-    const pointDate = addDays(startDate, index)
-    const incomeMinor = transactions
-      .filter(
-        (transaction) =>
-          transaction.kind === "INCOME" &&
-          format(parseISO(transaction.occurred_at_utc), "yyyy-MM-dd") ===
-            format(pointDate, "yyyy-MM-dd"),
-      )
-      .reduce((sum, transaction) => sum + transaction.amount_minor, 0)
-    const expenseMinor = transactions
-      .filter(
-        (transaction) =>
-          transaction.kind === "EXPENSE" &&
-          format(parseISO(transaction.occurred_at_utc), "yyyy-MM-dd") ===
-            format(pointDate, "yyyy-MM-dd"),
-      )
-      .reduce((sum, transaction) => sum + transaction.amount_minor, 0)
+          return {
+            label: format(pointDate, "EEE"),
+            income_minor: incomeMinor,
+            expense_minor: expenseMinor,
+          }
+        })
+      : Array.from({ length: 4 }).map((_, index) => {
+          const weekStart = subDays(
+            startOfWeek(new Date(), { weekStartsOn: 1 }),
+            (3 - index) * 7,
+          )
+          const weekEnd = addDays(weekStart, 6)
+          const incomeMinor = transactions
+            .filter((transaction) => {
+              const occurredAt = parseISO(transaction.occurred_at_utc)
 
-    return {
-      label: format(pointDate, "EEE"),
-      income_minor: incomeMinor,
-      expense_minor: expenseMinor,
-    }
-  })
+              return (
+                transaction.kind === "INCOME" &&
+                occurredAt >= weekStart &&
+                occurredAt <= weekEnd
+              )
+            })
+            .reduce((sum, transaction) => sum + transaction.amount_minor, 0)
+          const expenseMinor = transactions
+            .filter((transaction) => {
+              const occurredAt = parseISO(transaction.occurred_at_utc)
+
+              return (
+                transaction.kind === "EXPENSE" &&
+                occurredAt >= weekStart &&
+                occurredAt <= weekEnd
+              )
+            })
+            .reduce((sum, transaction) => sum + transaction.amount_minor, 0)
+
+          return {
+            label: `W${index + 1}`,
+            income_minor: incomeMinor,
+            expense_minor: expenseMinor,
+          }
+        })
 
   return {
-    period: "weekly" as const,
+    period,
     currency_code: household.currency_code,
     current_balance_minor: household.available_balance_minor,
     income_minor: household.month_income_minor,

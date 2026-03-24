@@ -6,6 +6,14 @@ import { Search } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import type {
   TransactionFilters,
   TransactionKindFilter,
@@ -52,22 +60,22 @@ export function TransactionFiltersBar({
   return (
     <div className="space-y-4 rounded-[var(--radius-lg)] border border-border/70 bg-card p-5 shadow-sm">
       <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
-        <div className="flex flex-wrap gap-2">
-          {filterKinds.map((item) => (
-            <Button
-              key={item}
-              type="button"
-              variant={item === kind ? "default" : "outline"}
-              size="sm"
-              onClick={() => {
-                setKind(item)
-                applyFilters({ kind: item, period, query })
-              }}
-            >
-              {item}
-            </Button>
-          ))}
-        </div>
+        <Tabs
+          value={kind}
+          onValueChange={(nextValue) => {
+            const nextKind = nextValue as TransactionKindFilter
+            setKind(nextKind)
+            applyFilters({ kind: nextKind, period, query })
+          }}
+        >
+          <TabsList>
+            {filterKinds.map((item) => (
+              <TabsTrigger key={item} value={item}>
+                {item}
+              </TabsTrigger>
+            ))}
+          </TabsList>
+        </Tabs>
         {isPending ? <Badge>Updating</Badge> : <Badge variant="primary">URL-synced</Badge>}
       </div>
       <form
@@ -89,22 +97,25 @@ export function TransactionFiltersBar({
             className="pl-9"
           />
         </div>
-        <select
+        <Select
           value={period}
-          onChange={(event) => {
-            const nextPeriod = event.target.value as TransactionPeriod
+          onValueChange={(nextValue) => {
+            const nextPeriod = nextValue as TransactionPeriod
             setPeriod(nextPeriod)
             applyFilters({ kind, period: nextPeriod, query })
           }}
-          className="h-11 rounded-[var(--radius-md)] border border-input bg-background px-3.5 text-sm shadow-xs outline-none focus-visible:border-primary/50 focus-visible:ring-4 focus-visible:ring-primary/10"
-          aria-label="Filter period"
         >
-          {filterPeriods.map((item) => (
-            <option key={item} value={item}>
-              Last {item}
-            </option>
-          ))}
-        </select>
+          <SelectTrigger aria-label="Filter period" className="md:w-[10rem]">
+            <SelectValue placeholder="Choose period" />
+          </SelectTrigger>
+          <SelectContent>
+            {filterPeriods.map((item) => (
+              <SelectItem key={item} value={item}>
+                Last {item}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
         <Button type="submit">Apply filters</Button>
       </form>
     </div>

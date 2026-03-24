@@ -6,10 +6,12 @@ import { getHouseholdContext } from "@/features/households/api/get-household-con
 
 export default async function DebtsPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ householdId: string }>
+  searchParams: Promise<Record<string, string | string[] | undefined>>
 }) {
-  const { householdId } = await params
+  const [{ householdId }, resolvedSearchParams] = await Promise.all([params, searchParams])
   const [household, debts, accounts] = await Promise.all([
     getHouseholdContext(householdId),
     getDebts(householdId),
@@ -20,5 +22,12 @@ export default async function DebtsPage({
     notFound()
   }
 
-  return <DebtsScreen household={household} debts={debts} accounts={accounts} />
+  return (
+    <DebtsScreen
+      household={household}
+      debts={debts}
+      accounts={accounts}
+      initialCreateOpen={resolvedSearchParams.action === "create-debt"}
+    />
+  )
 }

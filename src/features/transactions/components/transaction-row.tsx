@@ -1,3 +1,4 @@
+import type { ReactNode } from "react"
 import { ArrowRightLeft, ArrowUpRight, MinusCircle } from "lucide-react"
 import { StatusBadge } from "@/components/shared/status-badge"
 import { formatDateLabel, formatRelativeDate } from "@/lib/format/date"
@@ -24,9 +25,11 @@ const transactionMeta = {
 export function TransactionRow({
   transaction,
   compact = false,
+  action,
 }: {
   transaction: TransactionListItem
   compact?: boolean
+  action?: ReactNode
 }) {
   const meta = transactionMeta[transaction.kind]
   const Icon = meta.icon
@@ -61,22 +64,31 @@ export function TransactionRow({
         </div>
       </div>
       <div className="shrink-0 text-right">
-        <p className={cn("text-financial text-sm font-semibold", meta.tone)}>
-          {transaction.signedAmountMinor > 0 ? "+" : transaction.signedAmountMinor < 0 ? "-" : ""}
-          {formatMoney(Math.abs(transaction.signedAmountMinor), transaction.currencyCode)}
-        </p>
-        {compact ? (
-          <p className="text-xs text-muted-foreground">
-            {formatRelativeDate(transaction.occurredAtUtc)}
-          </p>
-        ) : (
-          <div className="mt-1 inline-flex justify-end">
-            <StatusBadge
-              label={transaction.status}
-              tone={transaction.status === "POSTED" ? "success" : "warning"}
-            />
+        <div className="flex items-start justify-end gap-2">
+          <div>
+            <p className={cn("text-financial text-sm font-semibold", meta.tone)}>
+              {transaction.signedAmountMinor > 0
+                ? "+"
+                : transaction.signedAmountMinor < 0
+                  ? "-"
+                  : ""}
+              {formatMoney(Math.abs(transaction.signedAmountMinor), transaction.currencyCode)}
+            </p>
+            {compact ? (
+              <p className="text-xs text-muted-foreground">
+                {formatRelativeDate(transaction.occurredAtUtc)}
+              </p>
+            ) : (
+              <div className="mt-1 inline-flex justify-end">
+                <StatusBadge
+                  label={transaction.status}
+                  tone={transaction.status === "POSTED" ? "success" : "warning"}
+                />
+              </div>
+            )}
           </div>
-        )}
+          {action}
+        </div>
       </div>
     </div>
   )

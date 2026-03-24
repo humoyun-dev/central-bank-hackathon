@@ -1,4 +1,6 @@
 import { notFound } from "next/navigation"
+import { getAccounts } from "@/features/accounts/api/get-accounts"
+import { getCategories } from "@/features/categories/api/get-categories"
 import { getHouseholdContext } from "@/features/households/api/get-household-context"
 import { getTransactions } from "@/features/transactions/api/get-transactions"
 import {
@@ -15,9 +17,12 @@ export default async function TransactionsPage({
   searchParams: Promise<Record<string, string | string[] | undefined>>
 }) {
   const [{ householdId }, resolvedSearchParams] = await Promise.all([params, searchParams])
-  const [household, transactions] = await Promise.all([
+  const [household, transactions, accounts, expenseCategories, incomeCategories] = await Promise.all([
     getHouseholdContext(householdId),
     getTransactions(householdId),
+    getAccounts(householdId),
+    getCategories(householdId, "EXPENSE"),
+    getCategories(householdId, "INCOME"),
   ])
 
   if (!household) {
@@ -26,12 +31,21 @@ export default async function TransactionsPage({
 
   const filters = parseTransactionFilters(resolvedSearchParams)
   const filteredTransactions = filterTransactions(transactions, filters)
+  const action = resolvedSearchParams.action
+  const initialAction =
+    action === "expense" || action === "income" || action === "transfer"
+      ? action
+      : undefined
 
   return (
     <TransactionsScreen
       household={household}
       filters={filters}
       transactions={filteredTransactions}
+      accounts={accounts}
+      expenseCategories={expenseCategories}
+      incomeCategories={incomeCategories}
+      initialAction={initialAction}
     />
   )
 }

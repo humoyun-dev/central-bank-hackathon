@@ -5,6 +5,7 @@ import { useMutation } from "@tanstack/react-query"
 import { LoaderCircle } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { Controller, useForm } from "react-hook-form"
+import { useEffect } from "react"
 import { toast } from "sonner"
 import { FormActions } from "@/components/shared/forms/form-actions"
 import { FormFieldError } from "@/components/shared/forms/form-field-error"
@@ -24,25 +25,49 @@ import {
   createCategoryRequestSchema,
   type CreateCategoryRequest,
 } from "@/features/categories/schemas/create-category"
+import { updateCategory } from "@/features/categories/api/update-category"
+import type { Category } from "@/features/categories/types/category"
 
-export function CategoryForm({ householdId }: { householdId: string }) {
+export function CategoryForm({
+  householdId,
+  category,
+  onCancel,
+  onSuccess,
+}: {
+  householdId: string
+  category?: Category | undefined
+  onCancel?: (() => void) | undefined
+  onSuccess?: (() => void) | undefined
+}) {
   const router = useRouter()
+  const isEditing = Boolean(category)
   const form = useForm<CreateCategoryRequest>({
     resolver: zodResolver(createCategoryRequestSchema),
     defaultValues: {
-      name: "",
-      kind: "EXPENSE",
+      name: category?.name ?? "",
+      kind: category?.kind ?? "EXPENSE",
     },
   })
 
+  useEffect(() => {
+    form.reset({
+      name: category?.name ?? "",
+      kind: category?.kind ?? "EXPENSE",
+    })
+  }, [category, form])
+
   const mutation = useMutation({
-    mutationFn: (values: CreateCategoryRequest) => createCategory(householdId, values),
+    mutationFn: (values: CreateCategoryRequest) =>
+      isEditing && category
+        ? updateCategory(householdId, category.id, { name: values.name })
+        : createCategory(householdId, values),
     onSuccess: () => {
-      toast.success("Category saved")
+      toast.success(isEditing ? "Category updated" : "Category saved")
       form.reset({
         name: "",
         kind: "EXPENSE",
       })
+      onSuccess?.()
       router.refresh()
     },
   })
@@ -60,7 +85,7 @@ export function CategoryForm({ householdId }: { householdId: string }) {
   return (
     <form className="space-y-4" onSubmit={form.handleSubmit(onSubmit)} noValidate>
       <FormSection
-        title="Create category"
+        title={isEditing ? "Edit category" : "Create category"}
         description="Household categories stay separate from system defaults and future backend conflicts are normalized at the boundary."
       >
         <div className="space-y-4">
@@ -83,8 +108,15 @@ export function CategoryForm({ householdId }: { householdId: string }) {
               control={form.control}
               name="kind"
               render={({ field, fieldState }) => (
-                <Select value={field.value} onValueChange={field.onChange}>
-                  <SelectTrigger id="category-kind" aria-invalid={fieldState.invalid}>
+                <Select
+                  value={field.value}
+                  onValueChange={field.onChange}
+                  disabled={mutation.isPending || isEditing}
+                >
+                  <SelectTrigger
+                    id="category-kind"
+                    aria-invalid={fieldState.invalid}
+                  >
                     <SelectValue placeholder="Choose a category kind" />
                   </SelectTrigger>
                   <SelectContent>
@@ -102,7 +134,8 @@ export function CategoryForm({ householdId }: { householdId: string }) {
       <InlineFormError message={form.formState.errors.root?.message} />
       <FormActions
         isSubmitting={mutation.isPending}
-        submitLabel="Create category"
+        onCancel={onCancel}
+        submitLabel={isEditing ? "Save category" : "Create category"}
         pendingLabel="Saving..."
         submitAdornment={
           mutation.isPending ? (

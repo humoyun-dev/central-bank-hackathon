@@ -12,13 +12,22 @@ export async function OverviewStatisticsSection({
 }: {
   householdId: string
 }) {
-  let analyticsPreview: Awaited<ReturnType<typeof getDashboardAnalyticsPreview>> | null = null
+  let analyticsPreview:
+    | {
+        weekly: Awaited<ReturnType<typeof getDashboardAnalyticsPreview>>
+        monthly: Awaited<ReturnType<typeof getDashboardAnalyticsPreview>>
+      }
+    | null = null
   let copy:
     | ReturnType<typeof getErrorPresentation>
     | null = null
 
   try {
-    analyticsPreview = await getDashboardAnalyticsPreview(householdId)
+    const [weekly, monthly] = await Promise.all([
+      getDashboardAnalyticsPreview(householdId, "weekly"),
+      getDashboardAnalyticsPreview(householdId, "monthly"),
+    ])
+    analyticsPreview = { weekly, monthly }
   } catch (error) {
     copy = getErrorPresentation(error, {
       fallbackTitle: "Statistics preview unavailable",
@@ -44,7 +53,11 @@ export async function OverviewStatisticsSection({
     )
   }
 
-  if (analyticsPreview && analyticsPreview.points.length === 0) {
+  if (
+    analyticsPreview &&
+    analyticsPreview.weekly.points.length === 0 &&
+    analyticsPreview.monthly.points.length === 0
+  ) {
     return (
       <section className="space-y-4">
         <SectionHeader title="Statistics" />
@@ -62,6 +75,9 @@ export async function OverviewStatisticsSection({
   }
 
   return analyticsPreview ? (
-    <StatisticsPanel analyticsPreview={analyticsPreview} householdId={householdId} />
+    <StatisticsPanel
+      analyticsPreview={analyticsPreview}
+      householdId={householdId}
+    />
   ) : null
 }

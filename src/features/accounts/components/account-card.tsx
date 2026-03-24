@@ -1,3 +1,4 @@
+import type { ReactNode } from "react"
 import { Building2, CreditCard, WalletCards } from "lucide-react"
 import { AmountValue } from "@/components/shared/amount-value"
 import { StatusBadge } from "@/components/shared/status-badge"
@@ -31,9 +32,11 @@ const accountStatusTone = {
 export function AccountCard({
   account,
   compact = false,
+  action,
 }: {
   account: Account
   compact?: boolean
+  action?: ReactNode
 }) {
   const meta = accountMeta[account.kind]
   const Icon = meta.icon
@@ -62,8 +65,11 @@ export function AccountCard({
               {account.maskedNumber ? ` •••• ${account.maskedNumber}` : ""}
             </p>
           </div>
-          <div className="flex size-10 items-center justify-center rounded-[1.1rem] bg-primary/10 text-primary">
-            <Icon className="size-5" aria-hidden="true" />
+          <div className="flex items-start gap-2">
+            {action}
+            <div className="flex size-10 items-center justify-center rounded-[1.1rem] bg-primary/10 text-primary">
+              <Icon className="size-5" aria-hidden="true" />
+            </div>
           </div>
         </div>
         <div className="space-y-1">

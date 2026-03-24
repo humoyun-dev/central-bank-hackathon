@@ -21,27 +21,27 @@ export function BalanceHero({
   const actions = [
     {
       label: "Send",
-      href: `/${household.id}/transactions`,
+      href: `/${household.id}/transactions?action=transfer&kind=TRANSFER`,
       icon: ArrowUpRight,
       visible: visibility.canInitiateTransfer,
     },
     {
       label: "Request",
-      href: `/${household.id}/accounts`,
+      href: `/${household.id}/transactions?action=income&kind=INCOME`,
       icon: ArrowDownLeft,
-      visible: visibility.canViewAccounts,
+      visible: visibility.canCreateIncome,
     },
     {
       label: "Split bill",
-      href: `/${household.id}/transactions`,
+      href: `/${household.id}/debts?action=create-debt`,
       icon: ReceiptText,
-      visible: visibility.canViewTransactions,
+      visible: visibility.canCreateDebt,
     },
     {
       label: "Top up",
-      href: `/${household.id}/accounts`,
+      href: `/${household.id}/accounts?action=create-account`,
       icon: Plus,
-      visible: visibility.canViewAccounts,
+      visible: visibility.canManageSettings,
     },
   ]
   const netCashFlowMinor = household.monthIncomeMinor - household.monthSpendMinor

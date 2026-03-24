@@ -103,7 +103,7 @@ export async function QuickTransferPanel({
               className="h-auto shrink-0 rounded-[1.4rem] px-4 py-4"
             >
               <Link
-                href={`/${household.id}/transactions?kind=TRANSFER`}
+                href={`/${household.id}/transactions?action=transfer&kind=TRANSFER`}
                 className="flex min-w-[11rem] items-center gap-3"
               >
                 <span className="flex size-11 items-center justify-center rounded-full bg-white text-slate-950">

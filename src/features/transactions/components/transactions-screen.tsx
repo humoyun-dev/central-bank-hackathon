@@ -1,96 +1,38 @@
-import Link from "next/link"
-import { AmountValue } from "@/components/shared/amount-value"
-import { EmptyState } from "@/components/shared/empty-state"
-import { PageHeader } from "@/components/shared/page-header"
-import { SectionCard } from "@/components/shared/section-card"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
+import type { Account } from "@/features/accounts/types/account"
+import type { Category } from "@/features/categories/types/category"
 import type {
   TransactionFilters,
   TransactionListItem,
 } from "@/features/transactions/types/transaction"
 import type { HouseholdContext } from "@/types/household"
-import { TransactionFiltersBar } from "@/features/transactions/components/transaction-filters"
-import { TransactionRow } from "@/features/transactions/components/transaction-row"
+import { TransactionsWorkspace } from "@/features/transactions/components/transactions-workspace"
 
 export function TransactionsScreen({
   household,
   filters,
   transactions,
+  accounts,
+  expenseCategories,
+  incomeCategories,
+  initialAction,
 }: {
   household: HouseholdContext
   filters: TransactionFilters
   transactions: TransactionListItem[]
+  accounts: Account[]
+  expenseCategories: Category[]
+  incomeCategories: Category[]
+  initialAction?: "expense" | "income" | "transfer" | undefined
 }) {
-  const incomeMinor = transactions
-    .filter((transaction) => transaction.kind === "INCOME")
-    .reduce((sum, transaction) => sum + transaction.amountMinor, 0)
-  const expenseMinor = transactions
-    .filter((transaction) => transaction.kind === "EXPENSE")
-    .reduce((sum, transaction) => sum + transaction.amountMinor, 0)
-
   return (
-    <div className="space-y-6">
-      <PageHeader
-        eyebrow="Transactions"
-        title="Shareable activity workspace"
-        description="Filters live in the URL so history, reloads, and deep links preserve the household-scoped transaction context."
-        actions={
-          <div className="flex flex-wrap items-center gap-2">
-            <Badge variant="primary">{transactions.length} matches</Badge>
-            <Button asChild variant="outline">
-              <Link href={`/${household.id}/accounts`}>View accounts</Link>
-            </Button>
-          </div>
-        }
-      />
-      <div className="grid gap-4 md:grid-cols-3">
-        <SectionCard title="Inflow" description={`Filtered over ${filters.period}`}>
-          <AmountValue
-            amountMinor={incomeMinor}
-            currencyCode={household.currencyCode}
-            size="section"
-            className="text-success-foreground"
-          />
-        </SectionCard>
-        <SectionCard title="Outflow" description={`Filtered over ${filters.period}`}>
-          <AmountValue
-            amountMinor={-expenseMinor}
-            currencyCode={household.currencyCode}
-            size="section"
-          />
-        </SectionCard>
-        <SectionCard title="Active filter" description="Current scope">
-          <div className="flex flex-wrap gap-2">
-            <Badge>{filters.kind}</Badge>
-            <Badge>{filters.period}</Badge>
-            {filters.query ? <Badge variant="primary">{filters.query}</Badge> : null}
-          </div>
-        </SectionCard>
-      </div>
-      <TransactionFiltersBar initialFilters={filters} />
-      <SectionCard
-        title="Transaction feed"
-        description="Mapped DTOs, normalized timestamps, and explicit money semantics keep the list safe for later mutations and analytics overlays."
-      >
-        {transactions.length === 0 ? (
-          <EmptyState
-            title="No transactions match this filter set"
-            description="Adjust the kind, period, or search term. This empty state is already ready for clear-filter or create-transaction actions in the next phase."
-            action={
-              <Button asChild variant="outline">
-                <Link href={`/${household.id}/transactions`}>Clear filters</Link>
-              </Button>
-            }
-          />
-        ) : (
-          <div className="space-y-3">
-            {transactions.map((transaction) => (
-              <TransactionRow key={transaction.id} transaction={transaction} />
-            ))}
-          </div>
-        )}
-      </SectionCard>
-    </div>
+    <TransactionsWorkspace
+      household={household}
+      filters={filters}
+      transactions={transactions}
+      accounts={accounts}
+      expenseCategories={expenseCategories}
+      incomeCategories={incomeCategories}
+      initialAction={initialAction}
+    />
   )
 }

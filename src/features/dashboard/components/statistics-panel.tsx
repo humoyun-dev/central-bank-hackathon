@@ -1,5 +1,8 @@
+"use client"
+
 import Link from "next/link"
 import { CalendarDays, ChevronRight, ChartColumn } from "lucide-react"
+import { useState } from "react"
 import { AmountValue } from "@/components/shared/amount-value"
 import { StatusBadge } from "@/components/shared/status-badge"
 import { SectionHeader } from "@/components/shared/section-header"
@@ -12,11 +15,16 @@ export function StatisticsPanel({
   analyticsPreview,
   householdId,
 }: {
-  analyticsPreview: DashboardAnalyticsPreview
+  analyticsPreview: {
+    weekly: DashboardAnalyticsPreview
+    monthly: DashboardAnalyticsPreview
+  }
   householdId: string
 }) {
+  const [period, setPeriod] = useState<"weekly" | "monthly">("weekly")
+  const activePreview = analyticsPreview[period]
   const maxBarValue = Math.max(
-    ...analyticsPreview.points.flatMap((point) => [point.incomeMinor, point.expenseMinor]),
+    ...activePreview.points.flatMap((point) => [point.incomeMinor, point.expenseMinor]),
     1,
   )
 
@@ -27,8 +35,26 @@ export function StatisticsPanel({
         action={
           <div className="flex items-center gap-2">
             <div className="inline-flex rounded-full bg-[#f1efea] p-1 text-xs font-semibold text-slate-500">
-              <span className="rounded-full bg-slate-950 px-4 py-2 text-white">Weekly</span>
-              <span className="px-4 py-2">Monthly</span>
+              <button
+                type="button"
+                className={cn(
+                  "rounded-full px-4 py-2 transition-colors",
+                  period === "weekly" ? "bg-slate-950 text-white" : "text-slate-500",
+                )}
+                onClick={() => setPeriod("weekly")}
+              >
+                Weekly
+              </button>
+              <button
+                type="button"
+                className={cn(
+                  "rounded-full px-4 py-2 transition-colors",
+                  period === "monthly" ? "bg-slate-950 text-white" : "text-slate-500",
+                )}
+                onClick={() => setPeriod("monthly")}
+              >
+                Monthly
+              </button>
             </div>
             <div className="flex size-10 items-center justify-center rounded-full bg-[#f1efea] text-slate-600">
               <CalendarDays className="size-4" aria-hidden="true" />
@@ -43,28 +69,34 @@ export function StatisticsPanel({
         <div className="flex items-start justify-between gap-3">
           <div>
             <AmountValue
-              amountMinor={analyticsPreview.currentBalanceMinor}
-              currencyCode={analyticsPreview.currencyCode}
+              amountMinor={activePreview.currentBalanceMinor}
+              currencyCode={activePreview.currencyCode}
               size="hero"
               className="text-slate-950"
             />
             <p className="mt-1 text-sm text-slate-500">
-              {analyticsPreview.period === "weekly" ? "Weekly" : "Monthly"} movement for{" "}
-              {analyticsPreview.currencyCode} household cash
+              {activePreview.period === "weekly" ? "Weekly" : "Monthly"} movement for{" "}
+              {activePreview.currencyCode} household cash
             </p>
           </div>
           <Button asChild variant="outline" size="sm" className="rounded-full bg-[#f7f6f1]">
-            <Link href={`/${householdId}/transactions`}>
+            <Link href={`/${householdId}/analytics`}>
               Details
               <ChevronRight className="size-4" aria-hidden="true" />
             </Link>
           </Button>
         </div>
-        <div className="grid h-56 grid-cols-7 items-end gap-3">
-          {analyticsPreview.points.map((point, index) => {
+        <div
+          className={cn(
+            "grid h-56 items-end gap-3",
+            activePreview.points.length === 4 ? "grid-cols-4" : "grid-cols-7",
+          )}
+        >
+          {activePreview.points.map((point, index) => {
             const incomeValue = point.incomeMinor
             const spendValue = point.expenseMinor
-            const incomeHeight = incomeValue === 0 ? 10 : Math.max((incomeValue / maxBarValue) * 100, 14)
+            const incomeHeight =
+              incomeValue === 0 ? 10 : Math.max((incomeValue / maxBarValue) * 100, 14)
             const expenseHeight =
               spendValue === 0 ? 10 : Math.max((spendValue / maxBarValue) * 100, 14)
 
@@ -98,7 +130,7 @@ export function StatisticsPanel({
               <StatusBadge label="Inflow" tone="success" />
             </div>
             <p className="mt-2 text-financial text-base font-semibold text-slate-950">
-              {formatSignedMoney(analyticsPreview.incomeMinor, analyticsPreview.currencyCode)}
+              {formatSignedMoney(activePreview.incomeMinor, activePreview.currencyCode)}
             </p>
           </div>
           <div className="rounded-[1.25rem] bg-[#f7f6f1] p-4">
@@ -109,7 +141,7 @@ export function StatisticsPanel({
               <StatusBadge label="Outflow" tone="warning" />
             </div>
             <p className={cn("mt-2 text-financial text-base font-semibold text-slate-950")}>
-              {formatSignedMoney(-analyticsPreview.expenseMinor, analyticsPreview.currencyCode)}
+              {formatSignedMoney(-activePreview.expenseMinor, activePreview.currencyCode)}
             </p>
           </div>
         </div>

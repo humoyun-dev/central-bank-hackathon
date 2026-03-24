@@ -2,7 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Controller, useForm, useWatch } from "react-hook-form"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { FormActions } from "@/components/shared/forms/form-actions"
 import { AmountField } from "@/components/shared/forms/amount-field"
 import { DateField } from "@/components/shared/forms/date-field"
@@ -47,20 +47,31 @@ export function DebtSettlementForm({
   householdId,
   debts,
   accounts,
+  initialDebtId,
   onCancel,
   onSuccess,
 }: {
   householdId: string
   debts: Debt[]
   accounts: Account[]
+  initialDebtId?: string | undefined
   onCancel?: (() => void) | undefined
   onSuccess?: (() => void) | undefined
 }) {
   const [formError, setFormError] = useState("")
   const form = useForm<SettleDebtFormValues>({
     resolver: zodResolver(settleDebtFormSchema),
-    defaultValues: getDefaultValues(debts, accounts),
+    defaultValues: {
+      ...getDefaultValues(debts, accounts),
+      ...(initialDebtId ? { debtId: initialDebtId } : null),
+    },
   })
+
+  useEffect(() => {
+    if (initialDebtId) {
+      form.setValue("debtId", initialDebtId)
+    }
+  }, [form, initialDebtId])
 
   const selectedDebtId = useWatch({
     control: form.control,

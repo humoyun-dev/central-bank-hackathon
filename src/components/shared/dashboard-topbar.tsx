@@ -34,26 +34,31 @@ export function DashboardTopbar({
           </div>
         </div>
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-          <label className="relative block min-w-0 sm:w-[16rem] lg:w-[18rem] xl:w-[20rem]">
-            <Search
-              className="pointer-events-none absolute left-4 top-1/2 size-4 -translate-y-1/2 text-slate-400"
-              aria-hidden="true"
-            />
-            <input
-              type="search"
-              aria-label="Search dashboard"
-              placeholder="Search something"
-              className="h-11 w-full rounded-full border border-slate-200 bg-[#f2f1ee] pl-11 pr-4 text-sm outline-none transition-shadow placeholder:text-slate-400 focus-visible:ring-4 focus-visible:ring-primary/10"
-            />
-          </label>
+          <form action={`/${household.id}/transactions`} className="min-w-0 sm:w-[16rem] lg:w-[18rem] xl:w-[20rem]">
+            <label className="relative block">
+              <Search
+                className="pointer-events-none absolute left-4 top-1/2 size-4 -translate-y-1/2 text-slate-400"
+                aria-hidden="true"
+              />
+              <input
+                type="search"
+                name="query"
+                aria-label="Search household activity"
+                placeholder="Search transactions"
+                className="h-11 w-full rounded-full border border-slate-200 bg-[#f2f1ee] pl-11 pr-4 text-sm outline-none transition-shadow placeholder:text-slate-400 focus-visible:ring-4 focus-visible:ring-primary/10"
+              />
+            </label>
+          </form>
           <div className="flex items-center gap-3">
             <button
               type="button"
+              disabled
+              title="Notification center is not available in this phase."
               className={cn(
-                "relative inline-flex size-11 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-700 shadow-sm transition-colors hover:bg-slate-50",
+                "relative inline-flex size-11 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-700 shadow-sm transition-colors disabled:cursor-not-allowed disabled:opacity-60",
                 mockMode ? "after:absolute after:right-3 after:top-3 after:size-2 after:rounded-full after:bg-rose-400" : "",
               )}
-              aria-label="Notifications"
+              aria-label="Notifications unavailable"
             >
               <Bell className="size-4" aria-hidden="true" />
             </button>

@@ -62,7 +62,12 @@ export function DashboardActionCenter({
       icon: WalletCards,
       visible: visibility.canCreateExpense,
       disabled: activeAccounts.length === 0 || expenseCategories.length === 0,
-      description: "Book a household outflow",
+      description:
+        activeAccounts.length === 0
+          ? "Create an active account first"
+          : expenseCategories.length === 0
+            ? "Create an expense category first"
+            : "Book a household outflow",
     },
     {
       id: "income" as const,
@@ -70,7 +75,12 @@ export function DashboardActionCenter({
       icon: Coins,
       visible: visibility.canCreateIncome,
       disabled: activeAccounts.length === 0 || incomeCategories.length === 0,
-      description: "Record a new inflow",
+      description:
+        activeAccounts.length === 0
+          ? "Create an active account first"
+          : incomeCategories.length === 0
+            ? "Create an income category first"
+            : "Record a new inflow",
     },
     {
       id: "transfer" as const,
@@ -78,7 +88,10 @@ export function DashboardActionCenter({
       icon: Repeat,
       visible: visibility.canInitiateTransfer,
       disabled: activeAccounts.length < 2,
-      description: "Move cash between accounts",
+      description:
+        activeAccounts.length < 2
+          ? "Needs at least two active accounts"
+          : "Move cash between accounts",
     },
     {
       id: "debt" as const,
@@ -94,7 +107,12 @@ export function DashboardActionCenter({
       icon: PlusCircle,
       visible: visibility.canSettleDebt,
       disabled: openDebts.length === 0 || activeAccounts.length === 0,
-      description: "Record a partial or full settlement",
+      description:
+        openDebts.length === 0
+          ? "No open debt is ready for settlement"
+          : activeAccounts.length === 0
+            ? "Create an active account first"
+            : "Record a partial or full settlement",
     },
     {
       id: "budget" as const,
@@ -102,7 +120,10 @@ export function DashboardActionCenter({
       icon: PiggyBank,
       visible: visibility.canManageBudgets,
       disabled: expenseCategories.length === 0,
-      description: "Create or update a category cap",
+      description:
+        expenseCategories.length === 0
+          ? "Create an expense category first"
+          : "Create or update a category cap",
     },
   ].filter((item) => item.visible)
 

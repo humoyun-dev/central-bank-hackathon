@@ -6,9 +6,14 @@ import { serverApiRequest } from "@/services/api/server/client"
 import { apiEndpoints } from "@/services/api/shared/endpoints"
 import { publicEnv } from "@/services/config/public-env"
 
-async function getDashboardAnalyticsPreviewInternal(householdId: string) {
+async function getDashboardAnalyticsPreviewInternal(
+  householdId: string,
+  period: "weekly" | "monthly" = "weekly",
+) {
   const parsedDto = publicEnv.enableMockApi
-    ? dashboardAnalyticsPreviewDtoSchema.parse(getMockAnalyticsPreviewDto(householdId))
+    ? dashboardAnalyticsPreviewDtoSchema.parse(
+        getMockAnalyticsPreviewDto(householdId, period),
+      )
     : await serverApiRequest({
         path: apiEndpoints.households.analyticsPreview(householdId),
         schema: dashboardAnalyticsPreviewDtoSchema,
@@ -18,6 +23,9 @@ async function getDashboardAnalyticsPreviewInternal(householdId: string) {
   return mapDashboardAnalyticsPreviewDto(parsedDto)
 }
 
-export async function getDashboardAnalyticsPreview(householdId: string) {
-  return getDashboardAnalyticsPreviewInternal(householdId)
+export async function getDashboardAnalyticsPreview(
+  householdId: string,
+  period: "weekly" | "monthly" = "weekly",
+) {
+  return getDashboardAnalyticsPreviewInternal(householdId, period)
 }
