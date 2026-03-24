@@ -1,0 +1,44 @@
+@layer base {
+  * {
+    @apply border-border outline-ring/60;
+  }
+
+  html {
+    @apply h-full scroll-smooth font-sans;
+    color-scheme: light;
+  }
+
+  body {
+    @apply min-h-full bg-background text-foreground;
+    background-image:
+      radial-gradient(circle at top left, rgb(156 183 247 / 0.28), transparent 30%),
+      radial-gradient(circle at bottom right, rgb(192 205 243 / 0.22), transparent 28%),
+      linear-gradient(180deg, rgb(231 237 255 / 0.92), rgb(240 244 255 / 0.96));
+  }
+
+  a {
+    @apply outline-none;
+  }
+
+  ::selection {
+    background: rgb(90 130 186 / 0.18);
+  }
+}
+
+@layer components {
+  .surface-card {
+    @apply rounded-[var(--radius-lg)] border border-border/70 bg-card shadow-[0_16px_42px_rgba(54,76,120,0.08)];
+  }
+
+  .surface-muted {
+    @apply rounded-[var(--radius-md)] border border-border/60 bg-muted/75;
+  }
+
+  .text-financial {
+    @apply font-mono tabular-nums tracking-tight;
+  }
+
+  .dashboard-frame {
+    @apply overflow-hidden rounded-[1.85rem] border-[3px] border-slate-950 bg-[#fcfbf7] shadow-[0_24px_90px_rgba(24,43,84,0.16)];
+  }
+}
