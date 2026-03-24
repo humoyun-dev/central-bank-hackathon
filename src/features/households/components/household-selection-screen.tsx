@@ -2,16 +2,25 @@ import Link from "next/link"
 import { ArrowRight, Building2, Users, Wallet } from "lucide-react"
 import { AmountValue } from "@/components/shared/amount-value"
 import { AppLogo } from "@/components/shared/app-logo"
+import { EmptyState } from "@/components/shared/empty-state"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
+import { AcceptInviteButton } from "@/features/households/components/accept-invite-button"
+import { CreateHouseholdForm } from "@/features/households/components/create-household-form"
 import { publicEnv } from "@/services/config/public-env"
+import type { HouseholdInvite } from "@/features/households/types/invite"
+import type { AuthSession } from "@/features/auth/types/session"
 import type { HouseholdContext } from "@/types/household"
 
 export function HouseholdSelectionScreen({
   households,
+  pendingInvites,
+  session,
 }: {
   households: HouseholdContext[]
+  pendingInvites: HouseholdInvite[]
+  session: AuthSession
 }) {
   return (
     <main className="mx-auto flex min-h-screen w-full max-w-6xl flex-col gap-8 px-4 py-8 sm:px-6 lg:px-8">
@@ -30,6 +39,39 @@ export function HouseholdSelectionScreen({
               deep links, and later auth/session enforcement.
             </p>
           </div>
+          {pendingInvites.length > 0 ? (
+            <Card className="bg-card/94">
+              <CardContent className="space-y-4 pt-6">
+                <div className="space-y-1">
+                  <Badge variant="primary">Pending invites</Badge>
+                  <h2 className="text-xl font-semibold tracking-tight text-foreground">
+                    Household access waiting for acceptance
+                  </h2>
+                  <p className="text-sm leading-6 text-muted-foreground">
+                    Accept role-scoped invites before entering the invited workspace.
+                  </p>
+                </div>
+                <div className="space-y-3">
+                  {pendingInvites.map((invite) => (
+                    <article
+                      key={invite.id}
+                      className="flex flex-col gap-3 rounded-[1.2rem] border border-border/70 bg-muted/45 p-4 sm:flex-row sm:items-center sm:justify-between"
+                    >
+                      <div className="space-y-1">
+                        <p className="text-sm font-semibold text-foreground">
+                          {invite.householdName}
+                        </p>
+                        <p className="text-sm text-muted-foreground">
+                          {invite.role} access · invited by {invite.invitedByName}
+                        </p>
+                      </div>
+                      <AcceptInviteButton inviteId={invite.id} />
+                    </article>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          ) : null}
           <div className="grid gap-4 xl:grid-cols-2">
             {households.map((household) => (
               <Card key={household.id} className="bg-card/94">
@@ -94,22 +136,27 @@ export function HouseholdSelectionScreen({
         <Card className="h-fit bg-card/94">
           <CardContent className="space-y-5 pt-6">
             <div className="space-y-2">
-              <Badge>Foundation checkpoint</Badge>
+              <Badge>Active session</Badge>
               <h2 className="text-xl font-semibold tracking-tight">
-                Phase 1 is wired for extension
+                {session.user.fullName}
               </h2>
               <p className="text-sm leading-6 text-muted-foreground">
-                The current scaffold keeps server-first rendering, typed DTO mapping,
-                query providers, and token-driven UI in place so feature work can start
-                without re-laying the foundation.
+                {session.user.email}
               </p>
             </div>
             <ul className="space-y-3 text-sm leading-6 text-muted-foreground">
               <li>Server routes stay thin and household-aware.</li>
-              <li>Browser code is prepared to call same-origin BFF endpoints.</li>
+              <li>Cookie session stays server-owned and never enters local storage.</li>
               <li>Mock mode is {publicEnv.enableMockApi ? "enabled" : "disabled"} for rapid verification.</li>
-              <li>Accounts and transactions already follow DTO to domain mapping patterns.</li>
+              <li>{session.memberships.length} accessible workspaces are currently attached.</li>
             </ul>
+            <CreateHouseholdForm />
+            {households.length === 0 ? (
+              <EmptyState
+                title="No households attached yet"
+                description="Create the first workspace or accept an invite to continue."
+              />
+            ) : null}
           </CardContent>
         </Card>
       </div>

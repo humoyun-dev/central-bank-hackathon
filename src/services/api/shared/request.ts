@@ -5,12 +5,22 @@ import { parseProblemDetails } from "@/services/api/shared/problem-details"
 export class ApiClientError extends Error {
   status: number
   problem: ProblemDetails | null
+  method: string
+  path: string
 
-  constructor(status: number, message: string, problem: ProblemDetails | null) {
+  constructor(
+    status: number,
+    message: string,
+    problem: ProblemDetails | null,
+    method: string,
+    path: string,
+  ) {
     super(message)
     this.name = "ApiClientError"
     this.status = status
     this.problem = problem
+    this.method = method
+    this.path = path
   }
 }
 
@@ -34,16 +44,36 @@ export async function apiRequest<TOutput>({
   cache = "no-store",
 }: ApiRequestOptions<TOutput>): Promise<TOutput> {
   const requestUrl = baseUrl ? new URL(path, baseUrl).toString() : path
-  const response = await fetch(requestUrl, {
-    method,
-    cache,
-    headers: {
-      Accept: "application/json",
-      ...(body ? { "Content-Type": "application/json" } : null),
-      ...headers,
-    },
-    ...(body !== undefined ? { body: JSON.stringify(body) } : {}),
-  })
+  let response: Response
+
+  try {
+    response = await fetch(requestUrl, {
+      method,
+      cache,
+      headers: {
+        Accept: "application/json",
+        ...(body ? { "Content-Type": "application/json" } : null),
+        ...headers,
+      },
+      ...(body !== undefined ? { body: JSON.stringify(body) } : {}),
+    })
+  } catch (error) {
+    throw new ApiClientError(
+      0,
+      error instanceof Error ? error.message : "Network request failed",
+      {
+        title: "Network request failed",
+        detail:
+          error instanceof Error
+            ? error.message
+            : "The request could not reach the backend boundary.",
+        status: 0,
+        kind: "network",
+      },
+      method,
+      path,
+    )
+  }
 
   if (!response.ok) {
     const problem = await parseProblemDetails(response)
@@ -51,6 +81,8 @@ export async function apiRequest<TOutput>({
       response.status,
       problem?.detail ?? problem?.title ?? "Request failed",
       problem,
+      method,
+      path,
     )
   }
 
@@ -63,5 +95,22 @@ export async function apiRequest<TOutput>({
   }
 
   const payload = await response.json()
-  return schema.parse(payload)
+  const parsedPayload = schema.safeParse(payload)
+
+  if (!parsedPayload.success) {
+    throw new ApiClientError(
+      response.status,
+      "Response validation failed",
+      {
+        title: "Response validation failed",
+        detail: parsedPayload.error.issues[0]?.message ?? "Invalid backend payload",
+        status: response.status,
+        kind: "schema",
+      },
+      method,
+      path,
+    )
+  }
+
+  return parsedPayload.data
 }

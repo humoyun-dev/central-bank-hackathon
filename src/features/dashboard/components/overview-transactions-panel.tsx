@@ -1,6 +1,8 @@
-import { ArrowUpRight, MinusCircle } from "lucide-react"
-import { formatDateLabel } from "@/lib/format/date"
-import { formatMoney } from "@/lib/format/money"
+import { ArrowRightLeft, ArrowUpRight, MinusCircle } from "lucide-react"
+import { SectionHeader } from "@/components/shared/section-header"
+import { TransactionKindBadge } from "@/features/transactions/components/transaction-kind-badge"
+import { formatDateLabel, formatTimeLabel } from "@/lib/format/date"
+import { formatSignedMoney } from "@/lib/format/money"
 import type { TransactionListItem } from "@/features/transactions/types/transaction"
 
 export function OverviewTransactionsPanel({
@@ -11,9 +13,10 @@ export function OverviewTransactionsPanel({
   if (transactions.length === 0) {
     return (
       <section className="space-y-4">
-        <h2 className="text-4xl font-semibold tracking-tight text-slate-950 sm:text-[2.35rem]">
-          Transactions
-        </h2>
+        <SectionHeader
+          title="Transactions"
+          description="Latest mapped household activity across cards, bank accounts, and internal transfers."
+        />
         <div className="surface-card rounded-[1.5rem] bg-white/88 p-6">
           <p className="text-sm leading-6 text-slate-500">
             Recent transaction activity will appear here once the household records
@@ -26,12 +29,19 @@ export function OverviewTransactionsPanel({
 
   return (
     <section className="space-y-4">
-      <h2 className="text-4xl font-semibold tracking-tight text-slate-950 sm:text-[2.35rem]">
-        Transactions
-      </h2>
+      <SectionHeader
+        title="Transactions"
+        description="Latest mapped household activity across cards, bank accounts, and internal transfers."
+      />
       <div className="space-y-3">
         {transactions.map((transaction) => {
           const isExpense = transaction.kind === "EXPENSE"
+          const isTransfer = transaction.kind === "TRANSFER"
+          const Icon = isExpense
+            ? MinusCircle
+            : isTransfer
+              ? ArrowRightLeft
+              : ArrowUpRight
 
           return (
             <article
@@ -40,28 +50,27 @@ export function OverviewTransactionsPanel({
             >
               <div className="flex min-w-0 items-center gap-3">
                 <div className="flex size-11 items-center justify-center rounded-full bg-[#f5f4f0] text-slate-700">
-                  {isExpense ? (
-                    <MinusCircle className="size-4" aria-hidden="true" />
-                  ) : (
-                    <ArrowUpRight className="size-4" aria-hidden="true" />
-                  )}
+                  <Icon className="size-4" aria-hidden="true" />
                 </div>
                 <div className="min-w-0">
-                  <p className="truncate text-sm font-semibold text-slate-950">
-                    {transaction.description}
-                  </p>
+                  <div className="flex flex-wrap items-center gap-2">
+                    <p className="truncate text-sm font-semibold text-slate-950">
+                      {transaction.description}
+                    </p>
+                    <TransactionKindBadge kind={transaction.kind} />
+                  </div>
                   <p className="text-sm text-slate-500">
-                    {formatDateLabel(transaction.occurredAtUtc)}
+                    {transaction.categoryName} via {transaction.accountName}
                   </p>
                 </div>
               </div>
               <div className="shrink-0 text-right">
                 <p className="text-financial text-sm font-semibold text-slate-950">
-                  {isExpense ? "-" : "+"}
-                  {formatMoney(transaction.amountMinor, transaction.currencyCode)}
+                  {formatSignedMoney(transaction.signedAmountMinor, transaction.currencyCode)}
                 </p>
                 <p className="text-xs text-slate-500">
-                  {transaction.kind === "EXPENSE" ? "04:31 AM" : transaction.categoryName}
+                  {formatDateLabel(transaction.occurredAtUtc)} ·{" "}
+                  {formatTimeLabel(transaction.occurredAtUtc)}
                 </p>
               </div>
             </article>

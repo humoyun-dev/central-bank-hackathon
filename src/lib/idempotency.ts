@@ -1,3 +1,3 @@
-export function createIdempotencyKey() {
-  return crypto.randomUUID()
+export function createIdempotencyKey(scope = "mutation") {
+  return `${scope}:${crypto.randomUUID()}`
 }

@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation"
-import { getDashboardOverview } from "@/features/dashboard/api/get-dashboard-overview"
+import { getHouseholdContext } from "@/features/households/api/get-household-context"
 import { DashboardOverviewScreen } from "@/features/dashboard/components/dashboard-overview-screen"
 
 export default async function HouseholdOverviewPage({
@@ -8,11 +8,11 @@ export default async function HouseholdOverviewPage({
   params: Promise<{ householdId: string }>
 }) {
   const { householdId } = await params
-  const overview = await getDashboardOverview(householdId)
+  const household = await getHouseholdContext(householdId)
 
-  if (!overview) {
+  if (!household) {
     notFound()
   }
 
-  return <DashboardOverviewScreen overview={overview} />
+  return <DashboardOverviewScreen household={household} householdId={householdId} />
 }

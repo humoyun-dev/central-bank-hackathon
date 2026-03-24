@@ -1,42 +1,38 @@
 import "server-only"
-import { z } from "zod"
-import { mockHouseholdDtos } from "@/services/api/mock/seed-data"
-import type { HouseholdContext } from "@/types/household"
-
-const householdDtoSchema = z.object({
-  id: z.string(),
-  name: z.string(),
-  role: z.enum(["OWNER", "ADMIN", "MEMBER", "VIEWER"]),
-  currency_code: z.string().length(3),
-  member_count: z.number().int().nonnegative(),
-  available_balance_minor: z.number().int(),
-  month_income_minor: z.number().int().nonnegative(),
-  month_spend_minor: z.number().int().nonnegative(),
-})
-
-const householdListSchema = z.array(householdDtoSchema)
-
-function mapHouseholdDtoToContext(
-  householdDto: z.infer<typeof householdDtoSchema>,
-): HouseholdContext {
-  return {
-    id: householdDto.id,
-    name: householdDto.name,
-    role: householdDto.role,
-    currencyCode: householdDto.currency_code,
-    memberCount: householdDto.member_count,
-    availableBalanceMinor: householdDto.available_balance_minor,
-    monthIncomeMinor: householdDto.month_income_minor,
-    monthSpendMinor: householdDto.month_spend_minor,
-  }
-}
+import { getSession } from "@/features/auth/api/get-session"
+import { mapHouseholdDtoToContext } from "@/features/households/mappers/map-household-dto-to-context"
+import {
+  householdDtoListSchema,
+} from "@/features/households/schemas/household.dto"
+import { listMockHouseholdDtos } from "@/services/api/mock/store"
 
 export async function listHouseholds() {
-  const parsedHouseholds = householdListSchema.parse(mockHouseholdDtos)
-  return parsedHouseholds.map(mapHouseholdDtoToContext)
+  const parsedHouseholds = householdDtoListSchema.parse(listMockHouseholdDtos())
+  const session = await getSession()
+
+  if (!session) {
+    return []
+  }
+
+  const sessionMemberships = new Map(
+    session.memberships.map((membership) => [membership.householdId, membership.role]),
+  )
+
+  return parsedHouseholds
+    .filter((household) => sessionMemberships.has(household.id))
+    .map((household) =>
+      mapHouseholdDtoToContext({
+        ...household,
+        role: sessionMemberships.get(household.id) ?? household.role,
+      }),
+    )
+}
+
+async function getHouseholdContextInternal(householdId: string) {
+  const households = await listHouseholds()
+  return households.find((household) => household.id === householdId) ?? null
 }
 
 export async function getHouseholdContext(householdId: string) {
-  const households = await listHouseholds()
-  return households.find((household) => household.id === householdId) ?? null
+  return getHouseholdContextInternal(householdId)
 }

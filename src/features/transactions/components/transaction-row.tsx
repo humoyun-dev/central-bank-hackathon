@@ -1,25 +1,23 @@
 import { ArrowRightLeft, ArrowUpRight, MinusCircle } from "lucide-react"
-import { Badge } from "@/components/ui/badge"
+import { StatusBadge } from "@/components/shared/status-badge"
 import { formatDateLabel, formatRelativeDate } from "@/lib/format/date"
 import { formatMoney } from "@/lib/format/money"
 import { cn } from "@/lib/utils"
 import type { TransactionListItem } from "@/features/transactions/types/transaction"
+import { TransactionKindBadge } from "@/features/transactions/components/transaction-kind-badge"
 
 const transactionMeta = {
   EXPENSE: {
     icon: MinusCircle,
     tone: "text-destructive",
-    badge: "warning" as const,
   },
   INCOME: {
     icon: ArrowUpRight,
     tone: "text-success-foreground",
-    badge: "success" as const,
   },
   TRANSFER: {
     icon: ArrowRightLeft,
     tone: "text-primary",
-    badge: "primary" as const,
   },
 }
 
@@ -49,7 +47,7 @@ export function TransactionRow({
             <p className="truncate text-sm font-semibold text-foreground">
               {transaction.description}
             </p>
-            <Badge variant={meta.badge}>{transaction.kind}</Badge>
+            <TransactionKindBadge kind={transaction.kind} />
           </div>
           <p className="text-sm text-muted-foreground">
             {transaction.categoryName} via {transaction.accountName}
@@ -64,15 +62,20 @@ export function TransactionRow({
       </div>
       <div className="shrink-0 text-right">
         <p className={cn("text-financial text-sm font-semibold", meta.tone)}>
-          {transaction.kind === "EXPENSE" ? "-" : transaction.kind === "INCOME" ? "+" : ""}
-          {formatMoney(transaction.amountMinor, transaction.currencyCode)}
+          {transaction.signedAmountMinor > 0 ? "+" : transaction.signedAmountMinor < 0 ? "-" : ""}
+          {formatMoney(Math.abs(transaction.signedAmountMinor), transaction.currencyCode)}
         </p>
         {compact ? (
           <p className="text-xs text-muted-foreground">
             {formatRelativeDate(transaction.occurredAtUtc)}
           </p>
         ) : (
-          <p className="text-xs text-muted-foreground">{transaction.status}</p>
+          <div className="mt-1 inline-flex justify-end">
+            <StatusBadge
+              label={transaction.status}
+              tone={transaction.status === "POSTED" ? "success" : "warning"}
+            />
+          </div>
         )}
       </div>
     </div>

@@ -37,8 +37,4 @@
   .text-financial {
     @apply font-mono tabular-nums tracking-tight;
   }
-
-  .dashboard-frame {
-    @apply overflow-hidden rounded-[1.85rem] border-[3px] border-slate-950 bg-[#fcfbf7] shadow-[0_24px_90px_rgba(24,43,84,0.16)];
-  }
 }

@@ -1,4 +1,5 @@
 import { MoreHorizontal } from "lucide-react"
+import { StatusBadge } from "@/components/shared/status-badge"
 import { cn } from "@/lib/utils"
 import { formatMoney } from "@/lib/format/money"
 import type { Account } from "@/features/accounts/types/account"
@@ -8,6 +9,12 @@ const accountBrandLabel: Record<Account["kind"], string> = {
   CARD: "VISA",
   CASH: "CASH",
 }
+
+const accountStatusTone = {
+  ACTIVE: "success",
+  RESTRICTED: "warning",
+  ARCHIVED: "neutral",
+} as const
 
 export function OverviewAccountGlance({
   account,
@@ -35,9 +42,16 @@ export function OverviewAccountGlance({
           {formatMoney(account.availableBalanceMinor, account.currencyCode)}
         </p>
       </div>
-      <div className="mt-8 flex items-center justify-between text-xs font-medium text-slate-500">
-        <span>{account.maskedNumber ? `•• ${account.maskedNumber}` : account.kind}</span>
-        <span>{account.isPrimary ? "Primary" : "01/28"}</span>
+      <div className="mt-8 flex items-center justify-between gap-3 text-xs font-medium text-slate-500">
+        <span className="truncate">
+          {account.maskedNumber
+            ? `${account.institutionName} •• ${account.maskedNumber}`
+            : account.institutionName}
+        </span>
+        <div className="flex items-center gap-2">
+          {account.isPrimary ? <StatusBadge label="Primary" tone="primary" /> : null}
+          <StatusBadge label={account.status} tone={accountStatusTone[account.status]} />
+        </div>
       </div>
     </article>
   )

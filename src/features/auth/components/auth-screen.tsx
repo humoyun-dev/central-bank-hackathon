@@ -4,7 +4,7 @@ import { AppLogo } from "@/components/shared/app-logo"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
+import { AuthForm } from "@/features/auth/components/auth-form"
 import { publicEnv } from "@/services/config/public-env"
 
 interface AuthScreenProps {
@@ -70,56 +70,15 @@ export function AuthScreen({ mode }: AuthScreenProps) {
             </h2>
             <p className="text-sm leading-6 text-muted-foreground">
               {isLogin
-                ? "The fields below show the intended secure sign-in surface."
-                : "The registration flow will attach to BFF routes after auth phase work begins."}
+                ? "Secure cookie session orchestration stays server-owned from the first submit."
+                : "Registration provisions an owner workspace and issues the session cookie from the server boundary."}
             </p>
           </div>
-          <form className="space-y-4">
-            {!isLogin ? (
-              <div className="space-y-2">
-                <label htmlFor="full-name" className="text-sm font-medium text-foreground">
-                  Full name
-                </label>
-                <Input id="full-name" name="full-name" placeholder="Alex Johnson" />
-              </div>
-            ) : null}
-            <div className="space-y-2">
-              <label htmlFor="email" className="text-sm font-medium text-foreground">
-                Email
-              </label>
-              <Input id="email" name="email" type="email" placeholder="alex@atlas.house" />
-            </div>
-            <div className="space-y-2">
-              <label htmlFor="password" className="text-sm font-medium text-foreground">
-                Password
-              </label>
-              <Input
-                id="password"
-                name="password"
-                type="password"
-                placeholder="Secure password"
-              />
-            </div>
-            {!isLogin ? (
-              <div className="space-y-2">
-                <label htmlFor="household-name" className="text-sm font-medium text-foreground">
-                  Household name
-                </label>
-                <Input
-                  id="household-name"
-                  name="household-name"
-                  placeholder="Atlas Household"
-                />
-              </div>
-            ) : null}
-            <Button type="button" className="w-full" disabled>
-              {isLogin ? "Secure login wiring lands next phase" : "Registration wiring lands next phase"}
-            </Button>
-          </form>
+          <AuthForm mode={mode} />
           <div className="space-y-3 rounded-[var(--radius-md)] border border-border/70 bg-muted/50 p-4">
             <p className="text-sm leading-6 text-muted-foreground">
-              Need to inspect the shell immediately? Continue with household-scoped demo
-              data while auth routes are still being integrated.
+              Need to inspect the product shell immediately? Login with the seeded
+              mock account and continue with household-scoped demo data.
             </p>
             <div className="flex flex-wrap gap-2">
               <Button asChild variant="outline">

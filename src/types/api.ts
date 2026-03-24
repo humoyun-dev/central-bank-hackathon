@@ -1,3 +1,11 @@
+export type ApiErrorKind =
+  | "problem-details"
+  | "json"
+  | "text"
+  | "network"
+  | "schema"
+  | "unknown"
+
 export interface ProblemDetails {
   type?: string | undefined
   title?: string | undefined
@@ -6,4 +14,6 @@ export interface ProblemDetails {
   instance?: string | undefined
   timestamp?: string | undefined
   errors?: Record<string, string[]> | undefined
+  kind?: ApiErrorKind | undefined
+  traceId?: string | undefined
 }

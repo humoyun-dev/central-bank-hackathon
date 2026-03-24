@@ -1,4 +1,5 @@
 import Link from "next/link"
+import { AmountValue } from "@/components/shared/amount-value"
 import { EmptyState } from "@/components/shared/empty-state"
 import { PageHeader } from "@/components/shared/page-header"
 import { SectionCard } from "@/components/shared/section-card"
@@ -45,14 +46,19 @@ export function TransactionsScreen({
       />
       <div className="grid gap-4 md:grid-cols-3">
         <SectionCard title="Inflow" description={`Filtered over ${filters.period}`}>
-          <p className="text-financial text-2xl font-semibold text-success-foreground">
-            +{(incomeMinor / 100).toFixed(2)} {household.currencyCode}
-          </p>
+          <AmountValue
+            amountMinor={incomeMinor}
+            currencyCode={household.currencyCode}
+            size="section"
+            className="text-success-foreground"
+          />
         </SectionCard>
         <SectionCard title="Outflow" description={`Filtered over ${filters.period}`}>
-          <p className="text-financial text-2xl font-semibold text-destructive">
-            -{(expenseMinor / 100).toFixed(2)} {household.currencyCode}
-          </p>
+          <AmountValue
+            amountMinor={-expenseMinor}
+            currencyCode={household.currencyCode}
+            size="section"
+          />
         </SectionCard>
         <SectionCard title="Active filter" description="Current scope">
           <div className="flex flex-wrap gap-2">

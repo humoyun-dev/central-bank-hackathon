@@ -12,5 +12,8 @@ export function mapAccountDtoToAccount(accountDto: AccountDto): Account {
     availableBalanceMinor: accountDto.available_balance_minor,
     maskedNumber: accountDto.masked_number,
     isPrimary: accountDto.is_primary,
+    status: accountDto.status,
+    archivedAtUtc: accountDto.archived_at_utc,
+    disabledReason: accountDto.disabled_reason,
   }
 }

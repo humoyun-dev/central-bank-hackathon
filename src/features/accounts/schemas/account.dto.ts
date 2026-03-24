@@ -10,6 +10,9 @@ export const accountDtoSchema = z.object({
   available_balance_minor: z.number().int(),
   masked_number: z.string().nullable(),
   is_primary: z.boolean(),
+  status: z.enum(["ACTIVE", "RESTRICTED", "ARCHIVED"]),
+  archived_at_utc: z.string().nullable(),
+  disabled_reason: z.string().nullable(),
 })
 
 export const accountDtoListSchema = z.array(accountDtoSchema)

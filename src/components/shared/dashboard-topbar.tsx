@@ -3,25 +3,23 @@ import { Bell, Search } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { AppLogo } from "@/components/shared/app-logo"
 import { cn } from "@/lib/utils"
+import { UserMenu } from "@/features/auth/components/user-menu"
+import type { AuthSession } from "@/features/auth/types/session"
 import type { HouseholdContext } from "@/types/household"
 
 export function DashboardTopbar({
   household,
+  session,
   mockMode,
 }: {
   household: HouseholdContext
+  session: AuthSession
   mockMode: boolean
 }) {
   const displayName = household.name.split(" ")[0] ?? household.name
-  const initials = household.name
-    .split(" ")
-    .map((item) => item[0] ?? "")
-    .join("")
-    .slice(0, 2)
-    .toUpperCase()
 
   return (
-    <header className="sticky top-0 z-20 bg-[#fcfbf7]/94 px-3 py-3 backdrop-blur sm:px-4 lg:px-5">
+    <header className="shrink-0 border-b border-border/60 bg-[#fcfbf7]/96 px-3 py-3 backdrop-blur sm:px-4 lg:px-5">
       <div className="flex flex-col gap-3 xl:flex-row xl:items-center xl:justify-between">
         <div className="flex items-start gap-3">
           <AppLogo withWordmark={false} className="lg:hidden" />
@@ -59,19 +57,11 @@ export function DashboardTopbar({
             >
               <Bell className="size-4" aria-hidden="true" />
             </button>
-            <div className="flex items-center gap-3">
-              <div className="flex size-11 items-center justify-center rounded-full bg-[linear-gradient(135deg,#1f2937,#3b82f6)] text-sm font-semibold text-white shadow-sm">
-                {initials}
-              </div>
-              <div className="hidden min-w-0 xl:block">
-                <p className="truncate text-sm font-semibold text-slate-950">
-                  {household.name}
-                </p>
-                <p className="truncate text-xs text-slate-500">
-                  {household.role} · {household.currencyCode}
-                </p>
-              </div>
-            </div>
+            <UserMenu
+              fullName={session.user.fullName}
+              email={session.user.email}
+              householdId={household.id}
+            />
           </div>
           <Button asChild variant="outline" className="hidden xl:inline-flex">
             <Link href="/select-household">Switch household</Link>

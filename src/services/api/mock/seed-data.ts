@@ -1,4 +1,12 @@
-export const mockHouseholdDtos = [
+import type { AccountDto } from "@/features/accounts/schemas/account.dto"
+import type { BudgetDto } from "@/features/budgets/schemas/budget.dto"
+import type { CategoryDto } from "@/features/categories/schemas/category.dto"
+import type { DebtDto } from "@/features/debts/schemas/debt.dto"
+import type { HouseholdDto } from "@/features/households/schemas/household.dto"
+import type { HouseholdInviteDto } from "@/features/households/schemas/invite.dto"
+import type { TransactionDto } from "@/features/transactions/schemas/transaction.dto"
+
+export const mockHouseholdDtos: HouseholdDto[] = [
   {
     id: "household-atlas",
     name: "Atlas Household",
@@ -19,9 +27,11 @@ export const mockHouseholdDtos = [
     month_income_minor: 491500,
     month_spend_minor: 286320,
   },
-] as const
+] as HouseholdDto[]
 
-export const mockAccountDtosByHousehold: Record<string, readonly unknown[]> = {
+export const mockHouseholdInviteDtos: HouseholdInviteDto[] = []
+
+export const mockAccountDtosByHousehold: Record<string, AccountDto[]> = {
   "household-atlas": [
     {
       id: "acc-operating",
@@ -33,6 +43,9 @@ export const mockAccountDtosByHousehold: Record<string, readonly unknown[]> = {
       available_balance_minor: 1684500,
       masked_number: "4821",
       is_primary: true,
+      status: "ACTIVE",
+      archived_at_utc: null,
+      disabled_reason: null,
     },
     {
       id: "acc-reserve",
@@ -44,6 +57,9 @@ export const mockAccountDtosByHousehold: Record<string, readonly unknown[]> = {
       available_balance_minor: 940000,
       masked_number: "1188",
       is_primary: false,
+      status: "ACTIVE",
+      archived_at_utc: null,
+      disabled_reason: null,
     },
     {
       id: "acc-travel-card",
@@ -55,6 +71,9 @@ export const mockAccountDtosByHousehold: Record<string, readonly unknown[]> = {
       available_balance_minor: 180000,
       masked_number: "7712",
       is_primary: false,
+      status: "RESTRICTED",
+      archived_at_utc: null,
+      disabled_reason: "Temporarily frozen after unusual card activity review.",
     },
     {
       id: "acc-cash-buffer",
@@ -66,6 +85,9 @@ export const mockAccountDtosByHousehold: Record<string, readonly unknown[]> = {
       available_balance_minor: 205000,
       masked_number: null,
       is_primary: false,
+      status: "ARCHIVED",
+      archived_at_utc: "2026-02-01T10:00:00.000Z",
+      disabled_reason: "Archived after reserve wallet consolidation.",
     },
   ],
   "household-horizon": [
@@ -79,6 +101,9 @@ export const mockAccountDtosByHousehold: Record<string, readonly unknown[]> = {
       available_balance_minor: 1123480,
       masked_number: "2041",
       is_primary: true,
+      status: "ACTIVE",
+      archived_at_utc: null,
+      disabled_reason: null,
     },
     {
       id: "acc-rent-wallet",
@@ -90,6 +115,9 @@ export const mockAccountDtosByHousehold: Record<string, readonly unknown[]> = {
       available_balance_minor: 610000,
       masked_number: "3390",
       is_primary: false,
+      status: "ACTIVE",
+      archived_at_utc: null,
+      disabled_reason: null,
     },
     {
       id: "acc-house-card",
@@ -101,11 +129,41 @@ export const mockAccountDtosByHousehold: Record<string, readonly unknown[]> = {
       available_balance_minor: 145000,
       masked_number: "1182",
       is_primary: false,
+      status: "ACTIVE",
+      archived_at_utc: null,
+      disabled_reason: null,
     },
   ],
 }
 
-export const mockTransactionDtosByHousehold: Record<string, readonly unknown[]> = {
+export const mockCategoryDtosByHousehold: Record<string, CategoryDto[]> = {
+  "household-atlas": [
+    { id: "cat-exp-groceries", name: "Groceries", kind: "EXPENSE", is_system: true },
+    { id: "cat-exp-utilities", name: "Utilities", kind: "EXPENSE", is_system: true },
+    { id: "cat-exp-dining", name: "Dining", kind: "EXPENSE", is_system: true },
+    { id: "cat-exp-housing", name: "Housing", kind: "EXPENSE", is_system: true },
+    { id: "cat-exp-subscriptions", name: "Subscriptions", kind: "EXPENSE", is_system: true },
+    { id: "cat-exp-transport", name: "Transport", kind: "EXPENSE", is_system: true },
+    { id: "cat-exp-debt", name: "Debt settlement", kind: "EXPENSE", is_system: true },
+    { id: "cat-inc-salary", name: "Salary", kind: "INCOME", is_system: true },
+    { id: "cat-inc-freelance", name: "Freelance", kind: "INCOME", is_system: true },
+    { id: "cat-inc-bonus", name: "Bonus", kind: "INCOME", is_system: true },
+    { id: "cat-inc-reimbursement", name: "Reimbursement", kind: "INCOME", is_system: true },
+  ],
+  "household-horizon": [
+    { id: "cat-exp-groceries", name: "Groceries", kind: "EXPENSE", is_system: true },
+    { id: "cat-exp-utilities", name: "Utilities", kind: "EXPENSE", is_system: true },
+    { id: "cat-exp-dining", name: "Dining", kind: "EXPENSE", is_system: true },
+    { id: "cat-exp-housing", name: "Housing", kind: "EXPENSE", is_system: true },
+    { id: "cat-exp-subscriptions", name: "Subscriptions", kind: "EXPENSE", is_system: true },
+    { id: "cat-exp-debt", name: "Debt settlement", kind: "EXPENSE", is_system: true },
+    { id: "cat-inc-salary", name: "Salary", kind: "INCOME", is_system: true },
+    { id: "cat-inc-freelance", name: "Freelance", kind: "INCOME", is_system: true },
+    { id: "cat-inc-bonus", name: "Bonus", kind: "INCOME", is_system: true },
+  ],
+}
+
+export const mockTransactionDtosByHousehold: Record<string, TransactionDto[]> = {
   "household-atlas": [
     {
       id: "txn-payroll",
@@ -209,4 +267,124 @@ export const mockTransactionDtosByHousehold: Record<string, readonly unknown[]> 
       status: "POSTED",
     },
   ],
+}
+
+export const mockDebtDtosByHousehold: Record<string, DebtDto[]> = {
+  "household-atlas": [
+    {
+      id: "debt-atlas-phill",
+      counterparty_name: "Phill",
+      direction: "PAYABLE",
+      currency_code: "USD",
+      original_amount_minor: 12000,
+      remaining_amount_minor: 8000,
+      description: "Shared grocery catch-up after the last household restock.",
+      created_at_utc: "2026-03-14T09:00:00.000Z",
+      due_at_utc: "2026-03-28T18:00:00.000Z",
+      status: "PARTIAL",
+    },
+    {
+      id: "debt-atlas-anna",
+      counterparty_name: "Anna",
+      direction: "RECEIVABLE",
+      currency_code: "USD",
+      original_amount_minor: 4500,
+      remaining_amount_minor: 4500,
+      description: "Utility top-up covered from the operating account.",
+      created_at_utc: "2026-03-17T12:30:00.000Z",
+      due_at_utc: null,
+      status: "OPEN",
+    },
+  ],
+  "household-horizon": [
+    {
+      id: "debt-horizon-maya",
+      counterparty_name: "Maya",
+      direction: "PAYABLE",
+      currency_code: "USD",
+      original_amount_minor: 9600,
+      remaining_amount_minor: 9600,
+      description: "Reimbursement for family supply run.",
+      created_at_utc: "2026-03-18T10:00:00.000Z",
+      due_at_utc: "2026-03-29T19:00:00.000Z",
+      status: "OPEN",
+    },
+  ],
+}
+
+export const mockBudgetDtosByHousehold: Record<string, BudgetDto[]> = {
+  "household-atlas": [
+    {
+      id: "budget-atlas-groceries",
+      category_id: "cat-exp-groceries",
+      category_name: "Groceries",
+      period: "MONTHLY",
+      currency_code: "USD",
+      limit_minor: 65000,
+      spent_minor: 18450,
+      remaining_minor: 46550,
+      effective_from_local_date: "2026-03-01",
+    },
+    {
+      id: "budget-atlas-utilities",
+      category_id: "cat-exp-utilities",
+      category_name: "Utilities",
+      period: "MONTHLY",
+      currency_code: "USD",
+      limit_minor: 32000,
+      spent_minor: 9620,
+      remaining_minor: 22380,
+      effective_from_local_date: "2026-03-01",
+    },
+  ],
+  "household-horizon": [
+    {
+      id: "budget-horizon-housing",
+      category_id: "cat-exp-housing",
+      category_name: "Housing",
+      period: "MONTHLY",
+      currency_code: "USD",
+      limit_minor: 180000,
+      spent_minor: 156000,
+      remaining_minor: 24000,
+      effective_from_local_date: "2026-03-01",
+    },
+  ],
+}
+
+export const mockAnalyticsPreviewDtosByHousehold: Record<string, unknown> = {
+  "household-atlas": {
+    period: "weekly",
+    currency_code: "USD",
+    current_balance_minor: 2845230,
+    income_minor: 642000,
+    expense_minor: 318450,
+    net_change_minor: 323550,
+    points: [
+      { label: "Mon", income_minor: 24000, expense_minor: 62000 },
+      { label: "Tue", income_minor: 18000, expense_minor: 42000 },
+      { label: "Wed", income_minor: 12000, expense_minor: 38000 },
+      { label: "Thu", income_minor: 21000, expense_minor: 47000 },
+      { label: "Fri", income_minor: 56000, expense_minor: 51000 },
+      { label: "Sat", income_minor: 8000, expense_minor: 58000 },
+      { label: "Sun", income_minor: 34000, expense_minor: 64000 },
+    ],
+  },
+  "household-horizon": {
+    period: "weekly",
+    currency_code: "USD",
+    current_balance_minor: 1923480,
+    income_minor: 491500,
+    expense_minor: 286320,
+    net_change_minor: 205180,
+    points: [
+      { label: "Mon", income_minor: 18000, expense_minor: 36000 },
+      { label: "Tue", income_minor: 22000, expense_minor: 28000 },
+      { label: "Wed", income_minor: 11000, expense_minor: 24000 },
+      { label: "Thu", income_minor: 26000, expense_minor: 34000 },
+      { label: "Fri", income_minor: 41000, expense_minor: 39000 },
+      { label: "Sat", income_minor: 9000, expense_minor: 26000 },
+      { label: "Sun", income_minor: 21000, expense_minor: 37000 },
+    ],
+  },
 }
