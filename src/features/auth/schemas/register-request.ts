@@ -3,18 +3,18 @@ import { z } from "zod"
 export const registerRequestSchema = z.object({
   fullName: z
     .string()
-    .min(2, "Full name must be at least 2 characters.")
-    .max(80, "Full name is too long."),
-  email: z.string().email("Enter a valid email address."),
+    .min(2, "validation.auth.fullName.min")
+    .max(80, "validation.auth.fullName.max"),
+  email: z.string().email("validation.auth.email.invalid"),
   password: z
     .string()
-    .min(8, "Password must be at least 8 characters.")
-    .regex(/[a-zA-Z]/, "Password must contain at least one letter.")
-    .regex(/[0-9]/, "Password must contain at least one number."),
+    .min(8, "validation.auth.password.min")
+    .regex(/[a-zA-Z]/, "validation.auth.password.letter")
+    .regex(/[0-9]/, "validation.auth.password.number"),
   householdName: z
     .string()
-    .min(2, "Household name must be at least 2 characters.")
-    .max(64, "Household name is too long."),
+    .min(2, "validation.households.name.min")
+    .max(64, "validation.households.name.max"),
 })
 
 export type RegisterRequest = z.infer<typeof registerRequestSchema>

@@ -4,7 +4,7 @@ import type { AuthSession } from "@/features/auth/types/session"
 import { publicEnv } from "@/services/config/public-env"
 import type { HouseholdContext } from "@/types/household"
 
-export function DashboardShell({
+export async function DashboardShell({
   household,
   session,
   children,

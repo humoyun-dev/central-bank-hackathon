@@ -1,6 +1,7 @@
 "use client"
 
 import { Controller, type Control, type FieldPath, type FieldValues } from "react-hook-form"
+import { useTranslations } from "next-intl"
 import { FormFieldError } from "@/components/shared/forms/form-field-error"
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
@@ -22,13 +23,15 @@ export function AmountField<TFieldValues extends FieldValues>({
   placeholder = "0.00",
   disabled = false,
 }: AmountFieldProps<TFieldValues>) {
+  const t = useTranslations("forms.common")
+
   return (
     <Controller
       control={control}
       name={name}
       render={({ field, fieldState }) => (
         <div className="space-y-2">
-          <Label htmlFor={String(name)}>{label}</Label>
+          <Label htmlFor={String(name)}>{label === "Amount" ? t("amountLabel") : label}</Label>
           {description ? (
             <p className="text-sm leading-6 text-muted-foreground">{description}</p>
           ) : null}
@@ -36,7 +39,7 @@ export function AmountField<TFieldValues extends FieldValues>({
             {...field}
             id={String(name)}
             inputMode="decimal"
-            placeholder={placeholder}
+            placeholder={placeholder === "0.00" ? t("amountPlaceholder") : placeholder}
             aria-invalid={fieldState.invalid}
             disabled={disabled}
             className="text-financial"

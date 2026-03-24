@@ -1,6 +1,7 @@
 "use client"
 
 import { zodResolver } from "@hookform/resolvers/zod"
+import { useLocale, useTranslations } from "next-intl"
 import { Controller, useForm, useWatch } from "react-hook-form"
 import { useEffect, useState } from "react"
 import { FormActions } from "@/components/shared/forms/form-actions"
@@ -28,15 +29,18 @@ import type { Category } from "@/features/categories/types/category"
 import { applyProblemDetailsToForm } from "@/features/mutations/lib/form-errors"
 import { useHouseholdMutation } from "@/features/mutations/hooks/use-household-mutation"
 import { formatDateInputValue } from "@/lib/format/date"
-import { parseMoneyToMinor } from "@/lib/format/money"
+import { formatMoneyByLocale, parseMoneyToMinor } from "@/lib/format/money"
 import { queryKeys } from "@/lib/query-keys"
 
-function getDefaultValues(categories: Category[]): UpsertBudgetFormValues {
+function getDefaultValues(
+  categories: Category[],
+  effectiveFromLocalDate = "",
+): UpsertBudgetFormValues {
   return {
     categoryId: categories[0]?.id ?? "",
     period: "MONTHLY",
     amount: "",
-    effectiveFromLocalDate: formatDateInputValue(new Date()),
+    effectiveFromLocalDate,
   }
 }
 
@@ -64,6 +68,9 @@ export function BudgetForm({
   onCancel?: (() => void) | undefined
   onSuccess?: (() => void) | undefined
 }) {
+  const locale = useLocale()
+  const t = useTranslations("budgets.form")
+  const tCommon = useTranslations("budgets.common")
   const [formError, setFormError] = useState("")
   const form = useForm<UpsertBudgetFormValues>({
     resolver: zodResolver(upsertBudgetFormSchema),
@@ -90,7 +97,7 @@ export function BudgetForm({
       return
     }
 
-    form.reset(getDefaultValues(categories))
+    form.reset(getDefaultValues(categories, formatDateInputValue(new Date())))
   }, [categories, form, initialBudget])
 
   useEffect(() => {
@@ -106,10 +113,10 @@ export function BudgetForm({
     mutationFn: (payload: Parameters<typeof upsertBudget>[1], idempotencyKey) =>
       upsertBudget(householdId, payload, idempotencyKey),
     invalidateKeys: [queryKeys.household(householdId)],
-    successMessage: matchingBudget ? "Budget updated" : "Budget created",
+    successMessage: matchingBudget ? "budgets.toasts.updated" : "budgets.toasts.created",
     idempotencyScope: "budget",
     onSuccess: () => {
-      form.reset(getDefaultValues(categories))
+      form.reset(getDefaultValues(categories, formatDateInputValue(new Date())))
       setFormError("")
       onSuccess?.()
     },
@@ -134,15 +141,15 @@ export function BudgetForm({
     <form className="space-y-4" onSubmit={handleSubmit}>
       <InlineFormError message={formError} />
       <FormSection
-        title="Budget scope"
-        description="Budgets in this phase govern expense categories and can be updated by reusing the same category + period combination."
+        title={t("sections.scope.title")}
+        description={t("sections.scope.description")}
       >
         <div className="grid gap-4 md:grid-cols-2">
           <CategorySelect
             categories={categories}
             control={form.control}
             name="categoryId"
-            label="Expense category"
+            label={t("fields.category.label")}
             disabled={mutation.isPending}
           />
           <Controller
@@ -150,18 +157,18 @@ export function BudgetForm({
             name="period"
             render={({ field, fieldState }) => (
               <div className="space-y-2">
-                <Label htmlFor="budget-period">Period</Label>
+                <Label htmlFor="budget-period">{t("fields.period.label")}</Label>
                 <Select
                   value={field.value}
                   onValueChange={field.onChange}
                   disabled={mutation.isPending}
                 >
                   <SelectTrigger id="budget-period" aria-invalid={fieldState.invalid}>
-                    <SelectValue placeholder="Choose a budget period" />
+                    <SelectValue placeholder={t("fields.period.placeholder")} />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="MONTHLY">Monthly</SelectItem>
-                    <SelectItem value="WEEKLY">Weekly</SelectItem>
+                    <SelectItem value="MONTHLY">{tCommon("periods.monthly")}</SelectItem>
+                    <SelectItem value="WEEKLY">{tCommon("periods.weekly")}</SelectItem>
                   </SelectContent>
                 </Select>
                 <FormFieldError message={fieldState.error?.message} />
@@ -171,26 +178,32 @@ export function BudgetForm({
         </div>
         {matchingBudget ? (
           <p className="text-sm leading-6 text-muted-foreground">
-            Current saved limit: {(matchingBudget.limitMinor / 100).toFixed(2)}{" "}
-            {matchingBudget.currencyCode} with {(matchingBudget.spentMinor / 100).toFixed(2)} spent.
+            {t("currentSavedLimit", {
+              limit: formatMoneyByLocale(matchingBudget.limitMinor, matchingBudget.currencyCode, {
+                locale,
+              }),
+              spent: formatMoneyByLocale(matchingBudget.spentMinor, matchingBudget.currencyCode, {
+                locale,
+              }),
+            })}
           </p>
         ) : null}
       </FormSection>
       <FormSection
-        title="Budget details"
-        description="Saving again with the same category and period updates the existing budget limit."
+        title={t("sections.details.title")}
+        description={t("sections.details.description")}
       >
         <div className="grid gap-4 md:grid-cols-2">
           <AmountField
             control={form.control}
             name="amount"
-            label="Budget limit"
+            label={t("fields.amount.label")}
             disabled={mutation.isPending}
           />
           <DateField
             control={form.control}
             name="effectiveFromLocalDate"
-            label="Effective from"
+            label={t("fields.effectiveFrom.label")}
             type="date"
             disabled={mutation.isPending}
           />
@@ -199,8 +212,8 @@ export function BudgetForm({
       <FormActions
         isSubmitting={mutation.isPending}
         onCancel={onCancel}
-        submitLabel={matchingBudget ? "Update budget" : "Create budget"}
-        pendingLabel="Saving..."
+        submitLabel={matchingBudget ? t("actions.update") : t("actions.create")}
+        pendingLabel={t("actions.pending")}
       />
     </form>
   )

@@ -1,4 +1,5 @@
-import Link from "next/link"
+"use client"
+
 import {
   ArrowDownLeft,
   ArrowUpRight,
@@ -6,8 +7,10 @@ import {
   Plus,
   ReceiptText,
 } from "lucide-react"
+import { useTranslations, useLocale } from "next-intl"
 import { AmountValue } from "@/components/shared/amount-value"
 import { Badge } from "@/components/ui/badge"
+import { Link } from "@/i18n/navigation"
 import { formatSignedMoney } from "@/lib/format/money"
 import { getVisibleDashboardActions } from "@/lib/permissions"
 import type { HouseholdContext } from "@/types/household"
@@ -17,28 +20,30 @@ export function BalanceHero({
 }: {
   household: HouseholdContext
 }) {
+  const t = useTranslations("dashboard")
+  const locale = useLocale()
   const visibility = getVisibleDashboardActions(household.role)
   const actions = [
     {
-      label: "Send",
+      label: t("send"),
       href: `/${household.id}/transactions?action=transfer&kind=TRANSFER`,
       icon: ArrowUpRight,
       visible: visibility.canInitiateTransfer,
     },
     {
-      label: "Request",
+      label: t("request"),
       href: `/${household.id}/transactions?action=income&kind=INCOME`,
       icon: ArrowDownLeft,
       visible: visibility.canCreateIncome,
     },
     {
-      label: "Split bill",
+      label: t("splitBill"),
       href: `/${household.id}/debts?action=create-debt`,
       icon: ReceiptText,
       visible: visibility.canCreateDebt,
     },
     {
-      label: "Top up",
+      label: t("topUp"),
       href: `/${household.id}/accounts?action=create-account`,
       icon: Plus,
       visible: visibility.canManageSettings,
@@ -51,16 +56,17 @@ export function BalanceHero({
       <div className="space-y-7">
         <div className="space-y-3">
           <Badge className="border-slate-950/10 bg-white/55 text-slate-700">
-            Available balance
+            {t("availableBalance")}
           </Badge>
           <AmountValue
             amountMinor={household.availableBalanceMinor}
             currencyCode={household.currencyCode}
             size="hero"
+            locale={locale}
             className="text-slate-950"
           />
           <p className="text-sm leading-6 text-slate-700">
-            Available household cash across your active operating surfaces.
+            {t("cashDescription")}
           </p>
         </div>
         <div className="flex flex-wrap gap-5">
@@ -75,15 +81,15 @@ export function BalanceHero({
         </div>
         <div className="flex flex-wrap items-center gap-3 text-sm text-slate-700">
           <span className="rounded-full bg-white/55 px-3 py-2 text-financial">
-            Net {formatSignedMoney(netCashFlowMinor, household.currencyCode)}
+            {t("net", { amount: formatSignedMoney(netCashFlowMinor, household.currencyCode, { locale }) })}
           </span>
           <span className="rounded-full bg-white/55 px-3 py-2">
-            {household.memberCount} collaborators
+            {t("collaborators", { count: household.memberCount })}
           </span>
           {!visibility.canManageSettings ? (
             <span className="inline-flex items-center gap-2 rounded-full bg-white/55 px-3 py-2">
               <Lock className="size-4" aria-hidden="true" />
-              Read-only management scope
+              {t("readOnly")}
             </span>
           ) : null}
         </div>

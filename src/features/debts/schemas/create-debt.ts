@@ -2,14 +2,14 @@ import { z } from "zod"
 import { isValidMoneyInput } from "@/lib/format/money"
 
 export const createDebtFormSchema = z.object({
-  counterpartyName: z.string().trim().min(2, "Enter the person or member name.").max(80),
+  counterpartyName: z.string().trim().min(2, "validation.debts.counterpartyName.min").max(80),
   direction: z.enum(["PAYABLE", "RECEIVABLE"]),
   amount: z
     .string()
     .trim()
-    .min(1, "Enter the debt amount.")
-    .refine(isValidMoneyInput, "Enter a valid amount with up to two decimals."),
-  description: z.string().trim().max(240, "Keep the description within 240 characters.").optional(),
+    .min(1, "validation.debts.amount.required")
+    .refine(isValidMoneyInput, "validation.money.invalidAmount"),
+  description: z.string().trim().max(240, "validation.debts.description.max").optional(),
   dueAtLocalDate: z.string().optional(),
 })
 

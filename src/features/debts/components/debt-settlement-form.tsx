@@ -1,6 +1,7 @@
 "use client"
 
 import { zodResolver } from "@hookform/resolvers/zod"
+import { useLocale, useTranslations } from "next-intl"
 import { Controller, useForm, useWatch } from "react-hook-form"
 import { useEffect, useState } from "react"
 import { FormActions } from "@/components/shared/forms/form-actions"
@@ -30,16 +31,20 @@ import type { Account } from "@/features/accounts/types/account"
 import { applyProblemDetailsToForm } from "@/features/mutations/lib/form-errors"
 import { useHouseholdMutation } from "@/features/mutations/hooks/use-household-mutation"
 import { formatDateTimeInputValue, parseDateTimeInputToUtc } from "@/lib/format/date"
-import { parseMoneyToMinor } from "@/lib/format/money"
+import { formatMoneyByLocale, parseMoneyToMinor } from "@/lib/format/money"
 import { queryKeys } from "@/lib/query-keys"
 
-function getDefaultValues(debts: Debt[], accounts: Account[]): SettleDebtFormValues {
+function getDefaultValues(
+  debts: Debt[],
+  accounts: Account[],
+  occurredAtLocal = "",
+): SettleDebtFormValues {
   return {
     debtId: debts[0]?.id ?? "",
     accountId: accounts[0]?.id ?? "",
     amount: "",
     note: "",
-    occurredAtLocal: formatDateTimeInputValue(new Date()),
+    occurredAtLocal,
   }
 }
 
@@ -58,6 +63,8 @@ export function DebtSettlementForm({
   onCancel?: (() => void) | undefined
   onSuccess?: (() => void) | undefined
 }) {
+  const locale = useLocale()
+  const t = useTranslations("debts.settlementForm")
   const [formError, setFormError] = useState("")
   const form = useForm<SettleDebtFormValues>({
     resolver: zodResolver(settleDebtFormSchema),
@@ -73,6 +80,12 @@ export function DebtSettlementForm({
     }
   }, [form, initialDebtId])
 
+  useEffect(() => {
+    if (!form.getValues("occurredAtLocal")) {
+      form.setValue("occurredAtLocal", formatDateTimeInputValue(new Date()))
+    }
+  }, [form])
+
   const selectedDebtId = useWatch({
     control: form.control,
     name: "debtId",
@@ -85,10 +98,12 @@ export function DebtSettlementForm({
       idempotencyKey,
     ) => settleDebt(householdId, debtId, payload, idempotencyKey),
     invalidateKeys: [queryKeys.household(householdId)],
-    successMessage: "Debt settlement recorded",
+    successMessage: "debts.toasts.settled",
     idempotencyScope: "debt-settlement",
     onSuccess: () => {
-      form.reset(getDefaultValues(debts, accounts))
+      form.reset(
+        getDefaultValues(debts, accounts, formatDateTimeInputValue(new Date())),
+      )
       setFormError("")
       onSuccess?.()
     },
@@ -103,7 +118,7 @@ export function DebtSettlementForm({
       if (amountMinor > selectedDebt.remainingAmountMinor) {
         form.setError("amount", {
           type: "manual",
-          message: "Settlement amount cannot exceed the remaining balance.",
+          message: "validation.debts.amount.exceedsRemaining",
         })
         return
       }
@@ -126,23 +141,28 @@ export function DebtSettlementForm({
     <form className="space-y-4" onSubmit={handleSubmit}>
       <InlineFormError message={formError} />
       <FormSection
-        title="Settlement target"
-        description="Choose an open or partially settled debt and record the movement through a live account."
+        title={t("sections.target.title")}
+        description={t("sections.target.description")}
       >
         <Controller
           control={form.control}
           name="debtId"
           render={({ field, fieldState }) => (
             <div className="space-y-2">
-              <Label htmlFor="settlement-debt">Debt record</Label>
+              <Label htmlFor="settlement-debt">{t("fields.debt.label")}</Label>
               <Select value={field.value} onValueChange={field.onChange} disabled={mutation.isPending}>
                 <SelectTrigger id="settlement-debt" aria-invalid={fieldState.invalid}>
-                  <SelectValue placeholder="Choose a debt to settle" />
+                  <SelectValue placeholder={t("fields.debt.placeholder")} />
                 </SelectTrigger>
                 <SelectContent>
                   {debts.map((debt) => (
                     <SelectItem key={debt.id} value={debt.id}>
-                      {debt.counterpartyName} · {(debt.remainingAmountMinor / 100).toFixed(2)} {debt.currencyCode}
+                      {t("fields.debt.option", {
+                        name: debt.counterpartyName,
+                        amount: formatMoneyByLocale(debt.remainingAmountMinor, debt.currencyCode, {
+                          locale,
+                        }),
+                      })}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -158,7 +178,13 @@ export function DebtSettlementForm({
               <DebtStatusBadge status={selectedDebt.status} />
             </div>
             <p className="mt-2 text-muted-foreground">
-              Remaining: {(selectedDebt.remainingAmountMinor / 100).toFixed(2)} {selectedDebt.currencyCode}
+              {t("selectedDebt.remaining", {
+                amount: formatMoneyByLocale(
+                  selectedDebt.remainingAmountMinor,
+                  selectedDebt.currencyCode,
+                  { locale },
+                ),
+              })}
             </p>
           </div>
         ) : null}
@@ -166,13 +192,13 @@ export function DebtSettlementForm({
           accounts={accounts}
           control={form.control}
           name="accountId"
-          label="Settlement account"
+          label={t("fields.account.label")}
           disabled={mutation.isPending}
         />
       </FormSection>
       <FormSection
-        title="Settlement details"
-        description="Partial settlements are supported. Full settlement is detected automatically when the remaining amount reaches zero."
+        title={t("sections.details.title")}
+        description={t("sections.details.description")}
       >
         <div className="grid gap-4 md:grid-cols-2">
           <AmountField
@@ -183,15 +209,15 @@ export function DebtSettlementForm({
           <DateField
             control={form.control}
             name="occurredAtLocal"
-            label="Occurred at"
+            label={t("fields.occurredAt.label")}
             disabled={mutation.isPending}
           />
         </div>
         <div className="space-y-2">
-          <Label htmlFor="settlement-note">Note</Label>
+          <Label htmlFor="settlement-note">{t("fields.note.label")}</Label>
           <Textarea
             id="settlement-note"
-            placeholder="Optional settlement context for the household log"
+            placeholder={t("fields.note.placeholder")}
             disabled={mutation.isPending}
             {...form.register("note")}
           />
@@ -201,8 +227,8 @@ export function DebtSettlementForm({
       <FormActions
         isSubmitting={mutation.isPending}
         onCancel={onCancel}
-        submitLabel="Settle debt"
-        pendingLabel="Recording..."
+        submitLabel={t("actions.submit")}
+        pendingLabel={t("actions.pending")}
       />
     </form>
   )

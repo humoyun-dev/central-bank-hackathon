@@ -1,6 +1,7 @@
 "use client"
 
 import { Controller, type Control, type FieldPath, type FieldValues } from "react-hook-form"
+import { useTranslations } from "next-intl"
 import { FormFieldError } from "@/components/shared/forms/form-field-error"
 import { Label } from "@/components/ui/label"
 import {
@@ -29,13 +30,15 @@ export function CategorySelect<TFieldValues extends FieldValues>({
   description,
   disabled = false,
 }: CategorySelectProps<TFieldValues>) {
+  const t = useTranslations("forms.common")
+
   return (
     <Controller
       control={control}
       name={name}
       render={({ field, fieldState }) => (
         <div className="space-y-2">
-          <Label htmlFor={String(name)}>{label}</Label>
+          <Label htmlFor={String(name)}>{label === "Category" ? t("categoryLabel") : label}</Label>
           {description ? (
             <p className="text-sm leading-6 text-muted-foreground">{description}</p>
           ) : null}
@@ -45,7 +48,7 @@ export function CategorySelect<TFieldValues extends FieldValues>({
             disabled={disabled}
           >
             <SelectTrigger id={String(name)} aria-invalid={fieldState.invalid}>
-              <SelectValue placeholder="Select a category" />
+              <SelectValue placeholder={t("categoryPlaceholder")} />
             </SelectTrigger>
             <SelectContent>
               {categories.map((category) => (

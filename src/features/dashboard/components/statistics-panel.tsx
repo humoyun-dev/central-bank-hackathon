@@ -1,13 +1,14 @@
 "use client"
 
-import Link from "next/link"
 import { CalendarDays, ChevronRight, ChartColumn } from "lucide-react"
+import { useLocale, useTranslations } from "next-intl"
 import { useState } from "react"
 import { AmountValue } from "@/components/shared/amount-value"
 import { StatusBadge } from "@/components/shared/status-badge"
 import { SectionHeader } from "@/components/shared/section-header"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
+import { Link } from "@/i18n/navigation"
 import { formatSignedMoney } from "@/lib/format/money"
 import type { DashboardAnalyticsPreview } from "@/features/dashboard/types/dashboard-analytics-preview"
 
@@ -21,6 +22,8 @@ export function StatisticsPanel({
   }
   householdId: string
 }) {
+  const locale = useLocale()
+  const t = useTranslations("dashboard.statistics")
   const [period, setPeriod] = useState<"weekly" | "monthly">("weekly")
   const activePreview = analyticsPreview[period]
   const maxBarValue = Math.max(
@@ -31,7 +34,7 @@ export function StatisticsPanel({
   return (
     <section className="space-y-4">
       <SectionHeader
-        title="Statistics"
+        title={t("title")}
         action={
           <div className="flex items-center gap-2">
             <div className="inline-flex rounded-full bg-[#f1efea] p-1 text-xs font-semibold text-slate-500">
@@ -43,7 +46,7 @@ export function StatisticsPanel({
                 )}
                 onClick={() => setPeriod("weekly")}
               >
-                Weekly
+                {t("period.weekly")}
               </button>
               <button
                 type="button"
@@ -53,7 +56,7 @@ export function StatisticsPanel({
                 )}
                 onClick={() => setPeriod("monthly")}
               >
-                Monthly
+                {t("period.monthly")}
               </button>
             </div>
             <div className="flex size-10 items-center justify-center rounded-full bg-[#f1efea] text-slate-600">
@@ -72,16 +75,22 @@ export function StatisticsPanel({
               amountMinor={activePreview.currentBalanceMinor}
               currencyCode={activePreview.currencyCode}
               size="hero"
+              locale={locale}
               className="text-slate-950"
             />
             <p className="mt-1 text-sm text-slate-500">
-              {activePreview.period === "weekly" ? "Weekly" : "Monthly"} movement for{" "}
-              {activePreview.currencyCode} household cash
+              {t("movementCaption", {
+                period:
+                  activePreview.period === "weekly"
+                    ? t("period.weekly")
+                    : t("period.monthly"),
+                currencyCode: activePreview.currencyCode,
+              })}
             </p>
           </div>
           <Button asChild variant="outline" size="sm" className="rounded-full bg-[#f7f6f1]">
             <Link href={`/${householdId}/analytics`}>
-              Details
+              {t("details")}
               <ChevronRight className="size-4" aria-hidden="true" />
             </Link>
           </Button>
@@ -125,23 +134,27 @@ export function StatisticsPanel({
           <div className="rounded-[1.25rem] bg-[#f7f6f1] p-4">
             <div className="flex items-center justify-between gap-3">
               <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">
-                Income
+                {t("income")}
               </p>
-              <StatusBadge label="Inflow" tone="success" />
+              <StatusBadge label={t("inflow")} tone="success" />
             </div>
             <p className="mt-2 text-financial text-base font-semibold text-slate-950">
-              {formatSignedMoney(activePreview.incomeMinor, activePreview.currencyCode)}
+              {formatSignedMoney(activePreview.incomeMinor, activePreview.currencyCode, {
+                locale,
+              })}
             </p>
           </div>
           <div className="rounded-[1.25rem] bg-[#f7f6f1] p-4">
             <div className="flex items-center justify-between gap-3">
               <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">
-                Expenses
+                {t("expenses")}
               </p>
-              <StatusBadge label="Outflow" tone="warning" />
+              <StatusBadge label={t("outflow")} tone="warning" />
             </div>
             <p className={cn("mt-2 text-financial text-base font-semibold text-slate-950")}>
-              {formatSignedMoney(-activePreview.expenseMinor, activePreview.currencyCode)}
+              {formatSignedMoney(-activePreview.expenseMinor, activePreview.currencyCode, {
+                locale,
+              })}
             </p>
           </div>
         </div>

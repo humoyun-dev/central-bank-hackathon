@@ -1,6 +1,9 @@
+import { resolveLocale } from "@/i18n/config"
+
 interface FormatMoneyOptions {
   currencyDisplay?: "symbol" | "narrowSymbol" | "code"
   compact?: boolean
+  locale?: string | undefined
 }
 
 export function formatMoney(
@@ -8,7 +11,7 @@ export function formatMoney(
   currencyCode: string,
   options: FormatMoneyOptions = {},
 ) {
-  const formatter = new Intl.NumberFormat("en-US", {
+  const formatter = new Intl.NumberFormat(resolveLocale(options.locale), {
     style: "currency",
     currency: currencyCode,
     currencyDisplay: options.currencyDisplay ?? "symbol",
@@ -38,11 +41,14 @@ export function formatSignedMoney(
   return absoluteValue
 }
 
+export const formatMoneyByLocale = formatMoney
+export const formatSignedMoneyByLocale = formatSignedMoney
+
 export function parseMoneyToMinor(rawValue: string) {
   const normalized = rawValue.replace(/,/g, "").trim()
 
   if (!/^\d+(\.\d{0,2})?$/.test(normalized)) {
-    throw new Error("Enter a valid amount with up to two decimal places.")
+    throw new Error("validation.money.invalidAmount")
   }
 
   const [wholePart = "0", decimalPart = ""] = normalized.split(".")

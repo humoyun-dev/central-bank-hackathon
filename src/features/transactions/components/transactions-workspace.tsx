@@ -1,7 +1,7 @@
 "use client"
 
 import { ArrowRightLeft, Eye, PlusCircle, WalletCards } from "lucide-react"
-import Link from "next/link"
+import { useLocale, useTranslations } from "next-intl"
 import { useMemo, useState } from "react"
 import { ActionMenu } from "@/components/shared/action-menu"
 import { EmptyState } from "@/components/shared/empty-state"
@@ -19,6 +19,7 @@ import { TransactionDetails } from "@/features/transactions/components/transacti
 import { TransactionFiltersBar } from "@/features/transactions/components/transaction-filters"
 import { TransactionRow } from "@/features/transactions/components/transaction-row"
 import { TransferForm } from "@/features/transactions/components/transfer-form"
+import { Link } from "@/i18n/navigation"
 import type {
   TransactionFilters,
   TransactionListItem,
@@ -45,6 +46,8 @@ export function TransactionsWorkspace({
   incomeCategories: Category[]
   initialAction?: "expense" | "income" | "transfer" | undefined
 }) {
+  const locale = useLocale()
+  const t = useTranslations("transactions.workspace")
   const activeAccounts = useMemo(
     () => accounts.filter((account) => account.status === "ACTIVE"),
     [accounts],
@@ -80,27 +83,27 @@ export function TransactionsWorkspace({
   return (
     <div className="space-y-6">
       <PageHeader
-        eyebrow="Transactions"
-        title="Shareable activity workspace"
-        description="Filters live in the URL while create and detail flows stay inside focused dialogs."
+        eyebrow={t("eyebrow")}
+        title={t("title")}
+        description={t("description")}
         actions={
           <div className="flex flex-wrap items-center gap-2">
-            <Badge variant="primary">{transactions.length} matches</Badge>
+            <Badge variant="primary">{t("matches", { count: transactions.length })}</Badge>
             {canCreateExpense ? (
               <Button
                 type="button"
                 disabled={expenseActionDisabled}
                 title={
                   activeAccounts.length === 0
-                    ? "Create an active account first."
+                    ? t("requirements.activeAccount")
                     : expenseCategories.length === 0
-                      ? "Create an expense category first."
+                      ? t("requirements.expenseCategory")
                       : undefined
                 }
                 onClick={() => setActiveDialog("expense")}
               >
                 <WalletCards className="size-4" aria-hidden="true" />
-                Add expense
+                {t("actions.addExpense")}
               </Button>
             ) : null}
             {canCreateIncome ? (
@@ -110,15 +113,15 @@ export function TransactionsWorkspace({
                 disabled={incomeActionDisabled}
                 title={
                   activeAccounts.length === 0
-                    ? "Create an active account first."
+                    ? t("requirements.activeAccount")
                     : incomeCategories.length === 0
-                      ? "Create an income category first."
+                      ? t("requirements.incomeCategory")
                       : undefined
                 }
                 onClick={() => setActiveDialog("income")}
               >
                 <PlusCircle className="size-4" aria-hidden="true" />
-                Add income
+                {t("actions.addIncome")}
               </Button>
             ) : null}
             {canTransfer ? (
@@ -128,57 +131,59 @@ export function TransactionsWorkspace({
                 disabled={transferActionDisabled}
                 title={
                   transferActionDisabled
-                    ? "Transfers require at least two active accounts."
+                    ? t("requirements.transferAccounts")
                     : undefined
                 }
                 onClick={() => setActiveDialog("transfer")}
               >
                 <ArrowRightLeft className="size-4" aria-hidden="true" />
-                Transfer
+                {t("actions.transfer")}
               </Button>
             ) : null}
             <Button asChild variant="outline">
-              <Link href={`/${household.id}/accounts`}>View accounts</Link>
+              <Link href={`/${household.id}/accounts`}>{t("actions.viewAccounts")}</Link>
             </Button>
           </div>
         }
       />
       <div className="grid gap-4 md:grid-cols-3">
-        <SectionCard title="Inflow" description={`Filtered over ${filters.period}`}>
+        <SectionCard title={t("summary.inflow")} description={t(`summary.periods.${filters.period}`)}>
           <AmountValue
             amountMinor={incomeMinor}
             currencyCode={household.currencyCode}
             size="section"
+            locale={locale}
             className="text-success-foreground"
           />
         </SectionCard>
-        <SectionCard title="Outflow" description={`Filtered over ${filters.period}`}>
+        <SectionCard title={t("summary.outflow")} description={t(`summary.periods.${filters.period}`)}>
           <AmountValue
             amountMinor={-expenseMinor}
             currencyCode={household.currencyCode}
             size="section"
+            locale={locale}
           />
         </SectionCard>
-        <SectionCard title="Active filter" description="Current scope">
+        <SectionCard title={t("summary.activeFilter")} description={t("summary.currentScope")}>
           <div className="flex flex-wrap gap-2">
-            <Badge>{filters.kind}</Badge>
-            <Badge>{filters.period}</Badge>
+            <Badge>{t(`filters.kinds.${filters.kind.toLowerCase()}`)}</Badge>
+            <Badge>{t(`summary.periods.${filters.period}`)}</Badge>
             {filters.query ? <Badge variant="primary">{filters.query}</Badge> : null}
           </div>
         </SectionCard>
       </div>
       <TransactionFiltersBar initialFilters={filters} />
       <SectionCard
-        title="Transaction feed"
-        description="Mapped DTOs, normalized timestamps, and explicit money semantics keep the list safe for later mutations and analytics overlays."
+        title={t("feed.title")}
+        description={t("feed.description")}
       >
         {transactions.length === 0 ? (
           <EmptyState
-            title="No transactions match this filter set"
-            description="Adjust the kind, period, or search term. Create flows remain available from the header."
+            title={t("feed.emptyTitle")}
+            description={t("feed.emptyDescription")}
             action={
               <Button asChild variant="outline">
-                <Link href={`/${household.id}/transactions`}>Clear filters</Link>
+                <Link href={`/${household.id}/transactions`}>{t("feed.clearFilters")}</Link>
               </Button>
             }
           />
@@ -188,12 +193,13 @@ export function TransactionsWorkspace({
               <TransactionRow
                 key={transaction.id}
                 transaction={transaction}
+                locale={locale}
                 action={
                   <ActionMenu
-                    label={`${transaction.description} actions`}
+                    label={t("transactionActions", { transaction: transaction.description })}
                     items={[
                       {
-                        label: "View details",
+                        label: t("viewDetails"),
                         icon: <Eye className="size-4" aria-hidden="true" />,
                         onSelect: () => setSelectedTransactionId(transaction.id),
                       },
@@ -209,8 +215,8 @@ export function TransactionsWorkspace({
       <FormDialog
         open={activeDialog === "expense"}
         onOpenChange={(open) => !open && setActiveDialog(null)}
-        title="Record expense"
-        description="Book a household outflow from the activity workspace."
+        title={t("dialogs.expense.title")}
+        description={t("dialogs.expense.description")}
       >
         <ExpenseForm
           householdId={household.id}
@@ -224,8 +230,8 @@ export function TransactionsWorkspace({
       <FormDialog
         open={activeDialog === "income"}
         onOpenChange={(open) => !open && setActiveDialog(null)}
-        title="Record income"
-        description="Capture a new inflow without leaving the transaction workspace."
+        title={t("dialogs.income.title")}
+        description={t("dialogs.income.description")}
       >
         <IncomeForm
           householdId={household.id}
@@ -239,8 +245,8 @@ export function TransactionsWorkspace({
       <FormDialog
         open={activeDialog === "transfer"}
         onOpenChange={(open) => !open && setActiveDialog(null)}
-        title="Create transfer"
-        description="Move household cash between active account surfaces."
+        title={t("dialogs.transfer.title")}
+        description={t("dialogs.transfer.description")}
       >
         <TransferForm
           householdId={household.id}
@@ -253,10 +259,12 @@ export function TransactionsWorkspace({
       <FormDialog
         open={Boolean(selectedTransaction)}
         onOpenChange={(open) => !open && setSelectedTransactionId(null)}
-        title={selectedTransaction ? selectedTransaction.description : "Transaction details"}
-        description="Review normalized transaction metadata from the typed household ledger."
+        title={selectedTransaction ? selectedTransaction.description : t("dialogs.detailsFallbackTitle")}
+        description={t("dialogs.detailsDescription")}
       >
-        {selectedTransaction ? <TransactionDetails transaction={selectedTransaction} /> : null}
+        {selectedTransaction ? (
+          <TransactionDetails transaction={selectedTransaction} locale={locale} />
+        ) : null}
       </FormDialog>
     </div>
   )

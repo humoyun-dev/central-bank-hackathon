@@ -1,6 +1,7 @@
 "use client"
 
 import { PencilLine, Plus } from "lucide-react"
+import { useTranslations } from "next-intl"
 import { useMemo, useState } from "react"
 import { ActionMenu } from "@/components/shared/action-menu"
 import { EmptyState } from "@/components/shared/empty-state"
@@ -23,19 +24,33 @@ function CategoryListSection({
   categories,
   canManageCategories,
   onEdit,
+  emptyTitle,
+  emptyDescription,
+  systemLabel,
+  customLabel,
+  actionMenuLabel,
+  editLabel,
+  kindLabels,
 }: {
   title: string
   description: string
   categories: Category[]
   canManageCategories: boolean
   onEdit: (category: Category) => void
+  emptyTitle: string
+  emptyDescription: string
+  systemLabel: string
+  customLabel: string
+  actionMenuLabel: (categoryName: string) => string
+  editLabel: string
+  kindLabels: Record<CategoryKind, string>
 }) {
   return (
     <SectionCard title={title} description={description}>
       {categories.length === 0 ? (
         <EmptyState
-          title="No categories"
-          description="This category group has not been configured yet."
+          title={emptyTitle}
+          description={emptyDescription}
         />
       ) : (
         <div className="space-y-3">
@@ -47,19 +62,19 @@ function CategoryListSection({
               <div className="space-y-0.5">
                 <p className="text-sm font-semibold text-foreground">{category.name}</p>
                 <p className="text-sm text-muted-foreground">
-                  {category.isSystem ? "System default" : "Household custom"}
+                  {category.isSystem ? systemLabel : customLabel}
                 </p>
               </div>
               <div className="flex items-center gap-2">
                 <Badge variant={category.isSystem ? "neutral" : "primary"}>
-                  {category.kind}
+                  {kindLabels[category.kind]}
                 </Badge>
                 {!category.isSystem && canManageCategories ? (
                   <ActionMenu
-                    label={`${category.name} actions`}
+                    label={actionMenuLabel(category.name)}
                     items={[
                       {
-                        label: "Edit category",
+                        label: editLabel,
                         icon: <PencilLine className="size-4" aria-hidden="true" />,
                         onSelect: () => onEdit(category),
                       },
@@ -82,6 +97,8 @@ export function CategoriesWorkspace({
   household: HouseholdContext
   categories: Category[]
 }) {
+  const t = useTranslations("categories.workspace")
+  const tCommon = useTranslations("categories.common")
   const [view, setView] = useState<CategoryView>("ALL")
   const [editedCategory, setEditedCategory] = useState<Category | null>(null)
   const [isCreateOpen, setIsCreateOpen] = useState(false)
@@ -101,20 +118,24 @@ export function CategoriesWorkspace({
   const incomeCategories = filteredCategories.filter(
     (category) => category.kind === "INCOME",
   )
+  const kindLabels: Record<CategoryKind, string> = {
+    EXPENSE: tCommon("kinds.expense"),
+    INCOME: tCommon("kinds.income"),
+  }
 
   return (
     <div className="space-y-6">
       <PageHeader
-        eyebrow="Categories"
-        title={`${household.name} category library`}
-        description="Create and edit household categories through focused dialogs while system defaults remain protected."
+        eyebrow={t("eyebrow")}
+        title={t("title", { household: household.name })}
+        description={t("description")}
         actions={
           <div className="flex flex-wrap items-center gap-2">
-            <Badge variant="primary">{categories.length} categories</Badge>
+            <Badge variant="primary">{t("count", { count: categories.length })}</Badge>
             {canManageCategories ? (
               <Button type="button" onClick={() => setIsCreateOpen(true)}>
                 <Plus className="size-4" aria-hidden="true" />
-                New category
+                {t("actions.newCategory")}
               </Button>
             ) : null}
           </div>
@@ -123,46 +144,60 @@ export function CategoriesWorkspace({
 
       <Tabs value={view} onValueChange={(nextValue) => setView(nextValue as CategoryView)}>
         <TabsList>
-          <TabsTrigger value="ALL">All</TabsTrigger>
-          <TabsTrigger value="EXPENSE">Expense</TabsTrigger>
-          <TabsTrigger value="INCOME">Income</TabsTrigger>
+          <TabsTrigger value="ALL">{t("tabs.all")}</TabsTrigger>
+          <TabsTrigger value="EXPENSE">{tCommon("kinds.expense")}</TabsTrigger>
+          <TabsTrigger value="INCOME">{tCommon("kinds.income")}</TabsTrigger>
         </TabsList>
       </Tabs>
 
       <div className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_24rem]">
         <div className="grid gap-4">
           <CategoryListSection
-            title="Expense categories"
-            description="Used for spending capture, budgets, and analytics grouping."
+            title={t("sections.expense.title")}
+            description={t("sections.expense.description")}
             categories={expenseCategories}
             canManageCategories={canManageCategories}
             onEdit={(category) => setEditedCategory(category)}
+            emptyTitle={t("sections.emptyTitle")}
+            emptyDescription={t("sections.emptyDescription")}
+            systemLabel={tCommon("origin.systemDefault")}
+            customLabel={tCommon("origin.householdCustom")}
+            actionMenuLabel={(categoryName) => t("categoryActions", { category: categoryName })}
+            editLabel={t("actions.editCategory")}
+            kindLabels={kindLabels}
           />
           <CategoryListSection
-            title="Income categories"
-            description="Used for inflow classification and summary reporting."
+            title={t("sections.income.title")}
+            description={t("sections.income.description")}
             categories={incomeCategories}
             canManageCategories={canManageCategories}
             onEdit={(category) => setEditedCategory(category)}
+            emptyTitle={t("sections.emptyTitle")}
+            emptyDescription={t("sections.emptyDescription")}
+            systemLabel={tCommon("origin.systemDefault")}
+            customLabel={tCommon("origin.householdCustom")}
+            actionMenuLabel={(categoryName) => t("categoryActions", { category: categoryName })}
+            editLabel={t("actions.editCategory")}
+            kindLabels={kindLabels}
           />
         </div>
         <SectionCard
-          title="Category controls"
-          description="Dialogs keep category mutations out of the reading path and preserve a calm workspace."
+          title={t("controls.title")}
+          description={t("controls.description")}
         >
           <div className="space-y-3 text-sm text-muted-foreground">
-            <p>Expense and income libraries can be filtered through the tab controls above.</p>
-            <p>System defaults stay read-only; only household custom categories expose edit actions.</p>
+            <p>{t("controls.tipViews")}</p>
+            <p>{t("controls.tipSystemDefaults")}</p>
           </div>
           {canManageCategories ? (
             <Button type="button" onClick={() => setIsCreateOpen(true)}>
               <Plus className="size-4" aria-hidden="true" />
-              Create category
+              {t("controls.createCategory")}
             </Button>
           ) : (
             <EmptyState
-              title="Category actions are limited"
-              description="This membership can review category mappings, but it cannot mutate them."
+              title={t("controls.readOnlyTitle")}
+              description={t("controls.readOnlyDescription")}
             />
           )}
         </SectionCard>
@@ -171,8 +206,8 @@ export function CategoriesWorkspace({
       <FormDialog
         open={isCreateOpen}
         onOpenChange={setIsCreateOpen}
-        title="Create category"
-        description="Add a household-scoped category without modifying system defaults."
+        title={t("dialogs.createTitle")}
+        description={t("dialogs.createDescription")}
       >
         <CategoryForm
           householdId={household.id}
@@ -184,8 +219,12 @@ export function CategoriesWorkspace({
       <FormDialog
         open={Boolean(editedCategory)}
         onOpenChange={(open) => !open && setEditedCategory(null)}
-        title={editedCategory ? `Edit ${editedCategory.name}` : "Edit category"}
-        description="Rename a household custom category while keeping its kind stable."
+        title={
+          editedCategory
+            ? t("dialogs.editTitle", { category: editedCategory.name })
+            : t("dialogs.editFallbackTitle")
+        }
+        description={t("dialogs.editDescription")}
       >
         {editedCategory ? (
           <CategoryForm

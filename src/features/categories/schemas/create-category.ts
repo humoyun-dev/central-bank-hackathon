@@ -3,8 +3,8 @@ import { z } from "zod"
 export const createCategoryRequestSchema = z.object({
   name: z
     .string()
-    .min(2, "Category name must be at least 2 characters.")
-    .max(48, "Category name is too long."),
+    .min(2, "validation.categories.name.min")
+    .max(48, "validation.categories.name.max"),
   kind: z.enum(["EXPENSE", "INCOME"]),
 })
 

@@ -1,8 +1,9 @@
 "use client"
 
 import { zodResolver } from "@hookform/resolvers/zod"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
+import { useTranslations } from "next-intl"
 import { FormActions } from "@/components/shared/forms/form-actions"
 import { AmountField } from "@/components/shared/forms/amount-field"
 import { DateField } from "@/components/shared/forms/date-field"
@@ -26,13 +27,17 @@ import { formatDateTimeInputValue, parseDateTimeInputToUtc } from "@/lib/format/
 import { parseMoneyToMinor } from "@/lib/format/money"
 import { queryKeys } from "@/lib/query-keys"
 
-function getDefaultValues(accounts: Account[], categories: Category[]): CreateIncomeFormValues {
+function getDefaultValues(
+  accounts: Account[],
+  categories: Category[],
+  occurredAtLocal = "",
+): CreateIncomeFormValues {
   return {
     accountId: accounts[0]?.id ?? "",
     categoryId: categories[0]?.id ?? "",
     amount: "",
     description: "",
-    occurredAtLocal: formatDateTimeInputValue(new Date()),
+    occurredAtLocal,
   }
 }
 
@@ -49,20 +54,29 @@ export function IncomeForm({
   onCancel: () => void
   onSuccess: () => void
 }) {
+  const t = useTranslations("transactions.incomeForm")
   const [formError, setFormError] = useState("")
   const form = useForm<CreateIncomeFormValues>({
     resolver: zodResolver(createIncomeFormSchema),
     defaultValues: getDefaultValues(accounts, categories),
   })
 
+  useEffect(() => {
+    if (!form.getValues("occurredAtLocal")) {
+      form.setValue("occurredAtLocal", formatDateTimeInputValue(new Date()))
+    }
+  }, [form])
+
   const mutation = useHouseholdMutation({
     mutationFn: (payload: Parameters<typeof createIncome>[1], idempotencyKey) =>
       createIncome(householdId, payload, idempotencyKey),
     invalidateKeys: [queryKeys.household(householdId)],
-    successMessage: "Income recorded",
+    successMessage: "transactions.toasts.incomeRecorded",
     idempotencyScope: "income",
     onSuccess: () => {
-      form.reset(getDefaultValues(accounts, categories))
+      form.reset(
+        getDefaultValues(accounts, categories, formatDateTimeInputValue(new Date())),
+      )
       setFormError("")
       onSuccess()
     },
@@ -88,29 +102,29 @@ export function IncomeForm({
     <form className="space-y-4" onSubmit={handleSubmit}>
       <InlineFormError message={formError} />
       <FormSection
-        title="Income source"
-        description="Select the receiving account and the source classification for this inflow."
+        title={t("sections.source.title")}
+        description={t("sections.source.description")}
       >
         <div className="grid gap-4 md:grid-cols-2">
           <AccountSelect
             accounts={accounts}
             control={form.control}
             name="accountId"
-            label="Receiving account"
+            label={t("fields.accountId.label")}
             disabled={mutation.isPending}
           />
           <CategorySelect
             categories={categories}
             control={form.control}
             name="categoryId"
-            label="Income source"
+            label={t("fields.categoryId.label")}
             disabled={mutation.isPending}
           />
         </div>
       </FormSection>
       <FormSection
-        title="Income details"
-        description="Capture the amount, description, and occurred-at timestamp for the household ledger."
+        title={t("sections.details.title")}
+        description={t("sections.details.description")}
       >
         <div className="grid gap-4 md:grid-cols-2">
           <AmountField
@@ -121,15 +135,15 @@ export function IncomeForm({
           <DateField
             control={form.control}
             name="occurredAtLocal"
-            label="Occurred at"
+            label={t("fields.occurredAt.label")}
             disabled={mutation.isPending}
           />
         </div>
         <div className="space-y-2">
-          <Label htmlFor="income-description">Description</Label>
+          <Label htmlFor="income-description">{t("fields.description.label")}</Label>
           <Input
             id="income-description"
-            placeholder="Freelance invoice payout"
+            placeholder={t("fields.description.placeholder")}
             disabled={mutation.isPending}
             {...form.register("description")}
           />
@@ -139,8 +153,8 @@ export function IncomeForm({
       <FormActions
         isSubmitting={mutation.isPending}
         onCancel={onCancel}
-        submitLabel="Record income"
-        pendingLabel="Recording..."
+        submitLabel={t("actions.submit")}
+        pendingLabel={t("actions.pending")}
       />
     </form>
   )

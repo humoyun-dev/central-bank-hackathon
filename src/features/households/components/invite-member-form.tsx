@@ -3,7 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useMutation } from "@tanstack/react-query"
 import { LoaderCircle } from "lucide-react"
-import { useRouter } from "next/navigation"
+import { useTranslations } from "next-intl"
 import { Controller, useForm } from "react-hook-form"
 import { toast } from "sonner"
 import { FormActions } from "@/components/shared/forms/form-actions"
@@ -23,9 +23,11 @@ import {
   createHouseholdInviteRequestSchema,
   type CreateHouseholdInviteRequest,
 } from "@/features/households/schemas/create-household-invite"
+import { useRouter } from "@/i18n/navigation"
 import { applyProblemDetailsToForm } from "@/features/mutations/lib/form-errors"
 
 export function InviteMemberForm({ householdId }: { householdId: string }) {
+  const t = useTranslations("households.inviteForm")
   const router = useRouter()
   const form = useForm<CreateHouseholdInviteRequest>({
     resolver: zodResolver(createHouseholdInviteRequestSchema),
@@ -39,7 +41,7 @@ export function InviteMemberForm({ householdId }: { householdId: string }) {
     mutationFn: (values: CreateHouseholdInviteRequest) =>
       createHouseholdInvite(householdId, values),
     onSuccess: () => {
-      toast.success("Invite sent")
+      toast.success(t("success"))
       form.reset({
         email: "",
         role: "MEMBER",
@@ -61,25 +63,25 @@ export function InviteMemberForm({ householdId }: { householdId: string }) {
   return (
     <form className="space-y-4" onSubmit={form.handleSubmit(onSubmit)} noValidate>
       <FormSection
-        title="Invite member"
-        description="Provision a role-scoped household invite that can be accepted from the selection surface."
+        title={t("title")}
+        description={t("description")}
       >
         <div className="space-y-4">
           <div className="space-y-2">
             <label htmlFor="invite-email" className="text-sm font-medium text-foreground">
-              Email
+              {t("fields.email.label")}
             </label>
             <Input
               id="invite-email"
               type="email"
               {...form.register("email")}
-              placeholder="member@atlas.house"
+              placeholder={t("fields.email.placeholder")}
             />
             <FormFieldError message={form.formState.errors.email?.message} />
           </div>
           <div className="space-y-2">
             <label htmlFor="invite-role" className="text-sm font-medium text-foreground">
-              Role
+              {t("fields.role.label")}
             </label>
             <Controller
               control={form.control}
@@ -87,12 +89,12 @@ export function InviteMemberForm({ householdId }: { householdId: string }) {
               render={({ field, fieldState }) => (
                 <Select value={field.value} onValueChange={field.onChange}>
                   <SelectTrigger id="invite-role" aria-invalid={fieldState.invalid}>
-                    <SelectValue placeholder="Choose a role" />
+                    <SelectValue placeholder={t("fields.role.placeholder")} />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="ADMIN">Admin</SelectItem>
-                    <SelectItem value="MEMBER">Member</SelectItem>
-                    <SelectItem value="VIEWER">Viewer</SelectItem>
+                    <SelectItem value="ADMIN">{t("roles.admin")}</SelectItem>
+                    <SelectItem value="MEMBER">{t("roles.member")}</SelectItem>
+                    <SelectItem value="VIEWER">{t("roles.viewer")}</SelectItem>
                   </SelectContent>
                 </Select>
               )}
@@ -105,8 +107,8 @@ export function InviteMemberForm({ householdId }: { householdId: string }) {
       <InlineFormError message={form.formState.errors.root?.message} />
       <FormActions
         isSubmitting={mutation.isPending}
-        submitLabel="Send invite"
-        pendingLabel="Sending..."
+        submitLabel={t("submit")}
+        pendingLabel={t("pending")}
         submitAdornment={
           mutation.isPending ? (
             <LoaderCircle className="size-4 animate-spin" aria-hidden="true" />

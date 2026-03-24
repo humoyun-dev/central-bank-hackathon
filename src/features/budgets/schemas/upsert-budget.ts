@@ -2,14 +2,14 @@ import { z } from "zod"
 import { isValidMoneyInput } from "@/lib/format/money"
 
 export const upsertBudgetFormSchema = z.object({
-  categoryId: z.string().min(1, "Choose the category this budget should govern."),
+  categoryId: z.string().min(1, "validation.budgets.categoryId.required"),
   period: z.enum(["MONTHLY", "WEEKLY"]),
   amount: z
     .string()
     .trim()
-    .min(1, "Enter the budget limit.")
-    .refine(isValidMoneyInput, "Enter a valid amount with up to two decimals."),
-  effectiveFromLocalDate: z.string().min(1, "Choose when the budget becomes active."),
+    .min(1, "validation.budgets.amount.required")
+    .refine(isValidMoneyInput, "validation.money.invalidAmount"),
+  effectiveFromLocalDate: z.string().min(1, "validation.budgets.effectiveFrom.required"),
 })
 
 export const upsertBudgetRequestSchema = z.object({

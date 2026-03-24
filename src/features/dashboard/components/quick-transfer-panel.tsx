@@ -1,4 +1,3 @@
-import Link from "next/link"
 import {
   ArrowRightLeft,
   Building2,
@@ -7,12 +6,15 @@ import {
   Plus,
   WalletCards,
 } from "lucide-react"
+import { getTranslations } from "next-intl/server"
 import { AmountValue } from "@/components/shared/amount-value"
 import { EmptyState } from "@/components/shared/empty-state"
 import { ErrorState } from "@/components/shared/error-state"
 import { SectionHeader } from "@/components/shared/section-header"
 import { Button } from "@/components/ui/button"
 import { getAccounts } from "@/features/accounts/api/get-accounts"
+import { Link } from "@/i18n/navigation"
+import { getCurrentLocale } from "@/i18n/server"
 import { getErrorPresentation } from "@/lib/error-presentation"
 import { getVisibleDashboardActions } from "@/lib/permissions"
 import type { HouseholdContext } from "@/types/household"
@@ -28,6 +30,8 @@ export async function QuickTransferPanel({
 }: {
   household: HouseholdContext
 }) {
+  const locale = await getCurrentLocale()
+  const t = await getTranslations("dashboard.quickTransfer")
   const visibility = getVisibleDashboardActions(household.role)
   let transferTargets: Awaited<ReturnType<typeof getAccounts>> | null = null
   let copy:
@@ -39,22 +43,21 @@ export async function QuickTransferPanel({
     transferTargets = accounts.filter((account) => account.status !== "ARCHIVED").slice(0, 4)
   } catch (error) {
     copy = getErrorPresentation(error, {
-      fallbackTitle: "Transfer shortcuts unavailable",
-      fallbackDescription:
-        "The overview could not load active transfer surfaces for this household right now.",
+      fallbackTitle: t("errorTitle"),
+      fallbackDescription: t("errorDescription"),
     })
   }
 
   if (copy) {
     return (
       <section className="space-y-4">
-        <SectionHeader title="Quick transfer" />
+        <SectionHeader title={t("title")} />
         <ErrorState
           title={copy.title}
           description={copy.description}
           action={
             <Button asChild variant="outline" className="rounded-full bg-white/70">
-              <Link href={`/${household.id}/accounts`}>Open accounts</Link>
+              <Link href={`/${household.id}/accounts`}>{t("openAccounts")}</Link>
             </Button>
           }
         />
@@ -65,32 +68,32 @@ export async function QuickTransferPanel({
   return (
     <section className="space-y-4">
       <SectionHeader
-        title="Quick transfer"
-        description="Start from a live account surface without leaving the overview."
+        title={t("title")}
+        description={t("description")}
         action={
           <Button asChild variant="outline" className="rounded-full bg-white/70">
-            <Link href={`/${household.id}/transactions`}>Open movement workspace</Link>
+            <Link href={`/${household.id}/transactions`}>{t("openWorkspace")}</Link>
           </Button>
         }
       />
       {!visibility.canInitiateTransfer ? (
         <EmptyState
-          title="Transfer actions are limited for this role"
-          description="This membership can review balances and activity, but initiating household money movement requires a higher permission scope."
+          title={t("readOnlyTitle")}
+          description={t("readOnlyDescription")}
           icon={Lock}
           action={
             <Button asChild variant="outline" className="rounded-full bg-white/70">
-              <Link href={`/${household.id}/accounts`}>Review account surfaces</Link>
+              <Link href={`/${household.id}/accounts`}>{t("reviewAccounts")}</Link>
             </Button>
           }
         />
       ) : transferTargets && transferTargets.length === 0 ? (
         <EmptyState
-          title="No active transfer surfaces"
-          description="Create or reconnect at least one active household account to unlock transfer shortcuts and destination suggestions."
+          title={t("emptyTitle")}
+          description={t("emptyDescription")}
           action={
             <Button asChild variant="outline" className="rounded-full bg-white/70">
-              <Link href={`/${household.id}/accounts`}>Review accounts</Link>
+              <Link href={`/${household.id}/accounts`}>{t("reviewAccounts")}</Link>
             </Button>
           }
         />
@@ -105,14 +108,14 @@ export async function QuickTransferPanel({
               <Link
                 href={`/${household.id}/transactions?action=transfer&kind=TRANSFER`}
                 className="flex min-w-[11rem] items-center gap-3"
-              >
+                >
                 <span className="flex size-11 items-center justify-center rounded-full bg-white text-slate-950">
                   <Plus className="size-5" aria-hidden="true" />
                 </span>
                 <span className="space-y-1 text-left">
-                  <span className="block text-sm font-semibold">New transfer</span>
+                  <span className="block text-sm font-semibold">{t("newTransferTitle")}</span>
                   <span className="block text-xs font-normal text-white/80">
-                    Start a household movement
+                    {t("newTransferDescription")}
                   </span>
                 </span>
               </Link>
@@ -145,6 +148,7 @@ export async function QuickTransferPanel({
                       amountMinor={account.availableBalanceMinor}
                       currencyCode={account.currencyCode}
                       size="compact"
+                      locale={locale}
                       className="text-slate-950"
                     />
                   </div>

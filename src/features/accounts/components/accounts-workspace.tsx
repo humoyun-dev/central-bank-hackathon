@@ -1,7 +1,7 @@
 "use client"
 
 import { ArrowRightLeft, Eye, PencilLine, Plus } from "lucide-react"
-import Link from "next/link"
+import { useTranslations } from "next-intl"
 import { useMemo, useState } from "react"
 import { ActionMenu } from "@/components/shared/action-menu"
 import { EmptyState } from "@/components/shared/empty-state"
@@ -14,6 +14,7 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { AccountCard } from "@/features/accounts/components/account-card"
 import { AccountDetails } from "@/features/accounts/components/account-details"
 import { AccountForm } from "@/features/accounts/components/account-form"
+import { Link } from "@/i18n/navigation"
 import type { Account } from "@/features/accounts/types/account"
 import { hasPermission } from "@/lib/permissions"
 import type { HouseholdContext } from "@/types/household"
@@ -28,12 +29,15 @@ type DialogState =
 export function AccountsWorkspace({
   household,
   accounts,
+  locale,
   initialCreateOpen = false,
 }: {
   household: HouseholdContext
   accounts: Account[]
+  locale: string
   initialCreateOpen?: boolean
 }) {
+  const t = useTranslations("accounts.workspace")
   const [view, setView] = useState<AccountView>("ALL")
   const canManageAccounts = hasPermission(household.role, "manageSettings")
   const [dialogState, setDialogState] = useState<DialogState>(() =>
@@ -60,21 +64,21 @@ export function AccountsWorkspace({
   return (
     <div className="space-y-4">
       <PageHeader
-        eyebrow="Household accounts"
-        title={`${household.name} account surfaces`}
-        description="Manage bank, card, and cash surfaces through focused dialogs while the workspace stays server-owned by default."
+        eyebrow={t("eyebrow")}
+        title={t("title", { household: household.name })}
+        description={t("description")}
         actions={
           <div className="flex flex-wrap items-center gap-2">
-            <Badge variant="primary">{accounts.length} total accounts</Badge>
+            <Badge variant="primary">{t("totalAccounts", { count: accounts.length })}</Badge>
             {canManageAccounts ? (
               <Button type="button" onClick={() => setDialogState({ type: "create" })}>
                 <Plus className="size-4" aria-hidden="true" />
-                New account
+                {t("newAccount")}
               </Button>
             ) : null}
             <Button asChild variant="outline" className="rounded-full bg-white/70">
               <Link href={`/${household.id}/transactions`}>
-                Review activity
+                {t("reviewActivity")}
                 <ArrowRightLeft className="size-4" aria-hidden="true" />
               </Link>
             </Button>
@@ -83,21 +87,21 @@ export function AccountsWorkspace({
       />
       <Tabs value={view} onValueChange={(nextValue) => setView(nextValue as AccountView)}>
         <TabsList>
-          <TabsTrigger value="ALL">All</TabsTrigger>
-          <TabsTrigger value="ACTIVE">Active</TabsTrigger>
-          <TabsTrigger value="RESTRICTED">Restricted</TabsTrigger>
-          <TabsTrigger value="ARCHIVED">Archived</TabsTrigger>
+          <TabsTrigger value="ALL">{t("tabs.all")}</TabsTrigger>
+          <TabsTrigger value="ACTIVE">{t("tabs.active")}</TabsTrigger>
+          <TabsTrigger value="RESTRICTED">{t("tabs.restricted")}</TabsTrigger>
+          <TabsTrigger value="ARCHIVED">{t("tabs.archived")}</TabsTrigger>
         </TabsList>
       </Tabs>
 
       {accounts.length === 0 ? (
         <EmptyState
-          title="No accounts connected yet"
-          description="Create the first household account to unlock balance, transfer, and budgeting workflows."
+          title={t("emptyTitle")}
+          description={t("emptyDescription")}
           action={
             canManageAccounts ? (
               <Button type="button" onClick={() => setDialogState({ type: "create" })}>
-                Create account
+                {t("createAccount")}
               </Button>
             ) : undefined
           }
@@ -109,19 +113,20 @@ export function AccountsWorkspace({
               <AccountCard
                 key={account.id}
                 account={account}
+                locale={locale}
                 action={
                   <ActionMenu
-                    label={`${account.name} actions`}
+                    label={t("accountActions", { account: account.name })}
                     items={[
                       {
-                        label: "View details",
+                        label: t("viewDetails"),
                         icon: <Eye className="size-4" aria-hidden="true" />,
                         onSelect: () => setDialogState({ type: "detail", accountId: account.id }),
                       },
                       ...(canManageAccounts
                         ? [
                             {
-                              label: "Edit account",
+                              label: t("editAccount"),
                               icon: <PencilLine className="size-4" aria-hidden="true" />,
                               onSelect: () =>
                                 setDialogState({ type: "edit", accountId: account.id }),
@@ -136,47 +141,47 @@ export function AccountsWorkspace({
             {filteredAccounts.length === 0 ? (
               <div className="md:col-span-2">
                 <EmptyState
-                  title="No accounts in this view"
-                  description="Switch tabs or create another account to populate this slice."
+                  title={t("filteredEmptyTitle")}
+                  description={t("filteredEmptyDescription")}
                 />
               </div>
             ) : null}
           </div>
           <SectionCard
-            title="Portfolio posture"
-            description="A compact summary that can evolve into health, sync, and permission diagnostics."
+            title={t("portfolio.title")}
+            description={t("portfolio.description")}
           >
             <div className="grid gap-3">
               <div className="surface-muted rounded-[1.1rem] p-4">
                 <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">
-                  Primary account
+                  {t("portfolio.primaryAccount")}
                 </p>
                 <p className="mt-2 text-base font-semibold text-foreground">
-                  {primaryAccount?.name ?? "Not assigned"}
+                  {primaryAccount?.name ?? t("portfolio.notAssigned")}
                 </p>
               </div>
               <div className="surface-muted rounded-[1.1rem] p-4">
                 <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">
-                  Mix
+                  {t("portfolio.mix")}
                 </p>
                 <div className="mt-2 space-y-2 text-sm text-muted-foreground">
-                  <p>{bankAccounts} bank accounts</p>
-                  <p>{cardAccounts} card accounts</p>
-                  <p>{cashAccounts} cash reserves</p>
+                  <p>{t("portfolio.bankAccounts", { count: bankAccounts })}</p>
+                  <p>{t("portfolio.cardAccounts", { count: cardAccounts })}</p>
+                  <p>{t("portfolio.cashAccounts", { count: cashAccounts })}</p>
                 </div>
               </div>
               <div className="surface-muted rounded-[1.1rem] p-4">
                 <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">
-                  Action model
+                  {t("portfolio.actionModel")}
                 </p>
                 <p className="mt-2 text-sm leading-6 text-muted-foreground">
-                  Create, detail, and edit flows live in dialogs so the workspace keeps a clean, card-driven scan path.
+                  {t("portfolio.actionDescription")}
                 </p>
               </div>
               {canManageAccounts ? (
                 <Button type="button" onClick={() => setDialogState({ type: "create" })}>
                   <Plus className="size-4" aria-hidden="true" />
-                  Add account
+                  {t("addAccount")}
                 </Button>
               ) : null}
             </div>
@@ -187,8 +192,8 @@ export function AccountsWorkspace({
       <FormDialog
         open={dialogState?.type === "create"}
         onOpenChange={(open) => !open && setDialogState(null)}
-        title="Create account"
-        description="Add a new bank, card, or cash surface for this household."
+        title={t("dialogs.createTitle")}
+        description={t("dialogs.createDescription")}
       >
         <AccountForm
           householdId={household.id}
@@ -201,8 +206,12 @@ export function AccountsWorkspace({
       <FormDialog
         open={dialogState?.type === "edit" && Boolean(selectedAccount)}
         onOpenChange={(open) => !open && setDialogState(null)}
-        title={selectedAccount ? `Edit ${selectedAccount.name}` : "Edit account"}
-        description="Update account labels, availability state, and primary placement."
+        title={
+          selectedAccount
+            ? t("dialogs.editTitle", { account: selectedAccount.name })
+            : t("dialogs.editFallbackTitle")
+        }
+        description={t("dialogs.editDescription")}
       >
         {selectedAccount ? (
           <AccountForm
@@ -218,10 +227,10 @@ export function AccountsWorkspace({
       <FormDialog
         open={dialogState?.type === "detail" && Boolean(selectedAccount)}
         onOpenChange={(open) => !open && setDialogState(null)}
-        title={selectedAccount ? selectedAccount.name : "Account details"}
-        description="Review the current balance posture and availability state for this account."
+        title={selectedAccount ? selectedAccount.name : t("dialogs.detailsFallbackTitle")}
+        description={t("dialogs.detailsDescription")}
       >
-        {selectedAccount ? <AccountDetails account={selectedAccount} /> : null}
+        {selectedAccount ? <AccountDetails account={selectedAccount} locale={locale} /> : null}
       </FormDialog>
     </div>
   )

@@ -8,6 +8,7 @@ interface AmountValueProps {
   currencyCode: string
   size?: AmountValueSize
   compact?: boolean
+  locale?: string | undefined
   className?: string
 }
 
@@ -22,6 +23,7 @@ export function AmountValue({
   currencyCode,
   size = "section",
   compact = false,
+  locale,
   className,
 }: AmountValueProps) {
   const toneClassName =
@@ -36,7 +38,7 @@ export function AmountValue({
         className,
       )}
     >
-      {formatMoney(amountMinor, currencyCode, { compact })}
+      {formatMoney(amountMinor, currencyCode, { compact, locale })}
     </p>
   )
 }

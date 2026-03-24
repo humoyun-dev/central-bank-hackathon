@@ -1,39 +1,53 @@
+import { getTranslations } from "next-intl/server"
 import { EmptyState } from "@/components/shared/empty-state"
 import { PageHeader } from "@/components/shared/page-header"
 import { SectionCard } from "@/components/shared/section-card"
 import { Badge } from "@/components/ui/badge"
 import { hasPermission } from "@/lib/permissions"
 import { formatRelativeDate } from "@/lib/format/date"
+import { getCurrentLocale } from "@/i18n/server"
 import { InviteMemberForm } from "@/features/households/components/invite-member-form"
 import type { HouseholdContext } from "@/types/household"
 import type { HouseholdInvite } from "@/features/households/types/invite"
 
-export function HouseholdSettingsScreen({
+export async function HouseholdSettingsScreen({
   household,
   invites,
 }: {
   household: HouseholdContext
   invites: HouseholdInvite[]
 }) {
+  const t = await getTranslations("households.settings")
+  const locale = await getCurrentLocale()
   const canManageSettings = hasPermission(household.role, "manageSettings")
+  const roleLabels = {
+    OWNER: t("roles.owner"),
+    ADMIN: t("roles.admin"),
+    MEMBER: t("roles.member"),
+    VIEWER: t("roles.viewer"),
+  } as const
+  const statusLabels = {
+    ACCEPTED: t("statuses.accepted"),
+    PENDING: t("statuses.pending"),
+  } as const
 
   return (
     <div className="space-y-6">
       <PageHeader
-        eyebrow="Household settings"
-        title={`${household.name} membership controls`}
-        description="Access and invite management stay household-scoped, role-aware, and server-rendered by default."
-        actions={<Badge variant="primary">{household.role}</Badge>}
+        eyebrow={t("eyebrow")}
+        title={t("title", { household: household.name })}
+        description={t("description")}
+        actions={<Badge variant="primary">{roleLabels[household.role]}</Badge>}
       />
       <div className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_24rem]">
         <SectionCard
-          title="Pending and accepted invites"
-          description="Invites are normalized into typed UI models so future backend fields can be added without touching the page shell."
+          title={t("invites.title")}
+          description={t("invites.description")}
         >
           {invites.length === 0 ? (
             <EmptyState
-              title="No invites yet"
-              description="This household has not issued any role-scoped member invites."
+              title={t("invites.emptyTitle")}
+              description={t("invites.emptyDescription")}
             />
           ) : (
             <div className="space-y-3">
@@ -46,13 +60,13 @@ export function HouseholdSettingsScreen({
                     <div className="space-y-1">
                       <p className="text-sm font-semibold text-foreground">{invite.email}</p>
                       <p className="text-sm text-muted-foreground">
-                        {invite.invitedByName} · {formatRelativeDate(invite.createdAtUtc)}
+                        {invite.invitedByName} · {formatRelativeDate(invite.createdAtUtc, locale)}
                       </p>
                     </div>
                     <div className="flex flex-wrap items-center gap-2">
-                      <Badge>{invite.role}</Badge>
+                      <Badge>{roleLabels[invite.role]}</Badge>
                       <Badge variant={invite.status === "ACCEPTED" ? "primary" : "neutral"}>
-                        {invite.status}
+                        {statusLabels[invite.status]}
                       </Badge>
                     </div>
                   </div>
@@ -63,15 +77,15 @@ export function HouseholdSettingsScreen({
         </SectionCard>
 
         <SectionCard
-          title="Role-aware actions"
-          description="Only owner and admin memberships can issue new invites."
+          title={t("actions.title")}
+          description={t("actions.description")}
         >
           {canManageSettings ? (
             <InviteMemberForm householdId={household.id} />
           ) : (
             <EmptyState
-              title="Read-only membership"
-              description="Invite management is disabled for the current role."
+              title={t("actions.emptyTitle")}
+              description={t("actions.emptyDescription")}
             />
           )}
         </SectionCard>

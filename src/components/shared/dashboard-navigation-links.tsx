@@ -1,7 +1,6 @@
 "use client"
 
-import Link from "next/link"
-import { usePathname } from "next/navigation"
+import { useTranslations } from "next-intl"
 import {
   ArrowLeftRight,
   BarChart3,
@@ -12,6 +11,7 @@ import {
   Settings2,
   Wallet2,
 } from "lucide-react"
+import { Link, usePathname } from "@/i18n/navigation"
 import { cn } from "@/lib/utils"
 import type { MembershipRole } from "@/types/household"
 
@@ -26,53 +26,57 @@ function isActiveRoute(pathname: string, href: string) {
     return false
   }
 
-  return pathname.startsWith(`${href}/`)
+  return pathname.startsWith(`${href}/`) || pathname.endsWith(href)
 }
 
-function getPrimaryItems(householdId: string) {
+function getPrimaryItems(householdId: string, t: (key: string) => string) {
   return [
     {
-      label: "Home",
+      label: t("home"),
       href: `/${householdId}`,
       icon: Home,
     },
     {
-      label: "Wallet",
+      label: t("wallet"),
       href: `/${householdId}/accounts`,
       icon: Wallet2,
     },
     {
-      label: "Transfer",
+      label: t("transactions"),
       href: `/${householdId}/transactions`,
       icon: ArrowLeftRight,
     },
     {
-      label: "Categories",
+      label: t("categories"),
       href: `/${householdId}/categories`,
       icon: FolderKanban,
     },
     {
-      label: "Debts",
+      label: t("debts"),
       href: `/${householdId}/debts`,
       icon: Landmark,
     },
     {
-      label: "Budgets",
+      label: t("budgets"),
       href: `/${householdId}/budgets`,
       icon: PiggyBank,
     },
     {
-      label: "Analytics",
+      label: t("analytics"),
       href: `/${householdId}/analytics`,
       icon: BarChart3,
     },
   ]
 }
 
-function getFooterItems(householdId: string, role: MembershipRole) {
+function getFooterItems(
+  householdId: string,
+  role: MembershipRole,
+  t: (key: string) => string,
+) {
   return [
     {
-      label: role === "OWNER" || role === "ADMIN" ? "Settings" : "Household",
+      label: role === "OWNER" || role === "ADMIN" ? t("settings") : t("household"),
       href: `/${householdId}/settings`,
       icon: Settings2,
     },
@@ -86,9 +90,10 @@ export function DesktopDashboardNavigationLinks({
   householdId: string
   role: MembershipRole
 }) {
+  const t = useTranslations("navigation")
   const pathname = usePathname()
-  const primaryItems = getPrimaryItems(householdId)
-  const footerItems = getFooterItems(householdId, role)
+  const primaryItems = getPrimaryItems(householdId, t)
+  const footerItems = getFooterItems(householdId, role, t)
 
   return (
     <nav className="flex min-h-0 flex-1 flex-col justify-between overflow-y-auto">
@@ -145,8 +150,9 @@ export function MobileDashboardNavigationLinks({
 }: {
   householdId: string
 }) {
+  const t = useTranslations("navigation")
   const pathname = usePathname()
-  const mobileItems = getPrimaryItems(householdId).filter((item) =>
+  const mobileItems = getPrimaryItems(householdId, t).filter((item) =>
     [
       `/${householdId}`,
       `/${householdId}/accounts`,

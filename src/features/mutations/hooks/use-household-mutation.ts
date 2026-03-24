@@ -1,9 +1,11 @@
 "use client"
 
 import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { useRouter } from "next/navigation"
+import { useTranslations } from "next-intl"
 import { startTransition, useRef } from "react"
 import { toast } from "sonner"
+import { useRouter } from "@/i18n/navigation"
+import { isTranslationKey } from "@/i18n/translate"
 import { createIdempotencyKey } from "@/lib/idempotency"
 
 interface UseHouseholdMutationOptions<TInput, TOutput> {
@@ -21,6 +23,7 @@ export function useHouseholdMutation<TInput, TOutput>({
   onSuccess,
   idempotencyScope = "mutation",
 }: UseHouseholdMutationOptions<TInput, TOutput>) {
+  const t = useTranslations()
   const queryClient = useQueryClient()
   const router = useRouter()
   const idempotencyKeyRef = useRef<string | null>(null)
@@ -42,9 +45,10 @@ export function useHouseholdMutation<TInput, TOutput>({
         ),
       )
 
-      toast.success(
-        typeof successMessage === "function" ? successMessage(result) : successMessage,
-      )
+      const message =
+        typeof successMessage === "function" ? successMessage(result) : successMessage
+
+      toast.success(isTranslationKey(message) ? t(message) : message)
 
       await onSuccess?.(result)
 

@@ -1,6 +1,7 @@
 "use client"
 
 import { PencilLine, PiggyBank, Plus } from "lucide-react"
+import { useLocale, useTranslations } from "next-intl"
 import { useMemo, useState } from "react"
 import { ActionMenu } from "@/components/shared/action-menu"
 import { AmountValue } from "@/components/shared/amount-value"
@@ -14,6 +15,8 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { BudgetForm } from "@/features/budgets/components/budget-form"
 import type { Budget, BudgetPeriod } from "@/features/budgets/types/budget"
 import type { Category } from "@/features/categories/types/category"
+import { formatDateByLocale } from "@/lib/format/date"
+import { formatNumberByLocale } from "@/lib/format/number"
 import { hasPermission } from "@/lib/permissions"
 import type { HouseholdContext } from "@/types/household"
 
@@ -28,6 +31,9 @@ export function BudgetsWorkspace({
   budgets: Budget[]
   categories: Category[]
 }) {
+  const locale = useLocale()
+  const t = useTranslations("budgets.workspace")
+  const tCommon = useTranslations("budgets.common")
   const [view, setView] = useState<BudgetView>("ALL")
   const [isCreateOpen, setIsCreateOpen] = useState(false)
   const [editedBudgetId, setEditedBudgetId] = useState<string | null>(null)
@@ -48,25 +54,25 @@ export function BudgetsWorkspace({
   return (
     <div className="space-y-6">
       <PageHeader
-        eyebrow="Budgets"
-        title={`${household.name} budget controls`}
-        description="Budget limits stay dialog-driven, category-scoped, and period-aware for a low-noise planning workspace."
+        eyebrow={t("eyebrow")}
+        title={t("title", { household: household.name })}
+        description={t("description")}
         actions={
           <div className="flex flex-wrap items-center gap-2">
-            <Badge variant="primary">{budgets.length} active limits</Badge>
+            <Badge variant="primary">{t("activeLimits", { count: budgets.length })}</Badge>
             {canManageBudgets ? (
               <Button
                 type="button"
                 disabled={expenseCategories.length === 0}
                 title={
                   expenseCategories.length === 0
-                    ? "Create an expense category first."
+                    ? t("requirements.expenseCategory")
                     : undefined
                 }
                 onClick={() => setIsCreateOpen(true)}
               >
                 <Plus className="size-4" aria-hidden="true" />
-                New budget
+                {t("actions.newBudget")}
               </Button>
             ) : null}
           </div>
@@ -75,25 +81,25 @@ export function BudgetsWorkspace({
 
       <Tabs value={view} onValueChange={(nextValue) => setView(nextValue as BudgetView)}>
         <TabsList>
-          <TabsTrigger value="ALL">All</TabsTrigger>
-          <TabsTrigger value="MONTHLY">Monthly</TabsTrigger>
-          <TabsTrigger value="WEEKLY">Weekly</TabsTrigger>
+          <TabsTrigger value="ALL">{t("tabs.all")}</TabsTrigger>
+          <TabsTrigger value="MONTHLY">{tCommon("periods.monthly")}</TabsTrigger>
+          <TabsTrigger value="WEEKLY">{tCommon("periods.weekly")}</TabsTrigger>
         </TabsList>
       </Tabs>
 
       <div className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_24rem]">
         <SectionCard
-          title="Budget progress"
-          description="Spending stays anchored to minor-unit calculations and consistent category mapping."
+          title={t("progress.title")}
+          description={t("progress.description")}
         >
           {filteredBudgets.length === 0 ? (
             <EmptyState
-              title="No budgets configured for this view"
-              description="Create a category limit to start tracking budget progress."
+              title={t("progress.emptyTitle")}
+              description={t("progress.emptyDescription")}
               action={
                 canManageBudgets ? (
                   <Button type="button" onClick={() => setIsCreateOpen(true)}>
-                    Create budget
+                    {t("progress.createBudget")}
                   </Button>
                 ) : undefined
               }
@@ -114,22 +120,26 @@ export function BudgetsWorkspace({
                     <div className="flex flex-wrap items-start justify-between gap-3">
                       <div className="space-y-1">
                         <div className="flex flex-wrap items-center gap-2">
-                          <h2 className="text-base font-semibold text-foreground">
-                            {budget.categoryName}
-                          </h2>
-                          <Badge variant="neutral">{budget.period}</Badge>
+                        <h2 className="text-base font-semibold text-foreground">
+                          {budget.categoryName}
+                        </h2>
+                          <Badge variant="neutral">
+                            {tCommon(`periods.${budget.period.toLowerCase()}`)}
+                          </Badge>
                         </div>
                         <p className="text-sm text-muted-foreground">
-                          Effective from {budget.effectiveFromLocalDate}
+                          {t("progress.effectiveFrom", {
+                            date: formatDateByLocale(budget.effectiveFromLocalDate, locale),
+                          })}
                         </p>
                       </div>
                       <div className="flex items-start gap-2">
                         {canManageBudgets ? (
                           <ActionMenu
-                            label={`${budget.categoryName} budget actions`}
+                            label={t("budgetActions", { budget: budget.categoryName })}
                             items={[
                               {
-                                label: "Edit budget",
+                                label: t("actions.editBudget"),
                                 icon: <PencilLine className="size-4" aria-hidden="true" />,
                                 onSelect: () => setEditedBudgetId(budget.id),
                               },
@@ -140,13 +150,20 @@ export function BudgetsWorkspace({
                           amountMinor={budget.remainingMinor}
                           currencyCode={budget.currencyCode}
                           size="compact"
+                          locale={locale}
                         />
                       </div>
                     </div>
                     <div className="mt-4 space-y-2">
                       <div className="flex items-center justify-between text-sm text-muted-foreground">
-                        <span>Spent</span>
-                        <span>{progress.toFixed(0)}%</span>
+                        <span>{t("progress.spent")}</span>
+                        <span>
+                          {formatNumberByLocale(progress, {
+                            locale,
+                            maximumFractionDigits: 0,
+                          })}
+                          %
+                        </span>
                       </div>
                       <div className="h-2 rounded-full bg-muted">
                         <div
@@ -159,11 +176,13 @@ export function BudgetsWorkspace({
                           amountMinor={-budget.spentMinor}
                           currencyCode={budget.currencyCode}
                           size="compact"
+                          locale={locale}
                         />
                         <AmountValue
                           amountMinor={budget.limitMinor}
                           currencyCode={budget.currencyCode}
                           size="compact"
+                          locale={locale}
                           className="text-muted-foreground"
                         />
                       </div>
@@ -176,12 +195,12 @@ export function BudgetsWorkspace({
         </SectionCard>
 
         <SectionCard
-          title="Budget controls"
-          description="Use dialogs for create and edit flows so the reading path stays compact."
+          title={t("controls.title")}
+          description={t("controls.description")}
         >
           <div className="space-y-3 text-sm text-muted-foreground">
-            <p>Weekly and monthly views are switchable through the tabs above.</p>
-            <p>Reusing the same category and period updates the saved budget record.</p>
+            <p>{t("controls.tipViews")}</p>
+            <p>{t("controls.tipReuse")}</p>
           </div>
           {canManageBudgets ? (
             <Button
@@ -189,18 +208,18 @@ export function BudgetsWorkspace({
               disabled={expenseCategories.length === 0}
               title={
                 expenseCategories.length === 0
-                  ? "Create an expense category first."
+                  ? t("requirements.expenseCategory")
                   : undefined
               }
               onClick={() => setIsCreateOpen(true)}
             >
               <PiggyBank className="size-4" aria-hidden="true" />
-              Create budget
+              {t("controls.createBudget")}
             </Button>
           ) : (
             <EmptyState
-              title="Budget mutations are limited"
-              description="This membership can review budgets but cannot change them."
+              title={t("controls.readOnlyTitle")}
+              description={t("controls.readOnlyDescription")}
             />
           )}
         </SectionCard>
@@ -209,8 +228,8 @@ export function BudgetsWorkspace({
       <FormDialog
         open={isCreateOpen}
         onOpenChange={setIsCreateOpen}
-        title="Create budget"
-        description="Set a weekly or monthly cap for an expense category."
+        title={t("dialogs.createTitle")}
+        description={t("dialogs.createDescription")}
       >
         <BudgetForm
           householdId={household.id}
@@ -224,8 +243,12 @@ export function BudgetsWorkspace({
       <FormDialog
         open={Boolean(editedBudget)}
         onOpenChange={(open) => !open && setEditedBudgetId(null)}
-        title={editedBudget ? `Edit ${editedBudget.categoryName} budget` : "Edit budget"}
-        description="Adjust the saved period cap while keeping the existing category scope."
+        title={
+          editedBudget
+            ? t("dialogs.editTitle", { category: editedBudget.categoryName })
+            : t("dialogs.editFallbackTitle")
+        }
+        description={t("dialogs.editDescription")}
       >
         {editedBudget ? (
           <BudgetForm

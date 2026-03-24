@@ -1,4 +1,5 @@
 import { ApiClientError } from "@/services/api/shared/request"
+import { isTranslationKey } from "@/i18n/translate"
 
 interface ErrorPresentationCopy {
   title: string
@@ -15,10 +16,16 @@ export function getErrorPresentation(
   options: ErrorPresentationOptions,
 ): ErrorPresentationCopy {
   if (error instanceof ApiClientError) {
-    const title = error.problem?.title ?? options.fallbackTitle
-    const detail = error.problem?.detail ?? options.fallbackDescription
+    const title =
+      error.problem?.title && isTranslationKey(error.problem.title)
+        ? error.problem.title
+        : options.fallbackTitle
+    const detail =
+      error.problem?.detail && isTranslationKey(error.problem.detail)
+        ? error.problem.detail
+        : options.fallbackDescription
     const traceIdSuffix = error.problem?.traceId
-      ? ` Reference: ${error.problem.traceId}.`
+      ? ` (${error.problem.traceId})`
       : ""
 
     return {
@@ -30,7 +37,9 @@ export function getErrorPresentation(
   if (error instanceof Error && error.message.trim().length > 0) {
     return {
       title: options.fallbackTitle,
-      description: error.message,
+      description: isTranslationKey(error.message)
+        ? error.message
+        : options.fallbackDescription,
     }
   }
 

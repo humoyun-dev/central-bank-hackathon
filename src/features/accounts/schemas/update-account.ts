@@ -2,13 +2,13 @@ import { z } from "zod"
 
 export const updateAccountRequestSchema = z
   .object({
-    name: z.string().trim().min(2, "Enter an account name."),
-    institutionName: z.string().trim().min(2, "Enter an institution or provider."),
+    name: z.string().trim().min(2, "validation.accounts.name.min"),
+    institutionName: z.string().trim().min(2, "validation.accounts.institutionName.min"),
     maskedNumber: z
       .string()
       .trim()
-      .max(4, "Use up to the last four digits.")
-      .regex(/^\d{0,4}$/, "Use digits only.")
+      .max(4, "validation.accounts.maskedNumber.max")
+      .regex(/^\d{0,4}$/, "validation.accounts.maskedNumber.digits")
       .nullable(),
     isPrimary: z.boolean(),
     status: z.enum(["ACTIVE", "RESTRICTED", "ARCHIVED"]),
@@ -19,20 +19,20 @@ export const updateAccountRequestSchema = z
       context.addIssue({
         code: z.ZodIssueCode.custom,
         path: ["disabledReason"],
-        message: "Restricted accounts need a short reason.",
+        message: "validation.accounts.disabledReason.required",
       })
     }
   })
 
 export const updateAccountFormSchema = z
   .object({
-    name: z.string().trim().min(2, "Enter an account name."),
-    institutionName: z.string().trim().min(2, "Enter an institution or provider."),
+    name: z.string().trim().min(2, "validation.accounts.name.min"),
+    institutionName: z.string().trim().min(2, "validation.accounts.institutionName.min"),
     maskedNumber: z
       .string()
       .trim()
-      .max(4, "Use up to the last four digits.")
-      .regex(/^\d{0,4}$/, "Use digits only.")
+      .max(4, "validation.accounts.maskedNumber.max")
+      .regex(/^\d{0,4}$/, "validation.accounts.maskedNumber.digits")
       .or(z.literal("")),
     isPrimary: z.enum(["yes", "no"]),
     status: z.enum(["ACTIVE", "RESTRICTED", "ARCHIVED"]),
@@ -43,7 +43,7 @@ export const updateAccountFormSchema = z
       context.addIssue({
         code: z.ZodIssueCode.custom,
         path: ["disabledReason"],
-        message: "Restricted accounts need a short reason.",
+        message: "validation.accounts.disabledReason.required",
       })
     }
   })

@@ -3,6 +3,7 @@
 import { MoreHorizontal } from "lucide-react"
 import type { ReactNode } from "react"
 import { Button } from "@/components/ui/button"
+import { useOptionalTranslation } from "@/i18n/translate"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -21,7 +22,7 @@ interface ActionMenuItem {
 }
 
 export function ActionMenu({
-  label = "Actions",
+  label = "common.actions.menu",
   items,
   align = "end",
 }: {
@@ -29,7 +30,9 @@ export function ActionMenu({
   items: ActionMenuItem[]
   align?: "start" | "center" | "end"
 }) {
+  const translate = useOptionalTranslation()
   const visibleItems = items.filter((item) => item.onSelect || item.disabled)
+  const resolvedLabel = translate(label) ?? label
 
   if (visibleItems.length === 0) {
     return null
@@ -42,14 +45,14 @@ export function ActionMenu({
           type="button"
           variant="ghost"
           size="icon-sm"
-          aria-label={label}
+          aria-label={resolvedLabel}
           className="rounded-full"
         >
           <MoreHorizontal className="size-4" aria-hidden="true" />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align={align}>
-        <DropdownMenuLabel>{label}</DropdownMenuLabel>
+        <DropdownMenuLabel>{resolvedLabel}</DropdownMenuLabel>
         <DropdownMenuSeparator />
         {visibleItems.map((item) => (
           <DropdownMenuItem
@@ -58,7 +61,7 @@ export function ActionMenu({
             onSelect={() => item.onSelect?.()}
           >
             {item.icon}
-            <span>{item.label}</span>
+            <span>{translate(item.label) ?? item.label}</span>
           </DropdownMenuItem>
         ))}
       </DropdownMenuContent>

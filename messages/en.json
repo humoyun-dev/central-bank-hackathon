@@ -1,0 +1,1274 @@
+{
+  "common": {
+    "loading": "Loading...",
+    "error": "Something went wrong.",
+    "empty": "No data available.",
+    "actions": {
+      "save": "Save",
+      "cancel": "Cancel",
+      "delete": "Delete",
+      "edit": "Edit",
+      "search": "Search",
+      "filter": "Filter",
+      "all": "All",
+      "menu": "Actions",
+      "saving": "Saving..."
+    },
+    "languageSwitcher": {
+      "trigger": "Switch language. Current language: {language}.",
+      "option": "Switch language to {language}."
+    },
+    "routeStates": {
+      "globalNotFound": {
+        "title": "This route could not be found",
+        "description": "The requested screen either moved or has not been provisioned yet. Return to household selection and continue from a valid workspace.",
+        "action": "Go to household selection"
+      },
+      "householdNotFound": {
+        "title": "Household not found",
+        "description": "The requested household could not be resolved from the current workspace dataset. Choose another household to continue.",
+        "action": "Select another household"
+      },
+      "householdError": {
+        "title": "The household workspace could not be assembled",
+        "description": "The shell stayed intact, but this route segment failed to render. Retry the segment or return to household selection.",
+        "action": "Retry segment"
+      }
+    }
+  },
+  "navigation": {
+    "home": "Home",
+    "wallet": "Wallet",
+    "transactions": "Transactions",
+    "categories": "Categories",
+    "debts": "Debts",
+    "budgets": "Budgets",
+    "analytics": "Analytics",
+    "settings": "Settings",
+    "household": "Household"
+  },
+  "actions": {
+    "create": "Create",
+    "update": "Update",
+    "open": "Open",
+    "view": "View",
+    "apply": "Apply",
+    "clear": "Clear",
+    "reset": "Reset",
+    "record": "Record"
+  },
+  "forms": {
+    "common": {
+      "amountLabel": "Amount",
+      "amountPlaceholder": "0.00",
+      "accountLabel": "Account",
+      "accountPlaceholder": "Select an account",
+      "categoryLabel": "Category",
+      "categoryPlaceholder": "Select a category"
+    }
+  },
+  "dashboard": {
+    "greeting": "Hello, {name}!",
+    "description": "All information about your household accounts lives in the sections below.",
+    "searchPlaceholder": "Search transactions",
+    "switchHousehold": "Switch household",
+    "notifications": "Notifications",
+    "notificationsUnavailable": "Notification center is not available in this phase.",
+    "availableBalance": "Available balance",
+    "cashDescription": "Available household cash across your active operating surfaces.",
+    "send": "Send",
+    "request": "Request",
+    "splitBill": "Split bill",
+    "topUp": "Top up",
+    "net": "Net {amount}",
+    "collaborators": "{count} collaborators",
+    "readOnly": "Read-only management scope",
+    "wallet": {
+      "title": "Wallet",
+      "description": "Compact account cards shaped for scanability and fast action.",
+      "errorTitle": "Wallet preview unavailable",
+      "errorDescription": "The account preview could not be loaded for this household right now.",
+      "openAccounts": "Open accounts",
+      "viewAll": "View all",
+      "emptyTitle": "No accounts connected",
+      "emptyDescription": "Connected household accounts will appear here after the first account is created or synced."
+    },
+    "activity": {
+      "title": "Transactions",
+      "description": "Latest mapped household activity across cards, bank accounts, and internal transfers.",
+      "errorTitle": "Recent activity unavailable",
+      "errorDescription": "The latest household transactions could not be assembled right now.",
+      "openWorkspace": "Open activity workspace",
+      "openFullActivity": "Open full activity",
+      "emptyDescription": "Recent transaction activity will appear here once the household records expense, income, or transfer entries.",
+      "details": "{category} via {account}"
+    },
+    "statistics": {
+      "title": "Statistics",
+      "errorTitle": "Statistics preview unavailable",
+      "errorDescription": "The analytics summary could not be loaded for this household right now.",
+      "inspectTransactions": "Inspect transactions",
+      "emptyTitle": "No analytics available yet",
+      "emptyDescription": "Analytics preview cards will become available once the household has enough recorded financial activity.",
+      "reviewTransactions": "Review transactions",
+      "period": {
+        "weekly": "Weekly",
+        "monthly": "Monthly"
+      },
+      "movementCaption": "{period} movement for {currencyCode} household cash",
+      "details": "Details",
+      "income": "Income",
+      "inflow": "Inflow",
+      "expenses": "Expenses",
+      "outflow": "Outflow"
+    },
+    "quickTransfer": {
+      "title": "Quick transfer",
+      "description": "Start from a live account surface without leaving the overview.",
+      "errorTitle": "Transfer shortcuts unavailable",
+      "errorDescription": "The overview could not load active transfer surfaces for this household right now.",
+      "openAccounts": "Open accounts",
+      "openWorkspace": "Open movement workspace",
+      "readOnlyTitle": "Transfer actions are limited for this role",
+      "readOnlyDescription": "This membership can review balances and activity, but initiating household money movement requires a higher permission scope.",
+      "reviewAccounts": "Review accounts",
+      "emptyTitle": "No active transfer surfaces",
+      "emptyDescription": "Create or reconnect at least one active household account to unlock transfer shortcuts and destination suggestions.",
+      "newTransferTitle": "New transfer",
+      "newTransferDescription": "Start a household movement"
+    },
+    "actionCenter": {
+      "title": "Quick actions",
+      "description": "Open product-grade finance forms directly from the overview. Mutations use same-origin BFF handlers, idempotency keys, and route refresh after success.",
+      "errorTitle": "Quick actions unavailable",
+      "errorDescription": "The dashboard could not prepare mutation references for this household.",
+      "readOnly": "This membership can review balances and activity, but mutation flows are hidden because the role is read-only.",
+      "requirements": {
+        "createActiveAccount": "Create an active account first",
+        "createExpenseCategory": "Create an expense category first",
+        "createIncomeCategory": "Create an income category first",
+        "twoActiveAccounts": "Needs at least two active accounts",
+        "noOpenDebts": "No open debt is ready for settlement"
+      },
+      "actions": {
+        "expense": {
+          "label": "Add expense",
+          "description": "Book a household outflow"
+        },
+        "income": {
+          "label": "Add income",
+          "description": "Record a new inflow"
+        },
+        "transfer": {
+          "label": "Transfer",
+          "description": "Move cash between accounts"
+        },
+        "debt": {
+          "label": "Add debt",
+          "description": "Track a payable or receivable"
+        },
+        "settlement": {
+          "label": "Settle debt",
+          "description": "Record a partial or full settlement"
+        },
+        "budget": {
+          "label": "Budget limit",
+          "description": "Create or update a category cap"
+        }
+      },
+      "stats": {
+        "activeAccounts": "Active accounts",
+        "openDebts": "Open debts",
+        "openCount": "{count} open",
+        "payables": "Payables",
+        "receivables": "Receivables",
+        "budgetRules": "Budget rules",
+        "trackedCount": "{count} tracked",
+        "budgetDescription": "Category caps stay aligned with household-scoped expenses after each refresh."
+      },
+      "dialogs": {
+        "expense": {
+          "title": "Record expense",
+          "description": "Post a new household expense against an active account and category."
+        },
+        "income": {
+          "title": "Record income",
+          "description": "Post a new household inflow into an active account."
+        },
+        "transfer": {
+          "title": "Create transfer",
+          "description": "Move available balance between two household accounts."
+        },
+        "debt": {
+          "title": "Create debt",
+          "description": "Track a payable or receivable without leaving the dashboard overview."
+        },
+        "settlement": {
+          "title": "Settle debt",
+          "description": "Record a partial or full debt settlement from a live account surface."
+        },
+        "budget": {
+          "title": "Set budget limit",
+          "description": "Create or update an expense budget rule for the active household."
+        }
+      }
+    }
+  },
+  "auth": {
+    "login": "Login",
+    "register": "Register",
+    "logout": "Logout",
+    "email": "Email",
+    "password": "Password",
+    "forgotPassword": "Forgot password?",
+    "serverOwned": "Server-owned auth boundary",
+    "loginTitle": "Securely enter {appName}",
+    "registerTitle": "Create a household workspace without leaking tokens to the browser",
+    "authDescription": "This quick-start phase focuses on shell, routing, and typed boundaries. Auth screens are production-shaped and ready for BFF wiring in the next delivery step.",
+    "bffReadyTitle": "BFF-ready sign in",
+    "bffReadyDescription": "Form surfaces are ready for secure cookie session exchange and field-level validation.",
+    "demoWorkspaceTitle": "Demo workspace enabled",
+    "demoWorkspaceDescription": "Use mocked household data to validate app shell, loading states, and route composition immediately.",
+    "welcomeBack": "Welcome back",
+    "setUpAccess": "Set up access",
+    "loginSub": "Secure cookie session orchestration stays server-owned from the first submit.",
+    "registerSub": "Registration provisions an owner workspace and issues the session cookie from the server boundary.",
+    "inspectShell": "Need to inspect the product shell immediately? Login with the seeded mock account and continue with household-scoped demo data.",
+    "openDemo": "Open demo households",
+    "goToRegister": "Go to register",
+    "goToLogin": "Go to login",
+    "signInTitle": "Secure sign in",
+    "signInDescription": "The browser never stores raw session tokens.",
+    "emailLabel": "Email",
+    "emailPlaceholder": "atlas@centralbank.app",
+    "registerEmailPlaceholder": "alex@atlas.house",
+    "passwordLabel": "Password",
+    "passwordPlaceholder": "Secure password",
+    "signInButton": "Sign in",
+    "signingIn": "Signing in...",
+    "demoCredentials": "Demo access uses <email>atlas@centralbank.app</email> / <password>Atlas12345</password>.",
+    "identityTitle": "Identity",
+    "identityDescription": "Owner access starts with an accountable member profile.",
+    "fullNameLabel": "Full name",
+    "fullNamePlaceholder": "Alex Johnson",
+    "credentialSetupTitle": "Credential setup",
+    "credentialSetupDescription": "The backend cookie boundary becomes the long-lived session owner.",
+    "initialHouseholdTitle": "Initial household",
+    "initialHouseholdDescription": "Registration provisions the first owner-scoped workspace.",
+    "householdNameLabel": "Household name",
+    "householdNamePlaceholder": "Atlas Household",
+    "createAccountButton": "Create account",
+    "creatingWorkspace": "Creating workspace...",
+    "alreadyHaveAccess": "Already have access?",
+    "returnToLogin": "Return to login",
+    "userMenu": {
+      "open": "Open user menu",
+      "session": "Session",
+      "switchHousehold": "Switch household",
+      "settings": "Household settings",
+      "signOut": "Sign out",
+      "signingOut": "Signing out...",
+      "sessionClosed": "Session closed"
+    }
+  },
+  "households": {
+    "selection": {
+      "title": "Household-scoped entry",
+      "heading": "Choose the workspace that should anchor routing, permissions, and financial context.",
+      "description": "Every finance object in this product belongs to a household. This selection screen is the first tenant boundary and should survive refresh, deep links, and later auth/session enforcement.",
+      "pendingInvites": "Pending invites",
+      "waitingAcceptance": "Household access waiting for acceptance",
+      "acceptRole": "Accept role-scoped invites before entering the invited workspace.",
+      "invitedBy": "{role} access · invited by {name}",
+      "tenantAware": "Tenant-aware dashboard with typed mock data",
+      "availableBalance": "Available balance",
+      "members": "Members",
+      "collaborators": "{count} collaborators",
+      "monthSpend": "Month spend",
+      "openWorkspace": "Open workspace",
+      "activeSession": "Active session",
+      "serverRoutes": "Server routes stay thin and household-aware.",
+      "cookieSession": "Cookie session stays server-owned and never enters local storage.",
+      "mockMode": "Mock mode is {status} for rapid verification.",
+      "workspacesAttached": "{count} accessible workspaces are currently attached.",
+      "noHouseholds": "No households attached yet",
+      "noHouseholdsDesc": "Create the first workspace or accept an invite to continue.",
+      "enabled": "enabled",
+      "disabled": "disabled",
+      "acceptInvite": "Accept invite",
+      "acceptInvitePending": "Accepting...",
+      "inviteAccepted": "Invite accepted",
+      "roles": {
+        "owner": "Owner",
+        "admin": "Admin",
+        "member": "Member",
+        "viewer": "Viewer"
+      }
+    },
+    "createForm": {
+      "title": "Create household",
+      "description": "Provision a new tenant-scoped workspace without leaving the secure selection shell.",
+      "submit": "Create workspace",
+      "pending": "Creating...",
+      "success": "Household created",
+      "fields": {
+        "name": {
+          "label": "Name",
+          "placeholder": "Northstar Household"
+        },
+        "currencyCode": {
+          "label": "Base currency",
+          "placeholder": "Choose a base currency"
+        }
+      },
+      "currencies": {
+        "USD": "USD",
+        "EUR": "EUR",
+        "UZS": "UZS"
+      }
+    },
+    "inviteForm": {
+      "title": "Invite member",
+      "description": "Provision a role-scoped household invite that can be accepted from the selection surface.",
+      "submit": "Send invite",
+      "pending": "Sending...",
+      "success": "Invite sent",
+      "fields": {
+        "email": {
+          "label": "Email",
+          "placeholder": "member@atlas.house"
+        },
+        "role": {
+          "label": "Role",
+          "placeholder": "Choose a role"
+        }
+      },
+      "roles": {
+        "admin": "Admin",
+        "member": "Member",
+        "viewer": "Viewer"
+      }
+    },
+    "settings": {
+      "eyebrow": "Household settings",
+      "title": "{household} membership controls",
+      "description": "Access and invite management stay household-scoped, role-aware, and server-rendered by default.",
+      "roles": {
+        "owner": "Owner",
+        "admin": "Admin",
+        "member": "Member",
+        "viewer": "Viewer"
+      },
+      "statuses": {
+        "accepted": "Accepted",
+        "pending": "Pending"
+      },
+      "invites": {
+        "title": "Pending and accepted invites",
+        "description": "Invites are normalized into typed UI models so future backend fields can be added without touching the page shell.",
+        "emptyTitle": "No invites yet",
+        "emptyDescription": "This household has not issued any role-scoped member invites."
+      },
+      "actions": {
+        "title": "Role-aware actions",
+        "description": "Only owner and admin memberships can issue new invites.",
+        "emptyTitle": "Read-only membership",
+        "emptyDescription": "Invite management is disabled for the current role."
+      }
+    }
+  },
+  "accounts": {
+    "common": {
+      "kinds": {
+        "bank": "Bank",
+        "card": "Card",
+        "cash": "Cash"
+      },
+      "status": {
+        "active": "Active",
+        "restricted": "Restricted",
+        "archived": "Archived"
+      },
+      "primary": "Primary",
+      "menu": "{account} menu",
+      "maskedNumber": " •••• {maskedNumber}",
+      "institutionWithMask": "{institution} •• {maskedNumber}",
+      "available": "Available",
+      "ledgerBalance": "Ledger balance",
+      "archivedAccount": "Archived account",
+      "restrictedAccount": "Restricted account",
+      "archivedOn": "Archived on {date}",
+      "limitedAvailability": "This account currently has limited availability."
+    },
+    "details": {
+      "available": "Available",
+      "ledger": "Ledger",
+      "institution": "Institution",
+      "status": "Status",
+      "lastFour": "Last four",
+      "notSet": "Not set",
+      "primary": "Primary",
+      "yes": "Yes",
+      "no": "No",
+      "archived": "Archived",
+      "availabilityNote": "Availability note"
+    },
+    "workspace": {
+      "eyebrow": "Household accounts",
+      "title": "{household} account surfaces",
+      "description": "Manage bank, card, and cash surfaces through focused dialogs while the workspace stays server-owned by default.",
+      "totalAccounts": "{count} total accounts",
+      "newAccount": "New account",
+      "reviewActivity": "Review activity",
+      "tabs": {
+        "all": "All",
+        "active": "Active",
+        "restricted": "Restricted",
+        "archived": "Archived"
+      },
+      "emptyTitle": "No accounts connected yet",
+      "emptyDescription": "Create the first household account to unlock balance, transfer, and budgeting workflows.",
+      "createAccount": "Create account",
+      "accountActions": "{account} actions",
+      "viewDetails": "View details",
+      "editAccount": "Edit account",
+      "filteredEmptyTitle": "No accounts in this view",
+      "filteredEmptyDescription": "Switch tabs or create another account to populate this slice.",
+      "portfolio": {
+        "title": "Portfolio posture",
+        "description": "A compact summary that can evolve into health, sync, and permission diagnostics.",
+        "primaryAccount": "Primary account",
+        "notAssigned": "Not assigned",
+        "mix": "Mix",
+        "bankAccounts": "{count} bank accounts",
+        "cardAccounts": "{count} card accounts",
+        "cashAccounts": "{count} cash reserves",
+        "actionModel": "Action model",
+        "actionDescription": "Create, detail, and edit flows live in dialogs so the workspace keeps a clean, card-driven scan path."
+      },
+      "addAccount": "Add account",
+      "dialogs": {
+        "createTitle": "Create account",
+        "createDescription": "Add a new bank, card, or cash surface for this household.",
+        "editTitle": "Edit {account}",
+        "editFallbackTitle": "Edit account",
+        "editDescription": "Update account labels, availability state, and primary placement.",
+        "detailsFallbackTitle": "Account details",
+        "detailsDescription": "Review the current balance posture and availability state for this account."
+      }
+    },
+    "form": {
+      "kinds": {
+        "bank": "Bank",
+        "card": "Card",
+        "cash": "Cash"
+      },
+      "status": {
+        "active": "Active",
+        "restricted": "Restricted",
+        "archived": "Archived"
+      },
+      "fields": {
+        "name": {
+          "label": "Account name",
+          "placeholder": "Operating Account"
+        },
+        "institutionName": {
+          "label": "Institution",
+          "placeholder": "Mercury Private"
+        },
+        "kind": {
+          "label": "Kind",
+          "placeholder": "Choose account kind"
+        },
+        "currencyCode": {
+          "label": "Currency"
+        },
+        "maskedNumber": {
+          "label": "Last four digits",
+          "placeholder": "4821"
+        },
+        "isPrimary": {
+          "label": "Primary account",
+          "placeholder": "Choose primary state",
+          "secondary": "Keep as secondary",
+          "primary": "Set as primary"
+        },
+        "openingBalance": {
+          "label": "Opening balance"
+        },
+        "status": {
+          "label": "Status",
+          "placeholder": "Choose account status"
+        },
+        "disabledReason": {
+          "label": "Restriction reason",
+          "placeholder": "Verification pending"
+        }
+      },
+      "create": {
+        "sections": {
+          "setup": {
+            "title": "Account setup",
+            "description": "Account surfaces stay household-scoped and later sync metadata can attach without reshaping this form."
+          },
+          "balance": {
+            "title": "Opening balance",
+            "description": "Balances are entered in decimal form and normalized to minor units before submit."
+          }
+        }
+      },
+      "edit": {
+        "sections": {
+          "settings": {
+            "title": "Account settings",
+            "description": "Update labels, primary placement, and availability state without leaving the account workspace."
+          },
+          "availability": {
+            "title": "Availability",
+            "description": "Archive or restrict accounts so downstream finance actions stay accurate."
+          }
+        }
+      },
+      "actions": {
+        "create": "Create account",
+        "creating": "Creating...",
+        "save": "Save account",
+        "saving": "Saving..."
+      }
+    },
+    "toasts": {
+      "created": "Account created",
+      "updated": "Account updated"
+    }
+  },
+  "transactions": {
+    "kinds": {
+      "expense": "Expense",
+      "income": "Income",
+      "transfer": "Transfer"
+    },
+    "filters": {
+      "kinds": {
+        "all": "All",
+        "expense": "Expense",
+        "income": "Income",
+        "transfer": "Transfer"
+      },
+      "updating": "Updating",
+      "urlSynced": "URL-synced",
+      "searchPlaceholder": "Search description, category, or account",
+      "periodAriaLabel": "Filter period",
+      "periodPlaceholder": "Choose period",
+      "periods": {
+        "7d": "Last 7d",
+        "30d": "Last 30d",
+        "90d": "Last 90d"
+      },
+      "apply": "Apply filters"
+    },
+    "workspace": {
+      "eyebrow": "Transactions",
+      "title": "Shareable activity workspace",
+      "description": "Filters live in the URL while create and detail flows stay inside focused dialogs.",
+      "matches": "{count} matches",
+      "requirements": {
+        "activeAccount": "Create an active account first.",
+        "expenseCategory": "Create an expense category first.",
+        "incomeCategory": "Create an income category first.",
+        "transferAccounts": "Transfers require at least two active accounts."
+      },
+      "actions": {
+        "addExpense": "Add expense",
+        "addIncome": "Add income",
+        "transfer": "Transfer",
+        "viewAccounts": "View accounts"
+      },
+      "summary": {
+        "inflow": "Inflow",
+        "outflow": "Outflow",
+        "activeFilter": "Active filter",
+        "currentScope": "Current scope",
+        "periods": {
+          "7d": "Filtered over 7d",
+          "30d": "Filtered over 30d",
+          "90d": "Filtered over 90d"
+        }
+      },
+      "filters": {
+        "kinds": {
+          "all": "All",
+          "expense": "Expense",
+          "income": "Income",
+          "transfer": "Transfer"
+        }
+      },
+      "feed": {
+        "title": "Transaction feed",
+        "description": "Mapped DTOs, normalized timestamps, and explicit money semantics keep the list safe for later mutations and analytics overlays.",
+        "emptyTitle": "No transactions match this filter set",
+        "emptyDescription": "Adjust the kind, period, or search term. Create flows remain available from the header.",
+        "clearFilters": "Clear filters"
+      },
+      "transactionActions": "{transaction} actions",
+      "viewDetails": "View details",
+      "dialogs": {
+        "expense": {
+          "title": "Record expense",
+          "description": "Book a household outflow from the activity workspace."
+        },
+        "income": {
+          "title": "Record income",
+          "description": "Capture a new inflow without leaving the transaction workspace."
+        },
+        "transfer": {
+          "title": "Create transfer",
+          "description": "Move household cash between active account surfaces."
+        },
+        "detailsFallbackTitle": "Transaction details",
+        "detailsDescription": "Review normalized transaction metadata from the typed household ledger."
+      }
+    },
+    "expenseForm": {
+      "sections": {
+        "source": {
+          "title": "Transaction source",
+          "description": "Choose where the household expense should be booked and categorized."
+        },
+        "details": {
+          "title": "Expense details",
+          "description": "Amounts are entered as decimals but submitted in backend-safe minor units."
+        }
+      },
+      "fields": {
+        "accountId": {
+          "label": "Source account"
+        },
+        "categoryId": {
+          "label": "Expense category"
+        },
+        "occurredAt": {
+          "label": "Occurred at"
+        },
+        "description": {
+          "label": "Description",
+          "placeholder": "Weekly grocery restock"
+        },
+        "note": {
+          "label": "Note",
+          "placeholder": "Optional note for the household activity log"
+        },
+        "reference": {
+          "label": "Reference",
+          "placeholder": "Optional merchant or receipt reference"
+        }
+      },
+      "actions": {
+        "submit": "Record expense",
+        "pending": "Recording...",
+        "reset": "Reset fields"
+      }
+    },
+    "incomeForm": {
+      "sections": {
+        "source": {
+          "title": "Income source",
+          "description": "Select the receiving account and the source classification for this inflow."
+        },
+        "details": {
+          "title": "Income details",
+          "description": "Capture the amount, description, and occurred-at timestamp for the household ledger."
+        }
+      },
+      "fields": {
+        "accountId": {
+          "label": "Receiving account"
+        },
+        "categoryId": {
+          "label": "Income source"
+        },
+        "occurredAt": {
+          "label": "Occurred at"
+        },
+        "description": {
+          "label": "Description",
+          "placeholder": "Freelance invoice payout"
+        }
+      },
+      "actions": {
+        "submit": "Record income",
+        "pending": "Recording..."
+      }
+    },
+    "transferForm": {
+      "sections": {
+        "path": {
+          "title": "Transfer path",
+          "description": "Move available balance between two active household account surfaces."
+        },
+        "details": {
+          "title": "Transfer details",
+          "description": "The current route will refresh after submit so account previews and recent activity stay aligned."
+        }
+      },
+      "fields": {
+        "fromAccountId": {
+          "label": "From account"
+        },
+        "toAccountId": {
+          "label": "To account"
+        },
+        "occurredAt": {
+          "label": "Occurred at"
+        },
+        "note": {
+          "label": "Note",
+          "placeholder": "Reserve top-up for the next spending cycle"
+        }
+      },
+      "availableInSource": "Available in source account: {currencyCode} {amount}",
+      "actions": {
+        "submit": "Record transfer",
+        "pending": "Recording..."
+      }
+    },
+    "row": {
+      "details": "{category} via {account}"
+    },
+    "details": {
+      "amount": "Amount",
+      "description": "Description",
+      "kind": "Kind",
+      "category": "Category",
+      "account": "Account",
+      "postedAt": "Posted at",
+      "status": "Status"
+    },
+    "status": {
+      "posted": "Posted",
+      "pending": "Pending"
+    },
+    "toasts": {
+      "expenseRecorded": "Expense recorded",
+      "incomeRecorded": "Income recorded",
+      "transferRecorded": "Transfer recorded"
+    }
+  },
+  "categories": {
+    "common": {
+      "kinds": {
+        "expense": "Expense",
+        "income": "Income"
+      },
+      "origin": {
+        "systemDefault": "System default",
+        "householdCustom": "Household custom"
+      }
+    },
+    "workspace": {
+      "eyebrow": "Categories",
+      "title": "{household} category library",
+      "description": "Create and edit household categories through focused dialogs while system defaults remain protected.",
+      "count": "{count} categories",
+      "tabs": {
+        "all": "All"
+      },
+      "actions": {
+        "newCategory": "New category",
+        "editCategory": "Edit category"
+      },
+      "sections": {
+        "expense": {
+          "title": "Expense categories",
+          "description": "Used for spending capture, budgets, and analytics grouping."
+        },
+        "income": {
+          "title": "Income categories",
+          "description": "Used for inflow classification and summary reporting."
+        },
+        "emptyTitle": "No categories",
+        "emptyDescription": "This category group has not been configured yet."
+      },
+      "categoryActions": "{category} actions",
+      "controls": {
+        "title": "Category controls",
+        "description": "Dialogs keep category mutations out of the reading path and preserve a calm workspace.",
+        "tipViews": "Expense and income libraries can be filtered through the tab controls above.",
+        "tipSystemDefaults": "System defaults stay read-only; only household custom categories expose edit actions.",
+        "createCategory": "Create category",
+        "readOnlyTitle": "Category actions are limited",
+        "readOnlyDescription": "This membership can review category mappings, but it cannot mutate them."
+      },
+      "dialogs": {
+        "createTitle": "Create category",
+        "createDescription": "Add a household-scoped category without modifying system defaults.",
+        "editTitle": "Edit {category}",
+        "editFallbackTitle": "Edit category",
+        "editDescription": "Rename a household custom category while keeping its kind stable."
+      }
+    },
+    "form": {
+      "sections": {
+        "create": {
+          "title": "Create category",
+          "description": "Household categories stay separate from system defaults and future backend conflicts are normalized at the boundary."
+        },
+        "edit": {
+          "title": "Edit category",
+          "description": "Household categories stay separate from system defaults and future backend conflicts are normalized at the boundary."
+        }
+      },
+      "fields": {
+        "name": {
+          "label": "Name",
+          "placeholder": "School fees"
+        },
+        "kind": {
+          "label": "Kind",
+          "placeholder": "Choose a category kind"
+        }
+      },
+      "actions": {
+        "create": "Create category",
+        "save": "Save category",
+        "pending": "Saving..."
+      },
+      "toasts": {
+        "created": "Category saved",
+        "updated": "Category updated"
+      }
+    }
+  },
+  "expenses": {},
+  "incomes": {},
+  "transfers": {},
+  "debts": {
+    "common": {
+      "status": {
+        "open": "Open",
+        "partial": "Partial",
+        "settled": "Settled"
+      },
+      "direction": {
+        "payable": "Payable",
+        "receivable": "Receivable"
+      }
+    },
+    "workspace": {
+      "eyebrow": "Debts",
+      "title": "{household} debt registry",
+      "description": "Receivables and payables stay explicit while create, detail, and settlement flows remain dialog-driven.",
+      "openItems": "{count} open items",
+      "requirements": {
+        "createDebtBeforeSettlement": "Create a debt before recording settlement.",
+        "createActiveAccount": "Create an active account first."
+      },
+      "tabs": {
+        "all": "All",
+        "open": "Open",
+        "partial": "Partial",
+        "settled": "Settled"
+      },
+      "meta": {
+        "created": "Created {date}",
+        "due": "Due {date}"
+      },
+      "actions": {
+        "addDebt": "Add debt",
+        "settleDebt": "Settle debt",
+        "viewDetails": "View details"
+      },
+      "ledger": {
+        "title": "Debt ledger",
+        "description": "Outstanding balances remain visible until settlement reaches zero.",
+        "emptyTitle": "No debts in this view",
+        "emptyDescription": "Create a receivable or payable to start tracking settlements.",
+        "createDebt": "Create debt"
+      },
+      "debtActions": "{debt} actions",
+      "actionsPanel": {
+        "title": "Debt actions",
+        "description": "Dialogs keep settlement and detail flows available without crowding the registry.",
+        "tipViews": "Open, partial, and settled views are available through the tabs above.",
+        "tipSettlement": "Settlement stays disabled until at least one active account is available.",
+        "createDebt": "Create debt",
+        "readOnlyTitle": "Debt mutations are limited",
+        "readOnlyDescription": "This membership can review debt records but cannot create or settle them."
+      },
+      "dialogs": {
+        "createTitle": "Create debt",
+        "createDescription": "Track a household payable or receivable.",
+        "settleTitle": "Settle debt",
+        "settleDescription": "Record a partial or full settlement against a live account.",
+        "detailsFallbackTitle": "Debt details",
+        "detailsDescription": "Review the remaining balance, status, and timing for this debt record."
+      }
+    },
+    "details": {
+      "remaining": "Remaining",
+      "original": "Original",
+      "counterparty": "Counterparty",
+      "direction": "Direction",
+      "status": "Status",
+      "created": "Created",
+      "due": "Due",
+      "description": "Description"
+    },
+    "form": {
+      "sections": {
+        "counterparty": {
+          "title": "Counterparty",
+          "description": "Capture who owes the household or who the household needs to reimburse."
+        },
+        "terms": {
+          "title": "Debt terms",
+          "description": "Use a due date if the settlement should be expected by a specific day."
+        }
+      },
+      "fields": {
+        "counterparty": {
+          "label": "Person or member",
+          "placeholder": "Anna"
+        },
+        "direction": {
+          "label": "Direction",
+          "placeholder": "Choose debt direction",
+          "payable": "Household owes someone",
+          "receivable": "Someone owes the household"
+        },
+        "dueDate": {
+          "label": "Due date"
+        },
+        "description": {
+          "label": "Description",
+          "placeholder": "Why this reimbursement or receivable exists"
+        }
+      },
+      "actions": {
+        "create": "Create debt",
+        "creating": "Creating..."
+      }
+    },
+    "settlementForm": {
+      "sections": {
+        "target": {
+          "title": "Settlement target",
+          "description": "Choose an open or partially settled debt and record the movement through a live account."
+        },
+        "details": {
+          "title": "Settlement details",
+          "description": "Partial settlements are supported. Full settlement is detected automatically when the remaining amount reaches zero."
+        }
+      },
+      "fields": {
+        "debt": {
+          "label": "Debt record",
+          "placeholder": "Choose a debt to settle",
+          "option": "{name} · {amount}"
+        },
+        "account": {
+          "label": "Settlement account"
+        },
+        "occurredAt": {
+          "label": "Occurred at"
+        },
+        "note": {
+          "label": "Note",
+          "placeholder": "Optional settlement context for the household log"
+        }
+      },
+      "selectedDebt": {
+        "remaining": "Remaining: {amount}"
+      },
+      "actions": {
+        "submit": "Settle debt",
+        "pending": "Recording..."
+      }
+    },
+    "toasts": {
+      "created": "Debt record created",
+      "settled": "Debt settlement recorded"
+    }
+  },
+  "budgets": {
+    "common": {
+      "periods": {
+        "monthly": "Monthly",
+        "weekly": "Weekly"
+      }
+    },
+    "workspace": {
+      "eyebrow": "Budgets",
+      "title": "{household} budget controls",
+      "description": "Budget limits stay dialog-driven, category-scoped, and period-aware for a low-noise planning workspace.",
+      "activeLimits": "{count} active limits",
+      "requirements": {
+        "expenseCategory": "Create an expense category first."
+      },
+      "tabs": {
+        "all": "All"
+      },
+      "actions": {
+        "newBudget": "New budget",
+        "editBudget": "Edit budget"
+      },
+      "progress": {
+        "title": "Budget progress",
+        "description": "Spending stays anchored to minor-unit calculations and consistent category mapping.",
+        "emptyTitle": "No budgets configured for this view",
+        "emptyDescription": "Create a category limit to start tracking budget progress.",
+        "createBudget": "Create budget",
+        "effectiveFrom": "Effective from {date}",
+        "spent": "Spent"
+      },
+      "budgetActions": "{budget} budget actions",
+      "controls": {
+        "title": "Budget controls",
+        "description": "Use dialogs for create and edit flows so the reading path stays compact.",
+        "tipViews": "Weekly and monthly views are switchable through the tabs above.",
+        "tipReuse": "Reusing the same category and period updates the saved budget record.",
+        "createBudget": "Create budget",
+        "readOnlyTitle": "Budget mutations are limited",
+        "readOnlyDescription": "This membership can review budgets but cannot change them."
+      },
+      "dialogs": {
+        "createTitle": "Create budget",
+        "createDescription": "Set a weekly or monthly cap for an expense category.",
+        "editTitle": "Edit {category} budget",
+        "editFallbackTitle": "Edit budget",
+        "editDescription": "Adjust the saved period cap while keeping the existing category scope."
+      }
+    },
+    "form": {
+      "sections": {
+        "scope": {
+          "title": "Budget scope",
+          "description": "Budgets in this phase govern expense categories and can be updated by reusing the same category + period combination."
+        },
+        "details": {
+          "title": "Budget details",
+          "description": "Saving again with the same category and period updates the existing budget limit."
+        }
+      },
+      "fields": {
+        "category": {
+          "label": "Expense category"
+        },
+        "period": {
+          "label": "Period",
+          "placeholder": "Choose a budget period"
+        },
+        "amount": {
+          "label": "Budget limit"
+        },
+        "effectiveFrom": {
+          "label": "Effective from"
+        }
+      },
+      "currentSavedLimit": "Current saved limit: {limit} with {spent} spent.",
+      "actions": {
+        "create": "Create budget",
+        "update": "Update budget",
+        "pending": "Saving..."
+      }
+    },
+    "toasts": {
+      "created": "Budget created",
+      "updated": "Budget updated"
+    }
+  },
+  "analytics": {
+    "eyebrow": "Analytics",
+    "title": "{household} financial signal",
+    "description": "Summary cards, category concentration, and calendar intensity all read from the same server-owned transaction boundary.",
+    "periods": {
+      "7d": "7 days",
+      "30d": "30 days",
+      "90d": "90 days"
+    },
+    "summary": {
+      "income": "Income",
+      "expense": "Expense",
+      "netChange": "Net change",
+      "lastPeriod": "Last {period}",
+      "transactionCount": "{count} transactions"
+    },
+    "trend": {
+      "title": "Flow trend",
+      "description": "Income and expense intensity over the selected period.",
+      "emptyTitle": "No trend data",
+      "emptyDescription": "Record transactions to populate analytics."
+    },
+    "categories": {
+      "title": "Category concentration",
+      "description": "Top expense groups across the selected period.",
+      "emptyTitle": "No category breakdown",
+      "emptyDescription": "Expense activity is required before category analytics can render.",
+      "transactionCount": "{count} transactions"
+    },
+    "calendar": {
+      "title": "Calendar intensity",
+      "description": "Recent daily expense concentration for quick anomaly scanning.",
+      "emptyTitle": "No calendar activity",
+      "emptyDescription": "Analytics calendar will populate after household transactions arrive."
+    }
+  },
+  "settings": {},
+  "validation": {
+    "common": {
+      "invalidField": "Please review this field."
+    },
+    "money": {
+      "invalidAmount": "Enter a valid amount with up to two decimal places."
+    },
+    "auth": {
+      "email": {
+        "invalid": "Enter a valid email address."
+      },
+      "password": {
+        "min": "Password must be at least 8 characters.",
+        "letter": "Password must contain at least one letter.",
+        "number": "Password must contain at least one number."
+      },
+      "fullName": {
+        "min": "Full name must be at least 2 characters.",
+        "max": "Full name is too long."
+      }
+    },
+    "households": {
+      "name": {
+        "min": "Household name must be at least 2 characters.",
+        "max": "Household name is too long."
+      },
+      "currencyCode": {
+        "length": "Use a 3-letter currency code."
+      },
+      "invite": {
+        "email": {
+          "invalid": "Enter a valid invite email address."
+        }
+      }
+    },
+    "accounts": {
+      "name": {
+        "min": "Enter an account name."
+      },
+      "institutionName": {
+        "min": "Enter an institution or provider."
+      },
+      "currencyCode": {
+        "length": "Use a 3-letter currency code."
+      },
+      "openingBalance": {
+        "required": "Enter an opening balance."
+      },
+      "maskedNumber": {
+        "max": "Use up to the last four digits.",
+        "digits": "Use digits only."
+      },
+      "disabledReason": {
+        "required": "Restricted accounts need a short reason."
+      }
+    },
+    "transactions": {
+      "accountId": {
+        "required": "Choose an account."
+      },
+      "expenseCategoryId": {
+        "required": "Choose an expense category."
+      },
+      "incomeCategoryId": {
+        "required": "Choose the income source."
+      },
+      "fromAccountId": {
+        "required": "Choose the source account."
+      },
+      "toAccountId": {
+        "required": "Choose the destination account."
+      },
+      "expenseAmount": {
+        "required": "Enter the expense amount."
+      },
+      "incomeAmount": {
+        "required": "Enter the income amount."
+      },
+      "transferAmount": {
+        "required": "Enter the transfer amount."
+      },
+      "occurredAt": {
+        "required": "Choose when this happened."
+      },
+      "description": {
+        "max": "Keep the description within 120 characters."
+      },
+      "note": {
+        "max": "Keep the note within 240 characters."
+      },
+      "reference": {
+        "max": "Keep the reference within 80 characters."
+      },
+      "transferNote": {
+        "max": "Keep the note within 160 characters."
+      },
+      "accountsMustDiffer": "Transfers must move between two different accounts.",
+      "crossCurrencyUnsupported": "Cross-currency transfers will be supported in a later phase."
+    },
+    "categories": {
+      "name": {
+        "min": "Category name must be at least 2 characters.",
+        "max": "Category name is too long."
+      }
+    },
+    "budgets": {
+      "categoryId": {
+        "required": "Choose the category this budget should govern."
+      },
+      "amount": {
+        "required": "Enter the budget limit."
+      },
+      "effectiveFrom": {
+        "required": "Choose when the budget becomes active."
+      }
+    },
+    "debts": {
+      "counterpartyName": {
+        "min": "Enter the person or member name."
+      },
+      "debtId": {
+        "required": "Choose the debt to settle."
+      },
+      "accountId": {
+        "required": "Choose the account used for settlement."
+      },
+      "amount": {
+        "required": "Enter the debt amount.",
+        "exceedsRemaining": "Settlement amount cannot exceed the remaining balance."
+      },
+      "description": {
+        "max": "Keep the description within 240 characters."
+      },
+      "note": {
+        "max": "Keep the note within 180 characters."
+      },
+      "occurredAt": {
+        "required": "Choose when the settlement happened."
+      }
+    }
+  },
+  "errors": {
+    "submission": {
+      "invalid": "Submitted data is invalid.",
+      "conflict": "The request conflicts with the current household state.",
+      "generic": "The form could not be submitted."
+    },
+    "auth": {
+      "unauthorized": "Your session has expired. Please sign in again."
+    },
+    "permission": {
+      "denied": "You do not have permission to perform this action."
+    },
+    "resource": {
+      "notFound": "The requested resource could not be found."
+    }
+  }
+}

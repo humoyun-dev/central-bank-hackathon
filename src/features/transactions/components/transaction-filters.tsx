@@ -1,8 +1,8 @@
 "use client"
 
 import { useState, useTransition } from "react"
-import { usePathname, useRouter } from "next/navigation"
 import { Search } from "lucide-react"
+import { useTranslations } from "next-intl"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -14,6 +14,7 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { usePathname, useRouter } from "@/i18n/navigation"
 import type {
   TransactionFilters,
   TransactionKindFilter,
@@ -28,6 +29,7 @@ export function TransactionFiltersBar({
 }: {
   initialFilters: TransactionFilters
 }) {
+  const t = useTranslations("transactions.filters")
   const router = useRouter()
   const pathname = usePathname()
   const [isPending, startTransition] = useTransition()
@@ -71,12 +73,12 @@ export function TransactionFiltersBar({
           <TabsList>
             {filterKinds.map((item) => (
               <TabsTrigger key={item} value={item}>
-                {item}
+                {t(`kinds.${item.toLowerCase()}`)}
               </TabsTrigger>
             ))}
           </TabsList>
         </Tabs>
-        {isPending ? <Badge>Updating</Badge> : <Badge variant="primary">URL-synced</Badge>}
+        {isPending ? <Badge>{t("updating")}</Badge> : <Badge variant="primary">{t("urlSynced")}</Badge>}
       </div>
       <form
         className="flex flex-col gap-3 md:flex-row"
@@ -93,7 +95,7 @@ export function TransactionFiltersBar({
           <Input
             value={query}
             onChange={(event) => setQuery(event.target.value)}
-            placeholder="Search description, category, or account"
+            placeholder={t("searchPlaceholder")}
             className="pl-9"
           />
         </div>
@@ -105,18 +107,18 @@ export function TransactionFiltersBar({
             applyFilters({ kind, period: nextPeriod, query })
           }}
         >
-          <SelectTrigger aria-label="Filter period" className="md:w-[10rem]">
-            <SelectValue placeholder="Choose period" />
+          <SelectTrigger aria-label={t("periodAriaLabel")} className="md:w-[10rem]">
+            <SelectValue placeholder={t("periodPlaceholder")} />
           </SelectTrigger>
           <SelectContent>
             {filterPeriods.map((item) => (
               <SelectItem key={item} value={item}>
-                Last {item}
+                {t(`periods.${item}`)}
               </SelectItem>
             ))}
           </SelectContent>
         </Select>
-        <Button type="submit">Apply filters</Button>
+        <Button type="submit">{t("apply")}</Button>
       </form>
     </div>
   )

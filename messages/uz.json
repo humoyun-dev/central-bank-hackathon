@@ -1,0 +1,1274 @@
+{
+  "common": {
+    "loading": "Yuklanmoqda...",
+    "error": "Kutilmagan xatolik yuz berdi.",
+    "empty": "Ma'lumot topilmadi.",
+    "actions": {
+      "save": "Saqlash",
+      "cancel": "Bekor qilish",
+      "delete": "O'chirish",
+      "edit": "Tahrirlash",
+      "search": "Qidirish",
+      "filter": "Filtr",
+      "all": "Barchasi",
+      "menu": "Amallar",
+      "saving": "Saqlanmoqda..."
+    },
+    "languageSwitcher": {
+      "trigger": "Tilni almashtirish. Joriy til: {language}.",
+      "option": "{language} tiliga o'tish."
+    },
+    "routeStates": {
+      "globalNotFound": {
+        "title": "Bu route topilmadi",
+        "description": "So'ralgan ekran ko'chirilgan bo'lishi yoki hali tayyorlanmagan bo'lishi mumkin. Ro'zg'or tanlash sahifasiga qayting va to'g'ri ish maydonidan davom eting.",
+        "action": "Ro'zg'or tanlashga o'tish"
+      },
+      "householdNotFound": {
+        "title": "Ro'zg'or topilmadi",
+        "description": "So'ralgan ro'zg'orni joriy workspace ma'lumotlaridan aniqlab bo'lmadi. Davom etish uchun boshqa ro'zg'orni tanlang.",
+        "action": "Boshqa ro'zg'orni tanlash"
+      },
+      "householdError": {
+        "title": "Ro'zg'or workspace’ini yig'ib bo'lmadi",
+        "description": "Qobiq saqlanib qoldi, lekin ushbu route segment render bo'lmadi. Segmentni qayta urinib ko'ring yoki ro'zg'or tanlash sahifasiga qayting.",
+        "action": "Segmentni qayta urinish"
+      }
+    }
+  },
+  "navigation": {
+    "home": "Asosiy",
+    "wallet": "Hamyon",
+    "transactions": "Tranzaksiyalar",
+    "categories": "Kategoriyalar",
+    "debts": "Qarzlar",
+    "budgets": "Byudjetlar",
+    "analytics": "Tahlil",
+    "settings": "Sozlamalar",
+    "household": "Ro'zg'or"
+  },
+  "actions": {
+    "create": "Yaratish",
+    "update": "Yangilash",
+    "open": "Ochish",
+    "view": "Ko'rish",
+    "apply": "Qo'llash",
+    "clear": "Tozalash",
+    "reset": "Tiklash",
+    "record": "Qayd etish"
+  },
+  "forms": {
+    "common": {
+      "amountLabel": "Summa",
+      "amountPlaceholder": "0.00",
+      "accountLabel": "Hisob",
+      "accountPlaceholder": "Hisobni tanlang",
+      "categoryLabel": "Kategoriya",
+      "categoryPlaceholder": "Kategoriyani tanlang"
+    }
+  },
+  "dashboard": {
+    "greeting": "Salom, {name}!",
+    "description": "Ro'zg'oringiz hisoblari haqidagi barcha ma'lumotlar quyidagi bo'limlarda joylashgan.",
+    "searchPlaceholder": "Tranzaksiyalarni qidirish",
+    "switchHousehold": "Ro'zg'orni almashtirish",
+    "notifications": "Bildirishnomalar",
+    "notificationsUnavailable": "Bildirishnoma markazi hozircha ushbu bosqichda mavjud emas.",
+    "availableBalance": "Mavjud balans",
+    "cashDescription": "Faol moliyaviy yuzalardagi ro'zg'or mablag'lari.",
+    "send": "Yuborish",
+    "request": "So'rash",
+    "splitBill": "Hisobni bo'lish",
+    "topUp": "To'ldirish",
+    "net": "Sof {amount}",
+    "collaborators": "{count} hamkor",
+    "readOnly": "Faqat ko'rish rejimi",
+    "wallet": {
+      "title": "Hamyon",
+      "description": "Tez ko'rish va amal qilish uchun ixcham hisob kartalari.",
+      "errorTitle": "Hamyon preview’i mavjud emas",
+      "errorDescription": "Hozircha ushbu ro'zg'or hisoblari preview’ini yuklab bo'lmadi.",
+      "openAccounts": "Hisoblarni ochish",
+      "viewAll": "Barchasini ko'rish",
+      "emptyTitle": "Hisoblar hali ulanmagan",
+      "emptyDescription": "Birinchi hisob yaratilgandan yoki sinxronlangandan keyin ro'zg'or hisoblari shu yerda ko'rinadi."
+    },
+    "activity": {
+      "title": "Tranzaksiyalar",
+      "description": "Kartalar, hisoblar va ichki o'tkazmalar bo'yicha oxirgi ro'zg'or faolligi.",
+      "errorTitle": "So'nggi faollik mavjud emas",
+      "errorDescription": "Hozircha ro'zg'orning so'nggi tranzaksiyalarini yig'ib bo'lmadi.",
+      "openWorkspace": "Faollik ish maydonini ochish",
+      "openFullActivity": "To'liq faollikni ochish",
+      "emptyDescription": "Xarajat, daromad yoki o'tkazma yozuvlari paydo bo'lgach, so'nggi faollik shu yerda ko'rinadi.",
+      "details": "{category} · {account} orqali"
+    },
+    "statistics": {
+      "title": "Statistika",
+      "errorTitle": "Statistika preview’i mavjud emas",
+      "errorDescription": "Hozircha ushbu ro'zg'or uchun analytics summary’ni yuklab bo'lmadi.",
+      "inspectTransactions": "Tranzaksiyalarni tekshirish",
+      "emptyTitle": "Analytics hali mavjud emas",
+      "emptyDescription": "Ro'zg'orda yetarli moliyaviy faollik yig'ilgach, analytics kartalari paydo bo'ladi.",
+      "reviewTransactions": "Tranzaksiyalarni ko'rib chiqish",
+      "period": {
+        "weekly": "Haftalik",
+        "monthly": "Oylik"
+      },
+      "movementCaption": "{currencyCode} bo'yicha ro'zg'or mablag'larining {period} harakati",
+      "details": "Batafsil",
+      "income": "Daromad",
+      "inflow": "Kirim",
+      "expenses": "Xarajatlar",
+      "outflow": "Chiqim"
+    },
+    "quickTransfer": {
+      "title": "Tez o'tkazma",
+      "description": "Overview’dan chiqmasdan turib, faol hisob yuzasidan boshlang.",
+      "errorTitle": "Tez o'tkazmalar mavjud emas",
+      "errorDescription": "Overview hozircha ushbu ro'zg'or uchun faol o'tkazma yuzalarini yuklay olmadi.",
+      "openAccounts": "Hisoblarni ochish",
+      "openWorkspace": "Harakatlar ish maydonini ochish",
+      "readOnlyTitle": "Bu rol uchun o'tkazma amallari cheklangan",
+      "readOnlyDescription": "Ushbu rol balans va faollikni ko'ra oladi, lekin ro'zg'or mablag'ini harakatlantirish uchun yuqoriroq ruxsat kerak.",
+      "reviewAccounts": "Hisoblarni ko'rib chiqish",
+      "emptyTitle": "Faol o'tkazma yuzalari yo'q",
+      "emptyDescription": "Tez o'tkazmalar va yo'nalish takliflarini ochish uchun kamida bitta faol ro'zg'or hisobini yarating yoki qayta ulang.",
+      "newTransferTitle": "Yangi o'tkazma",
+      "newTransferDescription": "Ro'zg'or mablag'lari harakatini boshlash"
+    },
+    "actionCenter": {
+      "title": "Tez amallar",
+      "description": "Production-grade moliyaviy formalarni overview’dan to'g'ridan-to'g'ri oching. Mutatsiyalar same-origin BFF handler, idempotency key va muvaffaqiyatdan keyingi route refresh bilan ishlaydi.",
+      "errorTitle": "Tez amallar mavjud emas",
+      "errorDescription": "Dashboard ushbu ro'zg'or uchun mutatsiya reference’larini tayyorlay olmadi.",
+      "readOnly": "Bu rol balans va faollikni ko'ra oladi, lekin rol read-only bo'lgani uchun mutatsiya oqimlari yashirilgan.",
+      "requirements": {
+        "createActiveAccount": "Avval faol hisob yarating",
+        "createExpenseCategory": "Avval xarajat kategoriyasini yarating",
+        "createIncomeCategory": "Avval daromad kategoriyasini yarating",
+        "twoActiveAccounts": "Kamida ikkita faol hisob kerak",
+        "noOpenDebts": "Yopilmagan va settlement uchun tayyor qarz yo'q"
+      },
+      "actions": {
+        "expense": {
+          "label": "Xarajat qo'shish",
+          "description": "Ro'zg'or chiqimini qayd etish"
+        },
+        "income": {
+          "label": "Daromad qo'shish",
+          "description": "Yangi kirimni qayd etish"
+        },
+        "transfer": {
+          "label": "O'tkazma",
+          "description": "Mablag'ni hisoblar orasida ko'chirish"
+        },
+        "debt": {
+          "label": "Qarz qo'shish",
+          "description": "To'lanadigan yoki olinadigan qarzni kuzatish"
+        },
+        "settlement": {
+          "label": "Qarzni yopish",
+          "description": "Qisman yoki to'liq settlement’ni qayd etish"
+        },
+        "budget": {
+          "label": "Byudjet limiti",
+          "description": "Kategoriya limitini yaratish yoki yangilash"
+        }
+      },
+      "stats": {
+        "activeAccounts": "Faol hisoblar",
+        "openDebts": "Ochiq qarzlar",
+        "openCount": "{count} ta ochiq",
+        "payables": "To'lanadiganlar",
+        "receivables": "Olinadiganlar",
+        "budgetRules": "Byudjet qoidalari",
+        "trackedCount": "{count} ta kuzatilmoqda",
+        "budgetDescription": "Kategoriya limitlari har refresh’dan keyin household-scoped xarajatlar bilan mos qoladi."
+      },
+      "dialogs": {
+        "expense": {
+          "title": "Xarajatni qayd etish",
+          "description": "Faol hisob va kategoriya bo'yicha yangi ro'zg'or xarajatini yozing."
+        },
+        "income": {
+          "title": "Daromadni qayd etish",
+          "description": "Faol hisobga yangi ro'zg'or kirimini yozing."
+        },
+        "transfer": {
+          "title": "O'tkazma yaratish",
+          "description": "Ro'zg'orning ikkita hisobi orasida mavjud balansni ko'chiring."
+        },
+        "debt": {
+          "title": "Qarz yaratish",
+          "description": "Dashboard overview’dan chiqmasdan turib, qarzni kuzating."
+        },
+        "settlement": {
+          "title": "Qarzni yopish",
+          "description": "Faol hisob yuzasidan qisman yoki to'liq settlement yozing."
+        },
+        "budget": {
+          "title": "Byudjet limitini belgilash",
+          "description": "Faol ro'zg'orning xarajat kategoriyasi uchun byudjet qoidasi yarating yoki yangilang."
+        }
+      }
+    }
+  },
+  "auth": {
+    "login": "Kirish",
+    "register": "Ro'yxatdan o'tish",
+    "logout": "Chiqish",
+    "email": "Email",
+    "password": "Parol",
+    "forgotPassword": "Parolni unutdingizmi?",
+    "serverOwned": "Server boshqaradigan auth chegarasi",
+    "loginTitle": "{appName} tizimiga xavfsiz kiring",
+    "registerTitle": "Tokenni brauzerga chiqarmasdan ro'zg'or ish maydonini yarating",
+    "authDescription": "Bu bosqich app shell, routing va typed boundary’ga qaratilgan. Auth ekranlari keyingi bosqichda BFF ulanishiga tayyor.",
+    "bffReadyTitle": "BFF tayyor kirish",
+    "bffReadyDescription": "Formalar xavfsiz cookie session almashinuvi va maydon darajasidagi validatsiyaga tayyor.",
+    "demoWorkspaceTitle": "Demo ish maydoni yoqilgan",
+    "demoWorkspaceDescription": "App shell, loading state va route composition’ni tekshirish uchun mock ro'zg'or ma'lumotlaridan foydalaning.",
+    "welcomeBack": "Qaytganingiz bilan",
+    "setUpAccess": "Kirishni sozlash",
+    "loginSub": "Xavfsiz cookie session boshqaruvi birinchi submit’dan boshlab server tomonda qoladi.",
+    "registerSub": "Ro'yxatdan o'tish owner workspace yaratadi va session cookie’ni server boundary’dan beradi.",
+    "inspectShell": "Mahsulot shell’ini darhol tekshirmoqchimisiz? Seed qilingan mock akkaunt bilan kiring va household-scoped demo ma'lumotlar bilan davom eting.",
+    "openDemo": "Demo ro'zg'orlarni ochish",
+    "goToRegister": "Ro'yxatdan o'tishga o'tish",
+    "goToLogin": "Kirishga o'tish",
+    "signInTitle": "Xavfsiz kirish",
+    "signInDescription": "Brauzer session tokenlarini xom holatda saqlamaydi.",
+    "emailLabel": "Email",
+    "emailPlaceholder": "atlas@centralbank.app",
+    "registerEmailPlaceholder": "alex@atlas.house",
+    "passwordLabel": "Parol",
+    "passwordPlaceholder": "Xavfsiz parol",
+    "signInButton": "Kirish",
+    "signingIn": "Kirilmoqda...",
+    "demoCredentials": "Demo kirish: <email>atlas@centralbank.app</email> / <password>Atlas12345</password>.",
+    "identityTitle": "Profil",
+    "identityDescription": "Owner kirishi mas'ul a'zo profili bilan boshlanadi.",
+    "fullNameLabel": "To'liq ism",
+    "fullNamePlaceholder": "Alex Johnson",
+    "credentialSetupTitle": "Hisob ma'lumotlarini sozlash",
+    "credentialSetupDescription": "Server cookie chegarasi uzoq muddatli session egasiga aylanadi.",
+    "initialHouseholdTitle": "Boshlang'ich ro'zg'or",
+    "initialHouseholdDescription": "Ro'yxatdan o'tish birinchi owner-scoped workspace’ni yaratadi.",
+    "householdNameLabel": "Ro'zg'or nomi",
+    "householdNamePlaceholder": "Atlas ro'zg'ori",
+    "createAccountButton": "Hisob yaratish",
+    "creatingWorkspace": "Ish maydoni yaratilmoqda...",
+    "alreadyHaveAccess": "Allaqachon kirishingiz bormi?",
+    "returnToLogin": "Kirishga qaytish",
+    "userMenu": {
+      "open": "Foydalanuvchi menyusini ochish",
+      "session": "Sessiya",
+      "switchHousehold": "Ro'zg'orni almashtirish",
+      "settings": "Ro'zg'or sozlamalari",
+      "signOut": "Chiqish",
+      "signingOut": "Chiqilmoqda...",
+      "sessionClosed": "Sessiya yopildi"
+    }
+  },
+  "households": {
+    "selection": {
+      "title": "Ro'zg'or kirishi",
+      "heading": "Routing, ruxsatlar va moliyaviy kontekstni belgilaydigan ish maydonini tanlang.",
+      "description": "Bu mahsulotdagi har bir moliyaviy obyekt ro'zg'orga tegishli. Ushbu tanlov ekrani birinchi tenant boundary bo'lib, refresh, deep link va keyingi auth/session kuchayishida ham to'g'ri ishlashi kerak.",
+      "pendingInvites": "Kutilayotgan takliflar",
+      "waitingAcceptance": "Qabul qilinishini kutayotgan ro'zg'or kirishi",
+      "acceptRole": "Taklif qilingan ish maydoniga kirishdan oldin rolga mos takliflarni qabul qiling.",
+      "invitedBy": "{role} huquqi · {name} tomonidan taklif qilingan",
+      "tenantAware": "Typed mock ma'lumotli tenant-aware dashboard",
+      "availableBalance": "Mavjud balans",
+      "members": "A'zolar",
+      "collaborators": "{count} hamkor",
+      "monthSpend": "Oylik xarajat",
+      "openWorkspace": "Ish maydonini ochish",
+      "activeSession": "Faol sessiya",
+      "serverRoutes": "Server route’lari yengil va ro'zg'or scope’iga mos qoladi.",
+      "cookieSession": "Cookie session serverda qoladi va local storage’ga tushmaydi.",
+      "mockMode": "Tez tekshiruv uchun mock rejimi {status}.",
+      "workspacesAttached": "Hozirda {count} ta kirish mumkin bo'lgan ish maydoni biriktirilgan.",
+      "noHouseholds": "Ro'zg'orlar hali biriktirilmagan",
+      "noHouseholdsDesc": "Davom etish uchun birinchi ish maydonini yarating yoki taklifni qabul qiling.",
+      "enabled": "yoqilgan",
+      "disabled": "o'chirilgan",
+      "acceptInvite": "Taklifni qabul qilish",
+      "acceptInvitePending": "Qabul qilinmoqda...",
+      "inviteAccepted": "Taklif qabul qilindi",
+      "roles": {
+        "owner": "Ega",
+        "admin": "Admin",
+        "member": "A'zo",
+        "viewer": "Kuzatuvchi"
+      }
+    },
+    "createForm": {
+      "title": "Ro'zg'or yaratish",
+      "description": "Himoyalangan selection shell’dan chiqmasdan yangi tenant-scoped ish maydonini yarating.",
+      "submit": "Ish maydonini yaratish",
+      "pending": "Yaratilmoqda...",
+      "success": "Ro'zg'or yaratildi",
+      "fields": {
+        "name": {
+          "label": "Nomi",
+          "placeholder": "Northstar ro'zg'ori"
+        },
+        "currencyCode": {
+          "label": "Asosiy valyuta",
+          "placeholder": "Asosiy valyutani tanlang"
+        }
+      },
+      "currencies": {
+        "USD": "USD",
+        "EUR": "EUR",
+        "UZS": "UZS"
+      }
+    },
+    "inviteForm": {
+      "title": "A'zoni taklif qilish",
+      "description": "Selection sahifasidan qabul qilinadigan roli bor household taklifini yarating.",
+      "submit": "Taklif yuborish",
+      "pending": "Yuborilmoqda...",
+      "success": "Taklif yuborildi",
+      "fields": {
+        "email": {
+          "label": "Email",
+          "placeholder": "member@atlas.house"
+        },
+        "role": {
+          "label": "Rol",
+          "placeholder": "Rolni tanlang"
+        }
+      },
+      "roles": {
+        "admin": "Admin",
+        "member": "A'zo",
+        "viewer": "Kuzatuvchi"
+      }
+    },
+    "settings": {
+      "eyebrow": "Ro'zg'or sozlamalari",
+      "title": "{household} a'zolik boshqaruvi",
+      "description": "Kirish va taklif boshqaruvi household-scoped, role-aware va odatda server-rendered bo'lib qoladi.",
+      "roles": {
+        "owner": "Ega",
+        "admin": "Admin",
+        "member": "A'zo",
+        "viewer": "Kuzatuvchi"
+      },
+      "statuses": {
+        "accepted": "Qabul qilingan",
+        "pending": "Kutilmoqda"
+      },
+      "invites": {
+        "title": "Kutilayotgan va qabul qilingan takliflar",
+        "description": "Takliflar typed UI model’ga normallashtiriladi, shunda keyingi backend field’larni page shell’ga tegmasdan qo'shish mumkin.",
+        "emptyTitle": "Hali taklif yo'q",
+        "emptyDescription": "Bu ro'zg'or hali rolga bog'liq a'zo takliflarini yubormagan."
+      },
+      "actions": {
+        "title": "Rolga mos amallar",
+        "description": "Faqat owner va admin yangi taklif yubora oladi.",
+        "emptyTitle": "Faqat ko'rish a'zoligi",
+        "emptyDescription": "Joriy rol uchun taklif boshqaruvi o'chirilgan."
+      }
+    }
+  },
+  "accounts": {
+    "common": {
+      "kinds": {
+        "bank": "Bank",
+        "card": "Karta",
+        "cash": "Naqd"
+      },
+      "status": {
+        "active": "Faol",
+        "restricted": "Cheklangan",
+        "archived": "Arxivlangan"
+      },
+      "primary": "Asosiy",
+      "menu": "{account} hisobi menyusi",
+      "maskedNumber": " •••• {maskedNumber}",
+      "institutionWithMask": "{institution} •• {maskedNumber}",
+      "available": "Mavjud",
+      "ledgerBalance": "Ledger balansi",
+      "archivedAccount": "Arxivlangan hisob",
+      "restrictedAccount": "Cheklangan hisob",
+      "archivedOn": "{date} kuni arxivlangan",
+      "limitedAvailability": "Ushbu hisobning mavjudligi hozircha cheklangan."
+    },
+    "details": {
+      "available": "Mavjud",
+      "ledger": "Ledger",
+      "institution": "Muassasa",
+      "status": "Holat",
+      "lastFour": "Oxirgi to'rtta",
+      "notSet": "Belgilanmagan",
+      "primary": "Asosiy",
+      "yes": "Ha",
+      "no": "Yo'q",
+      "archived": "Arxivlangan",
+      "availabilityNote": "Mavjudlik izohi"
+    },
+    "workspace": {
+      "eyebrow": "Ro'zg'or hisoblari",
+      "title": "{household} hisob yuzalari",
+      "description": "Bank, karta va naqd yuzalarni fokuslangan dialoglar orqali boshqaring; workspace esa odatda server-owned bo'lib qoladi.",
+      "totalAccounts": "{count} ta hisob",
+      "newAccount": "Yangi hisob",
+      "reviewActivity": "Faollikni ko'rish",
+      "tabs": {
+        "all": "Barchasi",
+        "active": "Faol",
+        "restricted": "Cheklangan",
+        "archived": "Arxivlangan"
+      },
+      "emptyTitle": "Hisoblar hali ulanmagan",
+      "emptyDescription": "Balans, o'tkazma va byudjet oqimlarini ochish uchun birinchi ro'zg'or hisobini yarating.",
+      "createAccount": "Hisob yaratish",
+      "accountActions": "{account} uchun amallar",
+      "viewDetails": "Tafsilotlarni ko'rish",
+      "editAccount": "Hisobni tahrirlash",
+      "filteredEmptyTitle": "Bu ko'rinishda hisob yo'q",
+      "filteredEmptyDescription": "Bu bo'limni to'ldirish uchun tab’ni almashtiring yoki yangi hisob yarating.",
+      "portfolio": {
+        "title": "Portfel holati",
+        "description": "Keyinchalik health, sync va permission diagnostikasiga aylanishi mumkin bo'lgan ixcham summary.",
+        "primaryAccount": "Asosiy hisob",
+        "notAssigned": "Biriktirilmagan",
+        "mix": "Tarkib",
+        "bankAccounts": "{count} ta bank hisobi",
+        "cardAccounts": "{count} ta karta hisobi",
+        "cashAccounts": "{count} ta naqd zaxira",
+        "actionModel": "Amal modeli",
+        "actionDescription": "Yaratish, ko'rish va tahrirlash oqimlari dialog ichida ishlaydi, shuning uchun workspace card-driven ko'rish yo'lini toza saqlaydi."
+      },
+      "addAccount": "Hisob qo'shish",
+      "dialogs": {
+        "createTitle": "Hisob yaratish",
+        "createDescription": "Ushbu ro'zg'or uchun yangi bank, karta yoki naqd yuzani qo'shing.",
+        "editTitle": "{account} ni tahrirlash",
+        "editFallbackTitle": "Hisobni tahrirlash",
+        "editDescription": "Hisob nomi, mavjudlik holati va asosiy joylashuvini yangilang.",
+        "detailsFallbackTitle": "Hisob tafsilotlari",
+        "detailsDescription": "Ushbu hisobning joriy balans holati va mavjudlik statusini ko'rib chiqing."
+      }
+    },
+    "form": {
+      "kinds": {
+        "bank": "Bank",
+        "card": "Karta",
+        "cash": "Naqd"
+      },
+      "status": {
+        "active": "Faol",
+        "restricted": "Cheklangan",
+        "archived": "Arxivlangan"
+      },
+      "fields": {
+        "name": {
+          "label": "Hisob nomi",
+          "placeholder": "Operatsion hisob"
+        },
+        "institutionName": {
+          "label": "Muassasa",
+          "placeholder": "Mercury Private"
+        },
+        "kind": {
+          "label": "Turi",
+          "placeholder": "Hisob turini tanlang"
+        },
+        "currencyCode": {
+          "label": "Valyuta"
+        },
+        "maskedNumber": {
+          "label": "Oxirgi to'rtta raqam",
+          "placeholder": "4821"
+        },
+        "isPrimary": {
+          "label": "Asosiy hisob",
+          "placeholder": "Asosiy holatini tanlang",
+          "secondary": "Ikkilamchi qoldirish",
+          "primary": "Asosiy qilish"
+        },
+        "openingBalance": {
+          "label": "Boshlang'ich balans"
+        },
+        "status": {
+          "label": "Holat",
+          "placeholder": "Hisob holatini tanlang"
+        },
+        "disabledReason": {
+          "label": "Cheklov sababi",
+          "placeholder": "Tasdiqlash kutilmoqda"
+        }
+      },
+      "create": {
+        "sections": {
+          "setup": {
+            "title": "Hisobni sozlash",
+            "description": "Hisob yuzalari household-scoped bo'lib qoladi va keyinroq sync metadata formani qayta qurmasdan qo'shilishi mumkin."
+          },
+          "balance": {
+            "title": "Boshlang'ich balans",
+            "description": "Balans o'nlik ko'rinishda kiritiladi va submit oldidan minor units’ga normallashtiriladi."
+          }
+        }
+      },
+      "edit": {
+        "sections": {
+          "settings": {
+            "title": "Hisob sozlamalari",
+            "description": "Hisob workspace’dan chiqmasdan turib nom, asosiy joylashuv va mavjudlik holatini yangilang."
+          },
+          "availability": {
+            "title": "Mavjudlik",
+            "description": "Keyingi moliyaviy amallar to'g'ri qolishi uchun hisoblarni arxivlang yoki cheklang."
+          }
+        }
+      },
+      "actions": {
+        "create": "Hisob yaratish",
+        "creating": "Yaratilmoqda...",
+        "save": "Hisobni saqlash",
+        "saving": "Saqlanmoqda..."
+      }
+    },
+    "toasts": {
+      "created": "Hisob yaratildi",
+      "updated": "Hisob yangilandi"
+    }
+  },
+  "transactions": {
+    "kinds": {
+      "expense": "Xarajat",
+      "income": "Daromad",
+      "transfer": "O'tkazma"
+    },
+    "filters": {
+      "kinds": {
+        "all": "Barchasi",
+        "expense": "Xarajat",
+        "income": "Daromad",
+        "transfer": "O'tkazma"
+      },
+      "updating": "Yangilanmoqda",
+      "urlSynced": "URL bilan sinxron",
+      "searchPlaceholder": "Tavsif, kategoriya yoki hisob bo'yicha qidirish",
+      "periodAriaLabel": "Filtr davri",
+      "periodPlaceholder": "Davrni tanlang",
+      "periods": {
+        "7d": "So'nggi 7 kun",
+        "30d": "So'nggi 30 kun",
+        "90d": "So'nggi 90 kun"
+      },
+      "apply": "Filtrlarni qo'llash"
+    },
+    "workspace": {
+      "eyebrow": "Tranzaksiyalar",
+      "title": "Ulashiladigan faollik ish maydoni",
+      "description": "Filtrlar URL’da yashaydi, create va detail oqimlari esa fokuslangan dialog ichida qoladi.",
+      "matches": "{count} ta mos natija",
+      "requirements": {
+        "activeAccount": "Avval faol hisob yarating.",
+        "expenseCategory": "Avval xarajat kategoriyasini yarating.",
+        "incomeCategory": "Avval daromad kategoriyasini yarating.",
+        "transferAccounts": "O'tkazma uchun kamida ikkita faol hisob kerak."
+      },
+      "actions": {
+        "addExpense": "Xarajat qo'shish",
+        "addIncome": "Daromad qo'shish",
+        "transfer": "O'tkazma",
+        "viewAccounts": "Hisoblarni ko'rish"
+      },
+      "summary": {
+        "inflow": "Kirim",
+        "outflow": "Chiqim",
+        "activeFilter": "Faol filtr",
+        "currentScope": "Joriy scope",
+        "periods": {
+          "7d": "7 kun bo'yicha filtrlangan",
+          "30d": "30 kun bo'yicha filtrlangan",
+          "90d": "90 kun bo'yicha filtrlangan"
+        }
+      },
+      "filters": {
+        "kinds": {
+          "all": "Barchasi",
+          "expense": "Xarajat",
+          "income": "Daromad",
+          "transfer": "O'tkazma"
+        }
+      },
+      "feed": {
+        "title": "Tranzaksiya lentasi",
+        "description": "Mapped DTO, normallashtirilgan vaqtlar va aniq pul semantikasi ro'yxatni keyingi mutatsiya va analytics overlay uchun xavfsiz qiladi.",
+        "emptyTitle": "Bu filtrlar bo'yicha tranzaksiya topilmadi",
+        "emptyDescription": "Tur, davr yoki qidiruv so'zini o'zgartiring. Create oqimlari header’da mavjud.",
+        "clearFilters": "Filtrlarni tozalash"
+      },
+      "transactionActions": "{transaction} uchun amallar",
+      "viewDetails": "Tafsilotlarni ko'rish",
+      "dialogs": {
+        "expense": {
+          "title": "Xarajatni qayd etish",
+          "description": "Faollik workspace’idan turib ro'zg'or chiqimini yozing."
+        },
+        "income": {
+          "title": "Daromadni qayd etish",
+          "description": "Tranzaksiya workspace’idan chiqmasdan yangi kirimni yozing."
+        },
+        "transfer": {
+          "title": "O'tkazma yaratish",
+          "description": "Faol hisob yuzalari orasida ro'zg'or mablag'ini ko'chiring."
+        },
+        "detailsFallbackTitle": "Tranzaksiya tafsilotlari",
+        "detailsDescription": "Typed household ledger’dan olingan normallashtirilgan tranzaksiya metadata’sini ko'rib chiqing."
+      }
+    },
+    "expenseForm": {
+      "sections": {
+        "source": {
+          "title": "Tranzaksiya manbai",
+          "description": "Ro'zg'or xarajati qayerda yozilishi va qanday kategoriyalanishini tanlang."
+        },
+        "details": {
+          "title": "Xarajat tafsilotlari",
+          "description": "Summalar o'nlik formatda kiritiladi, lekin backend-safe minor units ko'rinishida yuboriladi."
+        }
+      },
+      "fields": {
+        "accountId": {
+          "label": "Manba hisobi"
+        },
+        "categoryId": {
+          "label": "Xarajat kategoriyasi"
+        },
+        "occurredAt": {
+          "label": "Sodir bo'lgan vaqt"
+        },
+        "description": {
+          "label": "Tavsif",
+          "placeholder": "Haftalik oziq-ovqat xaridi"
+        },
+        "note": {
+          "label": "Izoh",
+          "placeholder": "Ro'zg'or faollik jurnaliga ixtiyoriy izoh"
+        },
+        "reference": {
+          "label": "Reference",
+          "placeholder": "Sotuvchi yoki chek bo'yicha ixtiyoriy reference"
+        }
+      },
+      "actions": {
+        "submit": "Xarajatni qayd etish",
+        "pending": "Qayd etilmoqda...",
+        "reset": "Maydonlarni tozalash"
+      }
+    },
+    "incomeForm": {
+      "sections": {
+        "source": {
+          "title": "Daromad manbai",
+          "description": "Ushbu kirim uchun qabul qiluvchi hisob va manba klassifikatsiyasini tanlang."
+        },
+        "details": {
+          "title": "Daromad tafsilotlari",
+          "description": "Household ledger uchun summa, tavsif va sodir bo'lgan vaqtni kiriting."
+        }
+      },
+      "fields": {
+        "accountId": {
+          "label": "Qabul qiluvchi hisob"
+        },
+        "categoryId": {
+          "label": "Daromad manbai"
+        },
+        "occurredAt": {
+          "label": "Sodir bo'lgan vaqt"
+        },
+        "description": {
+          "label": "Tavsif",
+          "placeholder": "Freelance invoice to'lovi"
+        }
+      },
+      "actions": {
+        "submit": "Daromadni qayd etish",
+        "pending": "Qayd etilmoqda..."
+      }
+    },
+    "transferForm": {
+      "sections": {
+        "path": {
+          "title": "O'tkazma yo'li",
+          "description": "Mavjud balansni ro'zg'orning ikkita faol hisobi orasida ko'chiring."
+        },
+        "details": {
+          "title": "O'tkazma tafsilotlari",
+          "description": "Submit’dan keyin route refresh qilinadi, shunda hisob preview’i va so'nggi faollik mos qoladi."
+        }
+      },
+      "fields": {
+        "fromAccountId": {
+          "label": "Qaysi hisobdan"
+        },
+        "toAccountId": {
+          "label": "Qaysi hisobga"
+        },
+        "occurredAt": {
+          "label": "Sodir bo'lgan vaqt"
+        },
+        "note": {
+          "label": "Izoh",
+          "placeholder": "Keyingi xarajat sikli uchun rezerv to'ldirish"
+        }
+      },
+      "availableInSource": "Manba hisobida mavjud: {currencyCode} {amount}",
+      "actions": {
+        "submit": "O'tkazmani qayd etish",
+        "pending": "Qayd etilmoqda..."
+      }
+    },
+    "row": {
+      "details": "{category} · {account} orqali"
+    },
+    "details": {
+      "amount": "Summa",
+      "description": "Tavsif",
+      "kind": "Turi",
+      "category": "Kategoriya",
+      "account": "Hisob",
+      "postedAt": "Qayd etilgan vaqt",
+      "status": "Holat"
+    },
+    "status": {
+      "posted": "Qayd etilgan",
+      "pending": "Jarayonda"
+    },
+    "toasts": {
+      "expenseRecorded": "Xarajat qayd etildi",
+      "incomeRecorded": "Daromad qayd etildi",
+      "transferRecorded": "O'tkazma qayd etildi"
+    }
+  },
+  "categories": {
+    "common": {
+      "kinds": {
+        "expense": "Xarajat",
+        "income": "Daromad"
+      },
+      "origin": {
+        "systemDefault": "Tizim standarti",
+        "householdCustom": "Ro'zg'orga xos"
+      }
+    },
+    "workspace": {
+      "eyebrow": "Kategoriyalar",
+      "title": "{household} kategoriyalar kutubxonasi",
+      "description": "Tizim kategoriyalari himoyalangan holda, ro'zg'or kategoriyalarini fokuslangan dialoglar orqali yarating va tahrirlang.",
+      "count": "{count} ta kategoriya",
+      "tabs": {
+        "all": "Barchasi"
+      },
+      "actions": {
+        "newCategory": "Yangi kategoriya",
+        "editCategory": "Kategoriyani tahrirlash"
+      },
+      "sections": {
+        "expense": {
+          "title": "Xarajat kategoriyalari",
+          "description": "Xarajatlarni yozish, byudjetlar va analytics guruhlash uchun ishlatiladi."
+        },
+        "income": {
+          "title": "Daromad kategoriyalari",
+          "description": "Kirimni tasniflash va umumiy hisobotlar uchun ishlatiladi."
+        },
+        "emptyTitle": "Kategoriyalar yo'q",
+        "emptyDescription": "Bu kategoriya guruhi hali sozlanmagan."
+      },
+      "categoryActions": "{category} uchun amallar",
+      "controls": {
+        "title": "Kategoriya boshqaruvi",
+        "description": "Dialoglar kategoriya o'zgarishlarini asosiy o'qish yo'lidan olib chiqadi va ish maydonini sokin saqlaydi.",
+        "tipViews": "Xarajat va daromad kutubxonalarini yuqoridagi tablar orqali filtrlash mumkin.",
+        "tipSystemDefaults": "Tizim standartlari faqat o'qish uchun qoladi; faqat ro'zg'orga xos kategoriyalarda edit action ko'rinadi.",
+        "createCategory": "Kategoriya yaratish",
+        "readOnlyTitle": "Kategoriya amallari cheklangan",
+        "readOnlyDescription": "Bu rol kategoriya mappinglarini ko'ra oladi, lekin ularni o'zgartira olmaydi."
+      },
+      "dialogs": {
+        "createTitle": "Kategoriya yaratish",
+        "createDescription": "Tizim defaultlarini o'zgartirmasdan ro'zg'orga xos kategoriya qo'shing.",
+        "editTitle": "{category} ni tahrirlash",
+        "editFallbackTitle": "Kategoriyani tahrirlash",
+        "editDescription": "Ro'zg'orga xos kategoriyaning turini saqlagan holda nomini yangilang."
+      }
+    },
+    "form": {
+      "sections": {
+        "create": {
+          "title": "Kategoriya yaratish",
+          "description": "Ro'zg'or kategoriyalari tizim defaultlaridan alohida saqlanadi va kelajakdagi backend konfliktlari boundary’da normallashtiriladi."
+        },
+        "edit": {
+          "title": "Kategoriyani tahrirlash",
+          "description": "Ro'zg'or kategoriyalari tizim defaultlaridan alohida saqlanadi va kelajakdagi backend konfliktlari boundary’da normallashtiriladi."
+        }
+      },
+      "fields": {
+        "name": {
+          "label": "Nomi",
+          "placeholder": "Maktab to'lovlari"
+        },
+        "kind": {
+          "label": "Turi",
+          "placeholder": "Kategoriya turini tanlang"
+        }
+      },
+      "actions": {
+        "create": "Kategoriya yaratish",
+        "save": "Kategoriyani saqlash",
+        "pending": "Saqlanmoqda..."
+      },
+      "toasts": {
+        "created": "Kategoriya saqlandi",
+        "updated": "Kategoriya yangilandi"
+      }
+    }
+  },
+  "expenses": {},
+  "incomes": {},
+  "transfers": {},
+  "debts": {
+    "common": {
+      "status": {
+        "open": "Ochiq",
+        "partial": "Qisman yopilgan",
+        "settled": "Yopilgan"
+      },
+      "direction": {
+        "payable": "To'lanadigan",
+        "receivable": "Olinadigan"
+      }
+    },
+    "workspace": {
+      "eyebrow": "Qarzlar",
+      "title": "{household} qarz reyestri",
+      "description": "Olinadigan va to'lanadigan qarzlar aniq ko'rinadi, create, detail va settlement oqimlari esa dialog ichida qoladi.",
+      "openItems": "{count} ta ochiq yozuv",
+      "requirements": {
+        "createDebtBeforeSettlement": "Settlement yozishdan oldin qarz yarating.",
+        "createActiveAccount": "Avval faol hisob yarating."
+      },
+      "tabs": {
+        "all": "Barchasi",
+        "open": "Ochiq",
+        "partial": "Qisman",
+        "settled": "Yopilgan"
+      },
+      "meta": {
+        "created": "Yaratilgan: {date}",
+        "due": "Muddati: {date}"
+      },
+      "actions": {
+        "addDebt": "Qarz qo'shish",
+        "settleDebt": "Qarzni yopish",
+        "viewDetails": "Tafsilotlarni ko'rish"
+      },
+      "ledger": {
+        "title": "Qarz reyestri",
+        "description": "Settlement nolga yetmaguncha qolgan balans ko'rinib turadi.",
+        "emptyTitle": "Bu ko'rinishda qarz yo'q",
+        "emptyDescription": "Settlement tracking’ni boshlash uchun olinadigan yoki to'lanadigan qarz yarating.",
+        "createDebt": "Qarz yaratish"
+      },
+      "debtActions": "{debt} uchun amallar",
+      "actionsPanel": {
+        "title": "Qarz amallari",
+        "description": "Dialoglar settlement va detail oqimlarini registry’ni to'ldirmasdan ochiq saqlaydi.",
+        "tipViews": "Ochiq, qisman va yopilgan ko'rinishlar yuqoridagi tablar orqali mavjud.",
+        "tipSettlement": "Kamida bitta faol hisob bo'lmaguncha settlement o'chirilgan bo'lib turadi.",
+        "createDebt": "Qarz yaratish",
+        "readOnlyTitle": "Qarz bo'yicha o'zgarishlar cheklangan",
+        "readOnlyDescription": "Bu rol qarz yozuvlarini ko'ra oladi, lekin ularni yaratish yoki yopish huquqiga ega emas."
+      },
+      "dialogs": {
+        "createTitle": "Qarz yaratish",
+        "createDescription": "Ro'zg'orning to'lanadigan yoki olinadigan qarzini qayd eting.",
+        "settleTitle": "Qarzni yopish",
+        "settleDescription": "Faol hisob orqali qisman yoki to'liq settlement yozing.",
+        "detailsFallbackTitle": "Qarz tafsilotlari",
+        "detailsDescription": "Ushbu qarz yozuvi uchun qolgan balans, holat va muddatni ko'rib chiqing."
+      }
+    },
+    "details": {
+      "remaining": "Qolgan summa",
+      "original": "Boshlang'ich summa",
+      "counterparty": "Qarama-qarshi tomon",
+      "direction": "Yo'nalish",
+      "status": "Holat",
+      "created": "Yaratilgan",
+      "due": "Muddati",
+      "description": "Tavsif"
+    },
+    "form": {
+      "sections": {
+        "counterparty": {
+          "title": "Qarama-qarshi tomon",
+          "description": "Kim ro'zg'ordan qarzdor yoki ro'zg'or kimga to'lov qilishi kerakligini kiriting."
+        },
+        "terms": {
+          "title": "Qarz shartlari",
+          "description": "Agar settlement ma'lum bir kunga kutilsa, due date kiriting."
+        }
+      },
+      "fields": {
+        "counterparty": {
+          "label": "Shaxs yoki a'zo",
+          "placeholder": "Anna"
+        },
+        "direction": {
+          "label": "Yo'nalish",
+          "placeholder": "Qarz yo'nalishini tanlang",
+          "payable": "Ro'zg'or kimlargadir qarzdor",
+          "receivable": "Kimdir ro'zg'ordan qarzdor"
+        },
+        "dueDate": {
+          "label": "Muddat sanasi"
+        },
+        "description": {
+          "label": "Tavsif",
+          "placeholder": "Bu reimbursement yoki receivable nimadan kelib chiqqan"
+        }
+      },
+      "actions": {
+        "create": "Qarz yaratish",
+        "creating": "Yaratilmoqda..."
+      }
+    },
+    "settlementForm": {
+      "sections": {
+        "target": {
+          "title": "Settlement maqsadi",
+          "description": "Ochiq yoki qisman yopilgan qarzni tanlang va harakatni faol hisob orqali yozing."
+        },
+        "details": {
+          "title": "Settlement tafsilotlari",
+          "description": "Qisman settlement qo'llab-quvvatlanadi. Qolgan summa nolga tushganda to'liq yopilgan deb aniqlanadi."
+        }
+      },
+      "fields": {
+        "debt": {
+          "label": "Qarz yozuvi",
+          "placeholder": "Yopiladigan qarzni tanlang",
+          "option": "{name} · {amount}"
+        },
+        "account": {
+          "label": "Settlement hisobi"
+        },
+        "occurredAt": {
+          "label": "Sodir bo'lgan vaqt"
+        },
+        "note": {
+          "label": "Izoh",
+          "placeholder": "Ro'zg'or jurnaliga ixtiyoriy settlement konteksti"
+        }
+      },
+      "selectedDebt": {
+        "remaining": "Qolgan summa: {amount}"
+      },
+      "actions": {
+        "submit": "Qarzni yopish",
+        "pending": "Qayd etilmoqda..."
+      }
+    },
+    "toasts": {
+      "created": "Qarz yozuvi yaratildi",
+      "settled": "Qarz settlement’i qayd etildi"
+    }
+  },
+  "budgets": {
+    "common": {
+      "periods": {
+        "monthly": "Oylik",
+        "weekly": "Haftalik"
+      }
+    },
+    "workspace": {
+      "eyebrow": "Byudjetlar",
+      "title": "{household} byudjet boshqaruvi",
+      "description": "Byudjet limitlari dialog orqali boshqariladi, kategoriya va davrga bog'langan bo'ladi va rejalashtirish workspace’ini sokin saqlaydi.",
+      "activeLimits": "{count} ta faol limit",
+      "requirements": {
+        "expenseCategory": "Avval xarajat kategoriyasini yarating."
+      },
+      "tabs": {
+        "all": "Barchasi"
+      },
+      "actions": {
+        "newBudget": "Yangi byudjet",
+        "editBudget": "Byudjetni tahrirlash"
+      },
+      "progress": {
+        "title": "Byudjet progressi",
+        "description": "Xarajatlar minor units hisobiga va izchil kategoriya mapping’iga tayangan holda ko'rsatiladi.",
+        "emptyTitle": "Bu ko'rinish uchun byudjet sozlanmagan",
+        "emptyDescription": "Byudjet progressini kuzatish uchun kategoriya limiti yarating.",
+        "createBudget": "Byudjet yaratish",
+        "effectiveFrom": "Kuchga kirish sanasi: {date}",
+        "spent": "Sarflangan"
+      },
+      "budgetActions": "{budget} byudjeti amallari",
+      "controls": {
+        "title": "Byudjet boshqaruvi",
+        "description": "Create va edit oqimlarini dialogda ushlab, o'qish yo'lini ixcham saqlang.",
+        "tipViews": "Haftalik va oylik ko'rinishlarni yuqoridagi tablar orqali almashtirish mumkin.",
+        "tipReuse": "Bir xil kategoriya va davrni qayta ishlatish saqlangan byudjet yozuvini yangilaydi.",
+        "createBudget": "Byudjet yaratish",
+        "readOnlyTitle": "Byudjet o'zgarishlari cheklangan",
+        "readOnlyDescription": "Bu rol byudjetlarni ko'ra oladi, lekin ularni o'zgartira olmaydi."
+      },
+      "dialogs": {
+        "createTitle": "Byudjet yaratish",
+        "createDescription": "Xarajat kategoriyasi uchun haftalik yoki oylik limit qo'ying.",
+        "editTitle": "{category} byudjetini tahrirlash",
+        "editFallbackTitle": "Byudjetni tahrirlash",
+        "editDescription": "Mavjud kategoriya scope’ini saqlagan holda davr limitini yangilang."
+      }
+    },
+    "form": {
+      "sections": {
+        "scope": {
+          "title": "Byudjet scope’i",
+          "description": "Bu bosqichda byudjetlar xarajat kategoriyalarini boshqaradi va bir xil kategoriya + davr kombinatsiyasi bilan yangilanadi."
+        },
+        "details": {
+          "title": "Byudjet tafsilotlari",
+          "description": "Bir xil kategoriya va davr bilan qayta saqlash mavjud byudjet limitini yangilaydi."
+        }
+      },
+      "fields": {
+        "category": {
+          "label": "Xarajat kategoriyasi"
+        },
+        "period": {
+          "label": "Davr",
+          "placeholder": "Byudjet davrini tanlang"
+        },
+        "amount": {
+          "label": "Byudjet limiti"
+        },
+        "effectiveFrom": {
+          "label": "Kuchga kirish sanasi"
+        }
+      },
+      "currentSavedLimit": "Joriy saqlangan limit: {limit}, shundan {spent} sarflangan.",
+      "actions": {
+        "create": "Byudjet yaratish",
+        "update": "Byudjetni yangilash",
+        "pending": "Saqlanmoqda..."
+      }
+    },
+    "toasts": {
+      "created": "Byudjet yaratildi",
+      "updated": "Byudjet yangilandi"
+    }
+  },
+  "analytics": {
+    "eyebrow": "Tahlil",
+    "title": "{household} moliyaviy signallari",
+    "description": "Umumiy kartalar, kategoriyalar kesimidagi konsentratsiya va kalendar intensivligi bitta server boshqaradigan tranzaksiya chegarasidan olinadi.",
+    "periods": {
+      "7d": "7 kun",
+      "30d": "30 kun",
+      "90d": "90 kun"
+    },
+    "summary": {
+      "income": "Daromad",
+      "expense": "Xarajat",
+      "netChange": "Sof o'zgarish",
+      "lastPeriod": "So'nggi {period}",
+      "transactionCount": "{count} ta tranzaksiya"
+    },
+    "trend": {
+      "title": "Oqim trendi",
+      "description": "Tanlangan davr bo'yicha daromad va xarajat intensivligi.",
+      "emptyTitle": "Trend ma'lumotlari yo'q",
+      "emptyDescription": "Tahlil ma'lumotlari to'ldirilishi uchun tranzaksiyalarni yozing."
+    },
+    "categories": {
+      "title": "Kategoriya konsentratsiyasi",
+      "description": "Tanlangan davr bo'yicha eng yirik xarajat guruhlari.",
+      "emptyTitle": "Kategoriya kesimi mavjud emas",
+      "emptyDescription": "Kategoriya tahlili ko'rinishi uchun xarajat faolligi kerak.",
+      "transactionCount": "{count} ta tranzaksiya"
+    },
+    "calendar": {
+      "title": "Kalendar intensivligi",
+      "description": "Anomaliyalarni tez ko'rish uchun so'nggi kunlardagi xarajat konsentratsiyasi.",
+      "emptyTitle": "Kalendar faolligi yo'q",
+      "emptyDescription": "Ro'zg'or tranzaksiyalari kelgach tahlil kalendari to'ldiriladi."
+    }
+  },
+  "settings": {},
+  "validation": {
+    "common": {
+      "invalidField": "Bu maydonni tekshirib chiqing."
+    },
+    "money": {
+      "invalidAmount": "Ko'pi bilan ikki xonali kasr bilan to'g'ri summa kiriting."
+    },
+    "auth": {
+      "email": {
+        "invalid": "To'g'ri email kiriting."
+      },
+      "password": {
+        "min": "Parol kamida 8 belgidan iborat bo'lishi kerak.",
+        "letter": "Parolda kamida bitta harf bo'lishi kerak.",
+        "number": "Parolda kamida bitta raqam bo'lishi kerak."
+      },
+      "fullName": {
+        "min": "To'liq ism kamida 2 belgidan iborat bo'lishi kerak.",
+        "max": "To'liq ism juda uzun."
+      }
+    },
+    "households": {
+      "name": {
+        "min": "Ro'zg'or nomi kamida 2 belgidan iborat bo'lishi kerak.",
+        "max": "Ro'zg'or nomi juda uzun."
+      },
+      "currencyCode": {
+        "length": "3 harfli valyuta kodidan foydalaning."
+      },
+      "invite": {
+        "email": {
+          "invalid": "Taklif uchun to'g'ri email kiriting."
+        }
+      }
+    },
+    "accounts": {
+      "name": {
+        "min": "Hisob nomini kiriting."
+      },
+      "institutionName": {
+        "min": "Muassasa yoki provider nomini kiriting."
+      },
+      "currencyCode": {
+        "length": "3 harfli valyuta kodidan foydalaning."
+      },
+      "openingBalance": {
+        "required": "Boshlang'ich balansni kiriting."
+      },
+      "maskedNumber": {
+        "max": "Ko'pi bilan oxirgi to'rtta raqamdan foydalaning.",
+        "digits": "Faqat raqamlardan foydalaning."
+      },
+      "disabledReason": {
+        "required": "Cheklangan hisob uchun qisqa sabab kerak."
+      }
+    },
+    "transactions": {
+      "accountId": {
+        "required": "Hisobni tanlang."
+      },
+      "expenseCategoryId": {
+        "required": "Xarajat kategoriyasini tanlang."
+      },
+      "incomeCategoryId": {
+        "required": "Daromad manbasini tanlang."
+      },
+      "fromAccountId": {
+        "required": "Manba hisobini tanlang."
+      },
+      "toAccountId": {
+        "required": "Qabul qiluvchi hisobni tanlang."
+      },
+      "expenseAmount": {
+        "required": "Xarajat summasini kiriting."
+      },
+      "incomeAmount": {
+        "required": "Daromad summasini kiriting."
+      },
+      "transferAmount": {
+        "required": "O'tkazma summasini kiriting."
+      },
+      "occurredAt": {
+        "required": "Amal vaqtini tanlang."
+      },
+      "description": {
+        "max": "Tavsifni 120 belgigacha qisqartiring."
+      },
+      "note": {
+        "max": "Izohni 240 belgigacha qisqartiring."
+      },
+      "reference": {
+        "max": "Reference’ni 80 belgigacha qisqartiring."
+      },
+      "transferNote": {
+        "max": "Izohni 160 belgigacha qisqartiring."
+      },
+      "accountsMustDiffer": "O'tkazma ikki xil hisob orasida bo'lishi kerak.",
+      "crossCurrencyUnsupported": "Turli valyutadagi o'tkazmalar keyingi bosqichda qo'llab-quvvatlanadi."
+    },
+    "categories": {
+      "name": {
+        "min": "Kategoriya nomi kamida 2 belgidan iborat bo'lishi kerak.",
+        "max": "Kategoriya nomi juda uzun."
+      }
+    },
+    "budgets": {
+      "categoryId": {
+        "required": "Bu byudjet qaysi kategoriyani boshqarishini tanlang."
+      },
+      "amount": {
+        "required": "Byudjet limitini kiriting."
+      },
+      "effectiveFrom": {
+        "required": "Byudjet qachondan kuchga kirishini tanlang."
+      }
+    },
+    "debts": {
+      "counterpartyName": {
+        "min": "Shaxs yoki a'zo nomini kiriting."
+      },
+      "debtId": {
+        "required": "Yopiladigan qarzni tanlang."
+      },
+      "accountId": {
+        "required": "Settlement uchun ishlatiladigan hisobni tanlang."
+      },
+      "amount": {
+        "required": "Qarz summasini kiriting.",
+        "exceedsRemaining": "Settlement summasi qolgan balansdan oshib ketmasligi kerak."
+      },
+      "description": {
+        "max": "Tavsifni 240 belgigacha qisqartiring."
+      },
+      "note": {
+        "max": "Izohni 180 belgigacha qisqartiring."
+      },
+      "occurredAt": {
+        "required": "Settlement qachon bo'lganini tanlang."
+      }
+    }
+  },
+  "errors": {
+    "submission": {
+      "invalid": "Yuborilgan ma'lumotlar noto'g'ri.",
+      "conflict": "So'rov joriy ro'zg'or holati bilan konfliktga kirdi.",
+      "generic": "Formani yuborib bo'lmadi."
+    },
+    "auth": {
+      "unauthorized": "Sessiyangiz muddati tugagan. Qayta kiring."
+    },
+    "permission": {
+      "denied": "Bu amalni bajarish uchun sizda ruxsat yo'q."
+    },
+    "resource": {
+      "notFound": "So'ralgan resurs topilmadi."
+    }
+  }
+}

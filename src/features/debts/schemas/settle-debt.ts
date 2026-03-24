@@ -2,15 +2,15 @@ import { z } from "zod"
 import { isValidMoneyInput } from "@/lib/format/money"
 
 export const settleDebtFormSchema = z.object({
-  debtId: z.string().min(1, "Choose the debt to settle."),
-  accountId: z.string().min(1, "Choose the account used for settlement."),
+  debtId: z.string().min(1, "validation.debts.debtId.required"),
+  accountId: z.string().min(1, "validation.debts.accountId.required"),
   amount: z
     .string()
     .trim()
-    .min(1, "Enter the settlement amount.")
-    .refine(isValidMoneyInput, "Enter a valid amount with up to two decimals."),
-  note: z.string().trim().max(180, "Keep the note within 180 characters.").optional(),
-  occurredAtLocal: z.string().min(1, "Choose when the settlement happened."),
+    .min(1, "validation.debts.amount.required")
+    .refine(isValidMoneyInput, "validation.money.invalidAmount"),
+  note: z.string().trim().max(180, "validation.debts.note.max").optional(),
+  occurredAtLocal: z.string().min(1, "validation.debts.occurredAt.required"),
 })
 
 export const settleDebtRequestSchema = z.object({

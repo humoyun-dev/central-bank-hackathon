@@ -1,8 +1,9 @@
 "use client"
 
 import { zodResolver } from "@hookform/resolvers/zod"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useForm, useWatch } from "react-hook-form"
+import { useTranslations } from "next-intl"
 import { FormActions } from "@/components/shared/forms/form-actions"
 import { AmountField } from "@/components/shared/forms/amount-field"
 import { DateField } from "@/components/shared/forms/date-field"
@@ -24,13 +25,16 @@ import { formatDateTimeInputValue, parseDateTimeInputToUtc } from "@/lib/format/
 import { parseMoneyToMinor } from "@/lib/format/money"
 import { queryKeys } from "@/lib/query-keys"
 
-function getDefaultValues(accounts: Account[]): CreateTransferFormValues {
+function getDefaultValues(
+  accounts: Account[],
+  occurredAtLocal = "",
+): CreateTransferFormValues {
   return {
     fromAccountId: accounts[0]?.id ?? "",
     toAccountId: accounts[1]?.id ?? "",
     amount: "",
     note: "",
-    occurredAtLocal: formatDateTimeInputValue(new Date()),
+    occurredAtLocal,
   }
 }
 
@@ -45,11 +49,18 @@ export function TransferForm({
   onCancel: () => void
   onSuccess: () => void
 }) {
+  const t = useTranslations("transactions.transferForm")
   const [formError, setFormError] = useState("")
   const form = useForm<CreateTransferFormValues>({
     resolver: zodResolver(createTransferFormSchema),
     defaultValues: getDefaultValues(accounts),
   })
+
+  useEffect(() => {
+    if (!form.getValues("occurredAtLocal")) {
+      form.setValue("occurredAtLocal", formatDateTimeInputValue(new Date()))
+    }
+  }, [form])
 
   const sourceAccountId = useWatch({
     control: form.control,
@@ -62,10 +73,10 @@ export function TransferForm({
     mutationFn: (payload: Parameters<typeof createTransfer>[1], idempotencyKey) =>
       createTransfer(householdId, payload, idempotencyKey),
     invalidateKeys: [queryKeys.household(householdId)],
-    successMessage: "Transfer recorded",
+    successMessage: "transactions.toasts.transferRecorded",
     idempotencyScope: "transfer",
     onSuccess: () => {
-      form.reset(getDefaultValues(accounts))
+      form.reset(getDefaultValues(accounts, formatDateTimeInputValue(new Date())))
       setFormError("")
       onSuccess()
     },
@@ -80,7 +91,7 @@ export function TransferForm({
     if (sourceAccount && destinationAccount && sourceAccount.currencyCode !== destinationAccount.currencyCode) {
       form.setError("toAccountId", {
         type: "manual",
-        message: "Cross-currency transfers will be supported in a later phase.",
+        message: "validation.transactions.crossCurrencyUnsupported",
       })
       return
     }
@@ -102,30 +113,30 @@ export function TransferForm({
     <form className="space-y-4" onSubmit={handleSubmit}>
       <InlineFormError message={formError} />
       <FormSection
-        title="Transfer path"
-        description="Move available balance between two active household account surfaces."
+        title={t("sections.path.title")}
+        description={t("sections.path.description")}
       >
         <div className="grid gap-4 md:grid-cols-2">
           <AccountSelect
             accounts={accounts}
             control={form.control}
             name="fromAccountId"
-            label="From account"
+            label={t("fields.fromAccountId.label")}
             disabled={mutation.isPending}
           />
           <AccountSelect
             accounts={accounts}
             control={form.control}
             name="toAccountId"
-            label="To account"
+            label={t("fields.toAccountId.label")}
             disabled={mutation.isPending}
             excludeAccountId={sourceAccountId}
           />
         </div>
       </FormSection>
       <FormSection
-        title="Transfer details"
-        description="The current route will refresh after submit so account previews and recent activity stay aligned."
+        title={t("sections.details.title")}
+        description={t("sections.details.description")}
       >
         <div className="grid gap-4 md:grid-cols-2">
           <AmountField
@@ -136,21 +147,23 @@ export function TransferForm({
           <DateField
             control={form.control}
             name="occurredAtLocal"
-            label="Occurred at"
+            label={t("fields.occurredAt.label")}
             disabled={mutation.isPending}
           />
         </div>
         {selectedSourceAccount ? (
           <p className="text-sm leading-6 text-muted-foreground">
-            Available in source account: {selectedSourceAccount.currencyCode}{" "}
-            {(selectedSourceAccount.availableBalanceMinor / 100).toFixed(2)}
+            {t("availableInSource", {
+              currencyCode: selectedSourceAccount.currencyCode,
+              amount: (selectedSourceAccount.availableBalanceMinor / 100).toFixed(2),
+            })}
           </p>
         ) : null}
         <div className="space-y-2">
-          <Label htmlFor="transfer-note">Note</Label>
+          <Label htmlFor="transfer-note">{t("fields.note.label")}</Label>
           <Textarea
             id="transfer-note"
-            placeholder="Reserve top-up for the next spending cycle"
+            placeholder={t("fields.note.placeholder")}
             disabled={mutation.isPending}
             {...form.register("note")}
           />
@@ -160,8 +173,8 @@ export function TransferForm({
       <FormActions
         isSubmitting={mutation.isPending}
         onCancel={onCancel}
-        submitLabel="Record transfer"
-        pendingLabel="Recording..."
+        submitLabel={t("actions.submit")}
+        pendingLabel={t("actions.pending")}
       />
     </form>
   )

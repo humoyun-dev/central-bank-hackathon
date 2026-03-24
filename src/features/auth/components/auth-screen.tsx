@@ -1,10 +1,13 @@
-import Link from "next/link"
+"use client"
+
 import { ShieldCheck, WalletCards } from "lucide-react"
+import { useTranslations } from "next-intl"
 import { AppLogo } from "@/components/shared/app-logo"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { AuthForm } from "@/features/auth/components/auth-form"
+import { Link } from "@/i18n/navigation"
 import { publicEnv } from "@/services/config/public-env"
 
 interface AuthScreenProps {
@@ -12,6 +15,7 @@ interface AuthScreenProps {
 }
 
 export function AuthScreen({ mode }: AuthScreenProps) {
+  const t = useTranslations("auth")
   const isLogin = mode === "login"
 
   return (
@@ -19,16 +23,14 @@ export function AuthScreen({ mode }: AuthScreenProps) {
       <div className="space-y-6">
         <AppLogo />
         <div className="space-y-3">
-          <Badge variant="primary">Server-owned auth boundary</Badge>
+          <Badge variant="primary">{t("serverOwned")}</Badge>
           <h1 className="max-w-2xl text-4xl font-semibold tracking-tight text-foreground">
             {isLogin
-              ? `Securely enter ${publicEnv.appName}`
-              : `Create a household workspace without leaking tokens to the browser`}
+              ? t("loginTitle", { appName: publicEnv.appName })
+              : t("registerTitle")}
           </h1>
           <p className="max-w-2xl text-base leading-7 text-muted-foreground">
-            This quick-start phase focuses on shell, routing, and typed boundaries.
-            Auth screens are production-shaped and ready for BFF wiring in the next
-            delivery step.
+            {t("authDescription")}
           </p>
         </div>
         <div className="grid gap-4 sm:grid-cols-2">
@@ -38,10 +40,9 @@ export function AuthScreen({ mode }: AuthScreenProps) {
                 <ShieldCheck className="size-5" aria-hidden="true" />
               </div>
               <div className="space-y-1">
-                <h2 className="text-base font-semibold">BFF-ready sign in</h2>
+                <h2 className="text-base font-semibold">{t("bffReadyTitle")}</h2>
                 <p className="text-sm leading-6 text-muted-foreground">
-                  Form surfaces are ready for secure cookie session exchange and
-                  field-level validation.
+                  {t("bffReadyDescription")}
                 </p>
               </div>
             </CardContent>
@@ -52,10 +53,9 @@ export function AuthScreen({ mode }: AuthScreenProps) {
                 <WalletCards className="size-5" aria-hidden="true" />
               </div>
               <div className="space-y-1">
-                <h2 className="text-base font-semibold">Demo workspace enabled</h2>
+                <h2 className="text-base font-semibold">{t("demoWorkspaceTitle")}</h2>
                 <p className="text-sm leading-6 text-muted-foreground">
-                  Use mocked household data to validate app shell, loading states, and
-                  route composition immediately.
+                  {t("demoWorkspaceDescription")}
                 </p>
               </div>
             </CardContent>
@@ -66,27 +66,24 @@ export function AuthScreen({ mode }: AuthScreenProps) {
         <CardContent className="space-y-6 pt-6">
           <div className="space-y-1">
             <h2 className="text-2xl font-semibold tracking-tight">
-              {isLogin ? "Welcome back" : "Set up access"}
+              {isLogin ? t("welcomeBack") : t("setUpAccess")}
             </h2>
             <p className="text-sm leading-6 text-muted-foreground">
-              {isLogin
-                ? "Secure cookie session orchestration stays server-owned from the first submit."
-                : "Registration provisions an owner workspace and issues the session cookie from the server boundary."}
+              {isLogin ? t("loginSub") : t("registerSub")}
             </p>
           </div>
           <AuthForm mode={mode} />
           <div className="space-y-3 rounded-[var(--radius-md)] border border-border/70 bg-muted/50 p-4">
             <p className="text-sm leading-6 text-muted-foreground">
-              Need to inspect the product shell immediately? Login with the seeded
-              mock account and continue with household-scoped demo data.
+              {t("inspectShell")}
             </p>
             <div className="flex flex-wrap gap-2">
               <Button asChild variant="outline">
-                <Link href="/select-household">Open demo households</Link>
+                <Link href="/select-household">{t("openDemo")}</Link>
               </Button>
               <Button asChild variant="ghost">
                 <Link href={isLogin ? "/register" : "/login"}>
-                  {isLogin ? "Go to register" : "Go to login"}
+                  {isLogin ? t("goToRegister") : t("goToLogin")}
                 </Link>
               </Button>
             </div>

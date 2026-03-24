@@ -3,6 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useEffect, useState } from "react"
 import { Controller, useForm, useWatch } from "react-hook-form"
+import { useTranslations } from "next-intl"
 import { FormActions } from "@/components/shared/forms/form-actions"
 import { AmountField } from "@/components/shared/forms/amount-field"
 import { FormFieldError } from "@/components/shared/forms/form-field-error"
@@ -67,6 +68,7 @@ function CreateAccountFormPanel({
   onCancel: () => void
   onSuccess: () => void
 }) {
+  const t = useTranslations("accounts.form")
   const [formError, setFormError] = useState("")
   const form = useForm<CreateAccountFormValues>({
     resolver: zodResolver(createAccountFormSchema),
@@ -80,7 +82,7 @@ function CreateAccountFormPanel({
       queryKeys.household(householdId),
       queryKeys.accounts(householdId),
     ],
-    successMessage: "Account created",
+    successMessage: "accounts.toasts.created",
     idempotencyScope: "account-create",
     onSuccess: () => {
       form.reset(getCreateDefaults(currencyCode))
@@ -111,25 +113,25 @@ function CreateAccountFormPanel({
     <form className="space-y-4" onSubmit={handleSubmit}>
       <InlineFormError message={formError} />
       <FormSection
-        title="Account setup"
-        description="Account surfaces stay household-scoped and later sync metadata can attach without reshaping this form."
+        title={t("create.sections.setup.title")}
+        description={t("create.sections.setup.description")}
       >
         <div className="grid gap-4 md:grid-cols-2">
           <div className="space-y-2">
-            <Label htmlFor="account-name">Account name</Label>
+            <Label htmlFor="account-name">{t("fields.name.label")}</Label>
             <Input
               id="account-name"
-              placeholder="Operating Account"
+              placeholder={t("fields.name.placeholder")}
               disabled={mutation.isPending}
               {...form.register("name")}
             />
             <FormFieldError message={form.formState.errors.name?.message} />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="account-institution">Institution</Label>
+            <Label htmlFor="account-institution">{t("fields.institutionName.label")}</Label>
             <Input
               id="account-institution"
-              placeholder="Mercury Private"
+              placeholder={t("fields.institutionName.placeholder")}
               disabled={mutation.isPending}
               {...form.register("institutionName")}
             />
@@ -142,19 +144,19 @@ function CreateAccountFormPanel({
             name="kind"
             render={({ field, fieldState }) => (
               <div className="space-y-2">
-                <Label htmlFor="account-kind">Kind</Label>
+                <Label htmlFor="account-kind">{t("fields.kind.label")}</Label>
                 <Select
                   value={field.value}
                   onValueChange={field.onChange}
                   disabled={mutation.isPending}
                 >
                   <SelectTrigger id="account-kind" aria-invalid={fieldState.invalid}>
-                    <SelectValue placeholder="Choose account kind" />
+                    <SelectValue placeholder={t("fields.kind.placeholder")} />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="BANK">Bank</SelectItem>
-                    <SelectItem value="CARD">Card</SelectItem>
-                    <SelectItem value="CASH">Cash</SelectItem>
+                    <SelectItem value="BANK">{t("kinds.bank")}</SelectItem>
+                    <SelectItem value="CARD">{t("kinds.card")}</SelectItem>
+                    <SelectItem value="CASH">{t("kinds.cash")}</SelectItem>
                   </SelectContent>
                 </Select>
                 <FormFieldError message={fieldState.error?.message} />
@@ -162,7 +164,7 @@ function CreateAccountFormPanel({
             )}
           />
           <div className="space-y-2">
-            <Label htmlFor="account-currency">Currency</Label>
+            <Label htmlFor="account-currency">{t("fields.currencyCode.label")}</Label>
             <Input
               id="account-currency"
               maxLength={3}
@@ -174,10 +176,10 @@ function CreateAccountFormPanel({
         </div>
         <div className="grid gap-4 md:grid-cols-2">
           <div className="space-y-2">
-            <Label htmlFor="account-masked-number">Last four digits</Label>
+            <Label htmlFor="account-masked-number">{t("fields.maskedNumber.label")}</Label>
             <Input
               id="account-masked-number"
-              placeholder="4821"
+              placeholder={t("fields.maskedNumber.placeholder")}
               disabled={mutation.isPending}
               {...form.register("maskedNumber")}
             />
@@ -188,18 +190,18 @@ function CreateAccountFormPanel({
             name="isPrimary"
             render={({ field, fieldState }) => (
               <div className="space-y-2">
-                <Label htmlFor="account-primary">Primary account</Label>
+                <Label htmlFor="account-primary">{t("fields.isPrimary.label")}</Label>
                 <Select
                   value={field.value}
                   onValueChange={field.onChange}
                   disabled={mutation.isPending}
                 >
                   <SelectTrigger id="account-primary" aria-invalid={fieldState.invalid}>
-                    <SelectValue placeholder="Choose primary state" />
+                    <SelectValue placeholder={t("fields.isPrimary.placeholder")} />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="no">Keep as secondary</SelectItem>
-                    <SelectItem value="yes">Set as primary</SelectItem>
+                    <SelectItem value="no">{t("fields.isPrimary.secondary")}</SelectItem>
+                    <SelectItem value="yes">{t("fields.isPrimary.primary")}</SelectItem>
                   </SelectContent>
                 </Select>
                 <FormFieldError message={fieldState.error?.message} />
@@ -209,21 +211,21 @@ function CreateAccountFormPanel({
         </div>
       </FormSection>
       <FormSection
-        title="Opening balance"
-        description="Balances are entered in decimal form and normalized to minor units before submit."
+        title={t("create.sections.balance.title")}
+        description={t("create.sections.balance.description")}
       >
         <AmountField
           control={form.control}
           name="openingBalance"
-          label="Opening balance"
+          label={t("fields.openingBalance.label")}
           disabled={mutation.isPending}
         />
       </FormSection>
       <FormActions
         isSubmitting={mutation.isPending}
         onCancel={onCancel}
-        submitLabel="Create account"
-        pendingLabel="Creating..."
+        submitLabel={t("actions.create")}
+        pendingLabel={t("actions.creating")}
       />
     </form>
   )
@@ -240,6 +242,7 @@ function EditAccountFormPanel({
   onCancel: () => void
   onSuccess: () => void
 }) {
+  const t = useTranslations("accounts.form")
   const [formError, setFormError] = useState("")
   const form = useForm<UpdateAccountFormValues>({
     resolver: zodResolver(updateAccountFormSchema),
@@ -261,7 +264,7 @@ function EditAccountFormPanel({
       queryKeys.household(householdId),
       queryKeys.accounts(householdId),
     ],
-    successMessage: "Account updated",
+    successMessage: "accounts.toasts.updated",
     idempotencyScope: "account-update",
     onSuccess: () => {
       form.reset(getUpdateDefaults(account))
@@ -294,25 +297,25 @@ function EditAccountFormPanel({
     <form className="space-y-4" onSubmit={handleSubmit}>
       <InlineFormError message={formError} />
       <FormSection
-        title="Account settings"
-        description="Update labels, primary placement, and availability state without leaving the account workspace."
+        title={t("edit.sections.settings.title")}
+        description={t("edit.sections.settings.description")}
       >
         <div className="grid gap-4 md:grid-cols-2">
           <div className="space-y-2">
-            <Label htmlFor="account-name">Account name</Label>
+            <Label htmlFor="account-name">{t("fields.name.label")}</Label>
             <Input
               id="account-name"
-              placeholder="Operating Account"
+              placeholder={t("fields.name.placeholder")}
               disabled={mutation.isPending}
               {...form.register("name")}
             />
             <FormFieldError message={form.formState.errors.name?.message} />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="account-institution">Institution</Label>
+            <Label htmlFor="account-institution">{t("fields.institutionName.label")}</Label>
             <Input
               id="account-institution"
-              placeholder="Mercury Private"
+              placeholder={t("fields.institutionName.placeholder")}
               disabled={mutation.isPending}
               {...form.register("institutionName")}
             />
@@ -321,10 +324,10 @@ function EditAccountFormPanel({
         </div>
         <div className="grid gap-4 md:grid-cols-2">
           <div className="space-y-2">
-            <Label htmlFor="account-masked-number">Last four digits</Label>
+            <Label htmlFor="account-masked-number">{t("fields.maskedNumber.label")}</Label>
             <Input
               id="account-masked-number"
-              placeholder="4821"
+              placeholder={t("fields.maskedNumber.placeholder")}
               disabled={mutation.isPending}
               {...form.register("maskedNumber")}
             />
@@ -335,18 +338,18 @@ function EditAccountFormPanel({
             name="isPrimary"
             render={({ field, fieldState }) => (
               <div className="space-y-2">
-                <Label htmlFor="account-primary">Primary account</Label>
+                <Label htmlFor="account-primary">{t("fields.isPrimary.label")}</Label>
                 <Select
                   value={field.value}
                   onValueChange={field.onChange}
                   disabled={mutation.isPending}
                 >
                   <SelectTrigger id="account-primary" aria-invalid={fieldState.invalid}>
-                    <SelectValue placeholder="Choose primary state" />
+                    <SelectValue placeholder={t("fields.isPrimary.placeholder")} />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="no">Keep as secondary</SelectItem>
-                    <SelectItem value="yes">Set as primary</SelectItem>
+                    <SelectItem value="no">{t("fields.isPrimary.secondary")}</SelectItem>
+                    <SelectItem value="yes">{t("fields.isPrimary.primary")}</SelectItem>
                   </SelectContent>
                 </Select>
                 <FormFieldError message={fieldState.error?.message} />
@@ -356,8 +359,8 @@ function EditAccountFormPanel({
         </div>
       </FormSection>
       <FormSection
-        title="Availability"
-        description="Archive or restrict accounts so downstream finance actions stay accurate."
+        title={t("edit.sections.availability.title")}
+        description={t("edit.sections.availability.description")}
       >
         <div className="grid gap-4 md:grid-cols-2">
           <Controller
@@ -365,19 +368,19 @@ function EditAccountFormPanel({
             name="status"
             render={({ field, fieldState }) => (
               <div className="space-y-2">
-                <Label htmlFor="account-status">Status</Label>
+                <Label htmlFor="account-status">{t("fields.status.label")}</Label>
                 <Select
                   value={field.value}
                   onValueChange={field.onChange}
                   disabled={mutation.isPending}
                 >
                   <SelectTrigger id="account-status" aria-invalid={fieldState.invalid}>
-                    <SelectValue placeholder="Choose account status" />
+                    <SelectValue placeholder={t("fields.status.placeholder")} />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="ACTIVE">Active</SelectItem>
-                    <SelectItem value="RESTRICTED">Restricted</SelectItem>
-                    <SelectItem value="ARCHIVED">Archived</SelectItem>
+                    <SelectItem value="ACTIVE">{t("status.active")}</SelectItem>
+                    <SelectItem value="RESTRICTED">{t("status.restricted")}</SelectItem>
+                    <SelectItem value="ARCHIVED">{t("status.archived")}</SelectItem>
                   </SelectContent>
                 </Select>
                 <FormFieldError message={fieldState.error?.message} />
@@ -386,10 +389,10 @@ function EditAccountFormPanel({
           />
           {selectedStatus === "RESTRICTED" ? (
             <div className="space-y-2">
-              <Label htmlFor="account-disabled-reason">Restriction reason</Label>
+              <Label htmlFor="account-disabled-reason">{t("fields.disabledReason.label")}</Label>
               <Input
                 id="account-disabled-reason"
-                placeholder="Verification pending"
+                placeholder={t("fields.disabledReason.placeholder")}
                 disabled={mutation.isPending}
                 {...form.register("disabledReason")}
               />
@@ -401,8 +404,8 @@ function EditAccountFormPanel({
       <FormActions
         isSubmitting={mutation.isPending}
         onCancel={onCancel}
-        submitLabel="Save account"
-        pendingLabel="Saving..."
+        submitLabel={t("actions.save")}
+        pendingLabel={t("actions.saving")}
       />
     </form>
   )

@@ -10,6 +10,7 @@ import {
 } from "date-fns"
 import { getTransactions } from "@/features/transactions/api/get-transactions"
 import type { AnalyticsPeriod, AnalyticsSnapshot } from "@/features/analytics/types/analytics"
+import { formatMonthDayByLocale, formatWeekdayDayByLocale } from "@/lib/format/date"
 
 const periodToDays: Record<AnalyticsPeriod, number> = {
   "7d": 7,
@@ -20,6 +21,7 @@ const periodToDays: Record<AnalyticsPeriod, number> = {
 export async function getAnalyticsSnapshot(
   householdId: string,
   period: AnalyticsPeriod,
+  locale?: string,
 ): Promise<AnalyticsSnapshot> {
   const transactions = await getTransactions(householdId)
   const periodDays = periodToDays[period]
@@ -61,7 +63,10 @@ export async function getAnalyticsSnapshot(
 
   const trend = Array.from(trendMap.entries()).map(([date, point]) => ({
     date,
-    label: format(parseISO(`${date}T00:00:00.000Z`), period === "90d" ? "MMM d" : "EEE d"),
+    label:
+      period === "90d"
+        ? formatMonthDayByLocale(parseISO(`${date}T00:00:00.000Z`), locale)
+        : formatWeekdayDayByLocale(parseISO(`${date}T00:00:00.000Z`), locale),
     incomeMinor: point.incomeMinor,
     expenseMinor: point.expenseMinor,
   }))
@@ -93,6 +98,7 @@ export async function getAnalyticsSnapshot(
     .slice(-35)
     .map(([date, point]) => ({
       date,
+      label: formatWeekdayDayByLocale(parseISO(`${date}T00:00:00.000Z`), locale),
       expenseMinor: point.expenseMinor,
       incomeMinor: point.incomeMinor,
     }))

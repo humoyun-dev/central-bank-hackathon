@@ -22,6 +22,7 @@ export interface AnalyticsCategoryBreakdown {
 
 export interface AnalyticsCalendarDay {
   date: string
+  label: string
   expenseMinor: number
   incomeMinor: number
 }

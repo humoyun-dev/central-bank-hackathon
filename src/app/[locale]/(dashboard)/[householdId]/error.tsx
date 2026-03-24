@@ -1,5 +1,6 @@
 "use client"
 
+import { useTranslations } from "next-intl"
 import { useEffect } from "react"
 import { ErrorState } from "@/components/shared/error-state"
 
@@ -10,6 +11,8 @@ export default function HouseholdError({
   error: Error & { digest?: string }
   unstable_retry: () => void
 }) {
+  const t = useTranslations("common.routeStates.householdError")
+
   useEffect(() => {
     console.error(error)
   }, [error])
@@ -17,9 +20,9 @@ export default function HouseholdError({
   return (
     <div className="mx-auto max-w-3xl py-8">
       <ErrorState
-        title="The household workspace could not be assembled"
-        description="The shell stayed intact, but this route segment failed to render. Retry the segment or return to household selection."
-        actionLabel="Retry segment"
+        title={t("title")}
+        description={t("description")}
+        actionLabel={t("action")}
         onAction={unstable_retry}
       />
     </div>

@@ -1,6 +1,7 @@
 "use client"
 
 import { Coins, HandCoins, PiggyBank, PlusCircle, Repeat, WalletCards } from "lucide-react"
+import { useLocale, useTranslations } from "next-intl"
 import { useState } from "react"
 import { AmountValue } from "@/components/shared/amount-value"
 import { FormDialog } from "@/components/shared/forms/form-dialog"
@@ -44,6 +45,8 @@ export function DashboardActionCenter({
   debts: Debt[]
   budgets: Budget[]
 }) {
+  const locale = useLocale()
+  const t = useTranslations("dashboard.actionCenter")
   const [activeDialog, setActiveDialog] = useState<ActionDialog>(null)
   const visibility = getVisibleDashboardActions(household.role)
   const activeAccounts = accounts.filter((account) => account.status === "ACTIVE")
@@ -58,85 +61,85 @@ export function DashboardActionCenter({
   const actionItems = [
     {
       id: "expense" as const,
-      label: "Add expense",
+      label: t("actions.expense.label"),
       icon: WalletCards,
       visible: visibility.canCreateExpense,
       disabled: activeAccounts.length === 0 || expenseCategories.length === 0,
       description:
         activeAccounts.length === 0
-          ? "Create an active account first"
+          ? t("requirements.createActiveAccount")
           : expenseCategories.length === 0
-            ? "Create an expense category first"
-            : "Book a household outflow",
+            ? t("requirements.createExpenseCategory")
+            : t("actions.expense.description"),
     },
     {
       id: "income" as const,
-      label: "Add income",
+      label: t("actions.income.label"),
       icon: Coins,
       visible: visibility.canCreateIncome,
       disabled: activeAccounts.length === 0 || incomeCategories.length === 0,
       description:
         activeAccounts.length === 0
-          ? "Create an active account first"
+          ? t("requirements.createActiveAccount")
           : incomeCategories.length === 0
-            ? "Create an income category first"
-            : "Record a new inflow",
+            ? t("requirements.createIncomeCategory")
+            : t("actions.income.description"),
     },
     {
       id: "transfer" as const,
-      label: "Transfer",
+      label: t("actions.transfer.label"),
       icon: Repeat,
       visible: visibility.canInitiateTransfer,
       disabled: activeAccounts.length < 2,
       description:
         activeAccounts.length < 2
-          ? "Needs at least two active accounts"
-          : "Move cash between accounts",
+          ? t("requirements.twoActiveAccounts")
+          : t("actions.transfer.description"),
     },
     {
       id: "debt" as const,
-      label: "Add debt",
+      label: t("actions.debt.label"),
       icon: HandCoins,
       visible: visibility.canCreateDebt,
       disabled: false,
-      description: "Track a payable or receivable",
+      description: t("actions.debt.description"),
     },
     {
       id: "settlement" as const,
-      label: "Settle debt",
+      label: t("actions.settlement.label"),
       icon: PlusCircle,
       visible: visibility.canSettleDebt,
       disabled: openDebts.length === 0 || activeAccounts.length === 0,
       description:
         openDebts.length === 0
-          ? "No open debt is ready for settlement"
+          ? t("requirements.noOpenDebts")
           : activeAccounts.length === 0
-            ? "Create an active account first"
-            : "Record a partial or full settlement",
+            ? t("requirements.createActiveAccount")
+            : t("actions.settlement.description"),
     },
     {
       id: "budget" as const,
-      label: "Budget limit",
+      label: t("actions.budget.label"),
       icon: PiggyBank,
       visible: visibility.canManageBudgets,
       disabled: expenseCategories.length === 0,
       description:
         expenseCategories.length === 0
-          ? "Create an expense category first"
-          : "Create or update a category cap",
+          ? t("requirements.createExpenseCategory")
+          : t("actions.budget.description"),
     },
   ].filter((item) => item.visible)
 
   return (
     <section className="space-y-4">
       <SectionHeader
-        title="Quick actions"
-        description="Open product-grade finance forms directly from the overview. Mutations use same-origin BFF handlers, idempotency keys, and route refresh after success."
+        title={t("title")}
+        description={t("description")}
       />
       <div className="surface-card space-y-5 rounded-[1.75rem] bg-white/88 p-5">
         {actionItems.length === 0 ? (
           <div className="rounded-[1.2rem] border border-border/60 bg-muted/30 px-4 py-4 text-sm leading-6 text-muted-foreground">
-            This membership can review balances and activity, but mutation flows are hidden because the role is read-only.
+            {t("readOnly")}
           </div>
         ) : (
           <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
@@ -165,39 +168,41 @@ export function DashboardActionCenter({
         <div className="grid gap-3 md:grid-cols-3">
           <div className="rounded-[1.2rem] bg-muted/35 p-4">
             <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">
-              Active accounts
+              {t("stats.activeAccounts")}
             </p>
             <p className="mt-2 text-2xl font-semibold text-foreground">{activeAccounts.length}</p>
           </div>
           <div className="rounded-[1.2rem] bg-muted/35 p-4">
             <div className="flex items-center justify-between gap-3">
               <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">
-                Open debts
+                {t("stats.openDebts")}
               </p>
-              <StatusBadge label={`${openDebts.length} open`} tone="warning" />
+              <StatusBadge label={t("stats.openCount", { count: openDebts.length })} tone="warning" />
             </div>
             <div className="mt-3 space-y-3">
               <div>
                 <p className="text-[0.72rem] font-semibold uppercase tracking-[0.16em] text-muted-foreground">
-                  Payables
+                  {t("stats.payables")}
                 </p>
                 <div className="mt-1">
                   <AmountValue
                     amountMinor={-openPayablesMinor}
                     currencyCode={household.currencyCode}
                     size="compact"
+                    locale={locale}
                   />
                 </div>
               </div>
               <div>
                 <p className="text-[0.72rem] font-semibold uppercase tracking-[0.16em] text-muted-foreground">
-                  Receivables
+                  {t("stats.receivables")}
                 </p>
                 <div className="mt-1">
                   <AmountValue
                     amountMinor={openReceivablesMinor}
                     currencyCode={household.currencyCode}
                     size="compact"
+                    locale={locale}
                   />
                 </div>
               </div>
@@ -206,12 +211,12 @@ export function DashboardActionCenter({
           <div className="rounded-[1.2rem] bg-muted/35 p-4">
             <div className="flex items-center justify-between gap-3">
               <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">
-                Budget rules
+                {t("stats.budgetRules")}
               </p>
-              <StatusBadge label={`${budgets.length} tracked`} tone="primary" />
+              <StatusBadge label={t("stats.trackedCount", { count: budgets.length })} tone="primary" />
             </div>
             <p className="mt-2 text-sm leading-6 text-muted-foreground">
-              Category caps stay aligned with household-scoped expenses after each refresh.
+              {t("stats.budgetDescription")}
             </p>
           </div>
         </div>
@@ -220,8 +225,8 @@ export function DashboardActionCenter({
       <FormDialog
         open={activeDialog === "expense"}
         onOpenChange={(open) => !open && setActiveDialog(null)}
-        title="Record expense"
-        description="Post a new household expense against an active account and category."
+        title={t("dialogs.expense.title")}
+        description={t("dialogs.expense.description")}
       >
         <ExpenseForm
           householdId={household.id}
@@ -235,8 +240,8 @@ export function DashboardActionCenter({
       <FormDialog
         open={activeDialog === "income"}
         onOpenChange={(open) => !open && setActiveDialog(null)}
-        title="Record income"
-        description="Post a new household inflow into an active account."
+        title={t("dialogs.income.title")}
+        description={t("dialogs.income.description")}
       >
         <IncomeForm
           householdId={household.id}
@@ -250,8 +255,8 @@ export function DashboardActionCenter({
       <FormDialog
         open={activeDialog === "transfer"}
         onOpenChange={(open) => !open && setActiveDialog(null)}
-        title="Create transfer"
-        description="Move available balance between two household accounts."
+        title={t("dialogs.transfer.title")}
+        description={t("dialogs.transfer.description")}
       >
         <TransferForm
           householdId={household.id}
@@ -264,8 +269,8 @@ export function DashboardActionCenter({
       <FormDialog
         open={activeDialog === "debt"}
         onOpenChange={(open) => !open && setActiveDialog(null)}
-        title="Create debt"
-        description="Track a payable or receivable without leaving the dashboard overview."
+        title={t("dialogs.debt.title")}
+        description={t("dialogs.debt.description")}
       >
         <DebtForm
           householdId={household.id}
@@ -277,8 +282,8 @@ export function DashboardActionCenter({
       <FormDialog
         open={activeDialog === "settlement"}
         onOpenChange={(open) => !open && setActiveDialog(null)}
-        title="Settle debt"
-        description="Record a partial or full debt settlement from a live account surface."
+        title={t("dialogs.settlement.title")}
+        description={t("dialogs.settlement.description")}
       >
         <DebtSettlementForm
           householdId={household.id}
@@ -292,8 +297,8 @@ export function DashboardActionCenter({
       <FormDialog
         open={activeDialog === "budget"}
         onOpenChange={(open) => !open && setActiveDialog(null)}
-        title="Set budget limit"
-        description="Create or update an expense budget rule for the active household."
+        title={t("dialogs.budget.title")}
+        description={t("dialogs.budget.description")}
       >
         <BudgetForm
           householdId={household.id}

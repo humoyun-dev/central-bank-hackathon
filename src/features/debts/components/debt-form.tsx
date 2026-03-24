@@ -1,6 +1,8 @@
 "use client"
 
 import { zodResolver } from "@hookform/resolvers/zod"
+import { useTranslations } from "next-intl"
+import { useEffect } from "react"
 import { Controller, useForm } from "react-hook-form"
 import { useState } from "react"
 import { FormActions } from "@/components/shared/forms/form-actions"
@@ -30,13 +32,13 @@ import { formatDateInputValue, parseDateInputToUtc } from "@/lib/format/date"
 import { parseMoneyToMinor } from "@/lib/format/money"
 import { queryKeys } from "@/lib/query-keys"
 
-function getDefaultValues(): CreateDebtFormValues {
+function getDefaultValues(dueAtLocalDate = ""): CreateDebtFormValues {
   return {
     counterpartyName: "",
     direction: "PAYABLE",
     amount: "",
     description: "",
-    dueAtLocalDate: formatDateInputValue(new Date()),
+    dueAtLocalDate,
   }
 }
 
@@ -49,20 +51,27 @@ export function DebtForm({
   onCancel?: (() => void) | undefined
   onSuccess?: (() => void) | undefined
 }) {
+  const t = useTranslations("debts.form")
   const [formError, setFormError] = useState("")
   const form = useForm<CreateDebtFormValues>({
     resolver: zodResolver(createDebtFormSchema),
     defaultValues: getDefaultValues(),
   })
 
+  useEffect(() => {
+    if (!form.getValues("dueAtLocalDate")) {
+      form.setValue("dueAtLocalDate", formatDateInputValue(new Date()))
+    }
+  }, [form])
+
   const mutation = useHouseholdMutation({
     mutationFn: (payload: Parameters<typeof createDebt>[1], idempotencyKey) =>
       createDebt(householdId, payload, idempotencyKey),
     invalidateKeys: [queryKeys.household(householdId)],
-    successMessage: "Debt record created",
+    successMessage: "debts.toasts.created",
     idempotencyScope: "debt",
     onSuccess: () => {
-      form.reset(getDefaultValues())
+      form.reset(getDefaultValues(formatDateInputValue(new Date())))
       setFormError("")
       onSuccess?.()
     },
@@ -88,15 +97,15 @@ export function DebtForm({
     <form className="space-y-4" onSubmit={handleSubmit}>
       <InlineFormError message={formError} />
       <FormSection
-        title="Counterparty"
-        description="Capture who owes the household or who the household needs to reimburse."
+        title={t("sections.counterparty.title")}
+        description={t("sections.counterparty.description")}
       >
         <div className="grid gap-4 md:grid-cols-2">
           <div className="space-y-2">
-            <Label htmlFor="debt-counterparty">Person or member</Label>
+            <Label htmlFor="debt-counterparty">{t("fields.counterparty.label")}</Label>
             <Input
               id="debt-counterparty"
-              placeholder="Anna"
+              placeholder={t("fields.counterparty.placeholder")}
               disabled={mutation.isPending}
               {...form.register("counterpartyName")}
             />
@@ -107,18 +116,18 @@ export function DebtForm({
             name="direction"
             render={({ field, fieldState }) => (
               <div className="space-y-2">
-                <Label htmlFor="debt-direction">Direction</Label>
+                <Label htmlFor="debt-direction">{t("fields.direction.label")}</Label>
                 <Select
                   value={field.value}
                   onValueChange={field.onChange}
                   disabled={mutation.isPending}
                 >
                   <SelectTrigger id="debt-direction" aria-invalid={fieldState.invalid}>
-                    <SelectValue placeholder="Choose debt direction" />
+                    <SelectValue placeholder={t("fields.direction.placeholder")} />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="PAYABLE">Household owes someone</SelectItem>
-                    <SelectItem value="RECEIVABLE">Someone owes the household</SelectItem>
+                    <SelectItem value="PAYABLE">{t("fields.direction.payable")}</SelectItem>
+                    <SelectItem value="RECEIVABLE">{t("fields.direction.receivable")}</SelectItem>
                   </SelectContent>
                 </Select>
                 <FormFieldError message={fieldState.error?.message} />
@@ -128,8 +137,8 @@ export function DebtForm({
         </div>
       </FormSection>
       <FormSection
-        title="Debt terms"
-        description="Use a due date if the settlement should be expected by a specific day."
+        title={t("sections.terms.title")}
+        description={t("sections.terms.description")}
       >
         <div className="grid gap-4 md:grid-cols-2">
           <AmountField
@@ -140,16 +149,16 @@ export function DebtForm({
           <DateField
             control={form.control}
             name="dueAtLocalDate"
-            label="Due date"
+            label={t("fields.dueDate.label")}
             type="date"
             disabled={mutation.isPending}
           />
         </div>
         <div className="space-y-2">
-          <Label htmlFor="debt-description">Description</Label>
+          <Label htmlFor="debt-description">{t("fields.description.label")}</Label>
           <Textarea
             id="debt-description"
-            placeholder="Why this reimbursement or receivable exists"
+            placeholder={t("fields.description.placeholder")}
             disabled={mutation.isPending}
             {...form.register("description")}
           />
@@ -159,8 +168,8 @@ export function DebtForm({
       <FormActions
         isSubmitting={mutation.isPending}
         onCancel={onCancel}
-        submitLabel="Create debt"
-        pendingLabel="Creating..."
+        submitLabel={t("actions.create")}
+        pendingLabel={t("actions.creating")}
       />
     </form>
   )

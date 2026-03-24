@@ -3,18 +3,18 @@ import { isValidMoneyInput } from "@/lib/format/money"
 
 export const createTransferFormSchema = z
   .object({
-    fromAccountId: z.string().min(1, "Choose the source account."),
-    toAccountId: z.string().min(1, "Choose the destination account."),
+    fromAccountId: z.string().min(1, "validation.transactions.fromAccountId.required"),
+    toAccountId: z.string().min(1, "validation.transactions.toAccountId.required"),
     amount: z
       .string()
       .trim()
-      .min(1, "Enter the transfer amount.")
-      .refine(isValidMoneyInput, "Enter a valid amount with up to two decimals."),
-    note: z.string().trim().max(160, "Keep the note within 160 characters.").optional(),
-    occurredAtLocal: z.string().min(1, "Choose when the transfer occurred."),
+      .min(1, "validation.transactions.transferAmount.required")
+      .refine(isValidMoneyInput, "validation.money.invalidAmount"),
+    note: z.string().trim().max(160, "validation.transactions.transferNote.max").optional(),
+    occurredAtLocal: z.string().min(1, "validation.transactions.occurredAt.required"),
   })
   .refine((value) => value.fromAccountId !== value.toAccountId, {
-    message: "Transfers must move between two different accounts.",
+    message: "validation.transactions.accountsMustDiffer",
     path: ["toAccountId"],
   })
 

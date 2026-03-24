@@ -3,7 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useMutation } from "@tanstack/react-query"
 import { LoaderCircle } from "lucide-react"
-import { useRouter } from "next/navigation"
+import { useTranslations } from "next-intl"
 import { Controller, useForm } from "react-hook-form"
 import { useEffect } from "react"
 import { toast } from "sonner"
@@ -27,6 +27,7 @@ import {
 } from "@/features/categories/schemas/create-category"
 import { updateCategory } from "@/features/categories/api/update-category"
 import type { Category } from "@/features/categories/types/category"
+import { useRouter } from "@/i18n/navigation"
 
 export function CategoryForm({
   householdId,
@@ -39,6 +40,8 @@ export function CategoryForm({
   onCancel?: (() => void) | undefined
   onSuccess?: (() => void) | undefined
 }) {
+  const t = useTranslations("categories.form")
+  const tCommon = useTranslations("categories.common")
   const router = useRouter()
   const isEditing = Boolean(category)
   const form = useForm<CreateCategoryRequest>({
@@ -62,7 +65,7 @@ export function CategoryForm({
         ? updateCategory(householdId, category.id, { name: values.name })
         : createCategory(householdId, values),
     onSuccess: () => {
-      toast.success(isEditing ? "Category updated" : "Category saved")
+      toast.success(t(isEditing ? "toasts.updated" : "toasts.created"))
       form.reset({
         name: "",
         kind: "EXPENSE",
@@ -85,24 +88,24 @@ export function CategoryForm({
   return (
     <form className="space-y-4" onSubmit={form.handleSubmit(onSubmit)} noValidate>
       <FormSection
-        title={isEditing ? "Edit category" : "Create category"}
-        description="Household categories stay separate from system defaults and future backend conflicts are normalized at the boundary."
+        title={isEditing ? t("sections.edit.title") : t("sections.create.title")}
+        description={isEditing ? t("sections.edit.description") : t("sections.create.description")}
       >
         <div className="space-y-4">
           <div className="space-y-2">
             <label htmlFor="category-name" className="text-sm font-medium text-foreground">
-              Name
+              {t("fields.name.label")}
             </label>
             <Input
               id="category-name"
               {...form.register("name")}
-              placeholder="School fees"
+              placeholder={t("fields.name.placeholder")}
             />
             <FormFieldError message={form.formState.errors.name?.message} />
           </div>
           <div className="space-y-2">
             <label htmlFor="category-kind" className="text-sm font-medium text-foreground">
-              Kind
+              {t("fields.kind.label")}
             </label>
             <Controller
               control={form.control}
@@ -117,11 +120,11 @@ export function CategoryForm({
                     id="category-kind"
                     aria-invalid={fieldState.invalid}
                   >
-                    <SelectValue placeholder="Choose a category kind" />
+                    <SelectValue placeholder={t("fields.kind.placeholder")} />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="EXPENSE">Expense</SelectItem>
-                    <SelectItem value="INCOME">Income</SelectItem>
+                    <SelectItem value="EXPENSE">{tCommon("kinds.expense")}</SelectItem>
+                    <SelectItem value="INCOME">{tCommon("kinds.income")}</SelectItem>
                   </SelectContent>
                 </Select>
               )}
@@ -135,8 +138,8 @@ export function CategoryForm({
       <FormActions
         isSubmitting={mutation.isPending}
         onCancel={onCancel}
-        submitLabel={isEditing ? "Save category" : "Create category"}
-        pendingLabel="Saving..."
+        submitLabel={isEditing ? t("actions.save") : t("actions.create")}
+        pendingLabel={t("actions.pending")}
         submitAdornment={
           mutation.isPending ? (
             <LoaderCircle className="size-4 animate-spin" aria-hidden="true" />

@@ -1,6 +1,7 @@
 "use client"
 
 import { Eye, HandCoins, Landmark, Plus } from "lucide-react"
+import { useLocale, useTranslations } from "next-intl"
 import { useMemo, useState } from "react"
 import { ActionMenu } from "@/components/shared/action-menu"
 import { AmountValue } from "@/components/shared/amount-value"
@@ -34,6 +35,9 @@ export function DebtsWorkspace({
   accounts: Account[]
   initialCreateOpen?: boolean
 }) {
+  const locale = useLocale()
+  const t = useTranslations("debts.workspace")
+  const tCommon = useTranslations("debts.common")
   const [view, setView] = useState<DebtView>("ALL")
   const openDebts = debts.filter((debt) => debt.status !== "SETTLED")
   const filteredDebts = useMemo(() => {
@@ -56,16 +60,16 @@ export function DebtsWorkspace({
   return (
     <div className="space-y-6">
       <PageHeader
-        eyebrow="Debts"
-        title={`${household.name} debt registry`}
-        description="Receivables and payables stay explicit while create, detail, and settlement flows remain dialog-driven."
+        eyebrow={t("eyebrow")}
+        title={t("title", { household: household.name })}
+        description={t("description")}
         actions={
           <div className="flex flex-wrap items-center gap-2">
-            <Badge variant="primary">{openDebts.length} open items</Badge>
+            <Badge variant="primary">{t("openItems", { count: openDebts.length })}</Badge>
             {canCreateDebt ? (
               <Button type="button" onClick={() => setIsCreateOpen(true)}>
                 <Plus className="size-4" aria-hidden="true" />
-                Add debt
+                {t("actions.addDebt")}
               </Button>
             ) : null}
             {canSettleDebt ? (
@@ -75,15 +79,15 @@ export function DebtsWorkspace({
                 disabled={openDebts.length === 0 || activeAccounts.length === 0}
                 title={
                   openDebts.length === 0
-                    ? "Create a debt before recording settlement."
+                    ? t("requirements.createDebtBeforeSettlement")
                     : activeAccounts.length === 0
-                      ? "Create an active account first."
+                      ? t("requirements.createActiveAccount")
                       : undefined
                 }
                 onClick={() => setSettlementDebtId(openDebts[0]?.id ?? null)}
               >
                 <HandCoins className="size-4" aria-hidden="true" />
-                Settle debt
+                {t("actions.settleDebt")}
               </Button>
             ) : null}
           </div>
@@ -92,26 +96,26 @@ export function DebtsWorkspace({
 
       <Tabs value={view} onValueChange={(nextValue) => setView(nextValue as DebtView)}>
         <TabsList>
-          <TabsTrigger value="ALL">All</TabsTrigger>
-          <TabsTrigger value="OPEN">Open</TabsTrigger>
-          <TabsTrigger value="PARTIAL">Partial</TabsTrigger>
-          <TabsTrigger value="SETTLED">Settled</TabsTrigger>
+          <TabsTrigger value="ALL">{t("tabs.all")}</TabsTrigger>
+          <TabsTrigger value="OPEN">{t("tabs.open")}</TabsTrigger>
+          <TabsTrigger value="PARTIAL">{t("tabs.partial")}</TabsTrigger>
+          <TabsTrigger value="SETTLED">{t("tabs.settled")}</TabsTrigger>
         </TabsList>
       </Tabs>
 
       <div className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_24rem]">
         <SectionCard
-          title="Debt ledger"
-          description="Outstanding balances remain visible until settlement reaches zero."
+          title={t("ledger.title")}
+          description={t("ledger.description")}
         >
           {filteredDebts.length === 0 ? (
             <EmptyState
-              title="No debts in this view"
-              description="Create a receivable or payable to start tracking settlements."
+              title={t("ledger.emptyTitle")}
+              description={t("ledger.emptyDescription")}
               action={
                 canCreateDebt ? (
                   <Button type="button" onClick={() => setIsCreateOpen(true)}>
-                    Create debt
+                    {t("ledger.createDebt")}
                   </Button>
                 ) : undefined
               }
@@ -131,12 +135,18 @@ export function DebtsWorkspace({
                         </h2>
                         <DebtStatusBadge status={debt.status} />
                         <Badge variant={debt.direction === "PAYABLE" ? "warning" : "primary"}>
-                          {debt.direction}
+                          {tCommon(`direction.${debt.direction.toLowerCase()}`)}
                         </Badge>
                       </div>
                       <p className="text-sm text-muted-foreground">
-                        Created {formatDateLabel(debt.createdAtUtc)}
-                        {debt.dueAtUtc ? ` · Due ${formatDateLabel(debt.dueAtUtc)}` : ""}
+                        {t("meta.created", {
+                          date: formatDateLabel(debt.createdAtUtc, locale),
+                        })}
+                        {debt.dueAtUtc
+                          ? ` · ${t("meta.due", {
+                              date: formatDateLabel(debt.dueAtUtc, locale),
+                            })}`
+                          : ""}
                       </p>
                       {debt.description ? (
                         <p className="text-sm leading-6 text-muted-foreground">
@@ -146,17 +156,17 @@ export function DebtsWorkspace({
                     </div>
                     <div className="flex items-start gap-2">
                       <ActionMenu
-                        label={`${debt.counterpartyName} actions`}
+                        label={t("debtActions", { debt: debt.counterpartyName })}
                         items={[
                           {
-                            label: "View details",
+                            label: t("actions.viewDetails"),
                             icon: <Eye className="size-4" aria-hidden="true" />,
                             onSelect: () => setDetailDebtId(debt.id),
                           },
                           ...(canSettleDebt && debt.status !== "SETTLED"
                             ? [
                                 {
-                                  label: "Settle debt",
+                                  label: t("actions.settleDebt"),
                                   icon: <HandCoins className="size-4" aria-hidden="true" />,
                                   onSelect: () => setSettlementDebtId(debt.id),
                                 },
@@ -172,6 +182,7 @@ export function DebtsWorkspace({
                         }
                         currencyCode={debt.currencyCode}
                         size="compact"
+                        locale={locale}
                       />
                     </div>
                   </div>
@@ -182,22 +193,22 @@ export function DebtsWorkspace({
         </SectionCard>
 
         <SectionCard
-          title="Debt actions"
-          description="Dialogs keep settlement and detail flows available without crowding the registry."
+          title={t("actionsPanel.title")}
+          description={t("actionsPanel.description")}
         >
           <div className="space-y-3 text-sm text-muted-foreground">
-            <p>Open, partial, and settled views are available through the tabs above.</p>
-            <p>Settlement stays disabled until at least one active account is available.</p>
+            <p>{t("actionsPanel.tipViews")}</p>
+            <p>{t("actionsPanel.tipSettlement")}</p>
           </div>
           {canCreateDebt ? (
             <Button type="button" onClick={() => setIsCreateOpen(true)}>
               <Landmark className="size-4" aria-hidden="true" />
-              Create debt
+              {t("actionsPanel.createDebt")}
             </Button>
           ) : (
             <EmptyState
-              title="Debt mutations are limited"
-              description="This membership can review debt records but cannot create or settle them."
+              title={t("actionsPanel.readOnlyTitle")}
+              description={t("actionsPanel.readOnlyDescription")}
             />
           )}
         </SectionCard>
@@ -206,8 +217,8 @@ export function DebtsWorkspace({
       <FormDialog
         open={isCreateOpen}
         onOpenChange={setIsCreateOpen}
-        title="Create debt"
-        description="Track a household payable or receivable."
+        title={t("dialogs.createTitle")}
+        description={t("dialogs.createDescription")}
       >
         <DebtForm
           householdId={household.id}
@@ -219,8 +230,8 @@ export function DebtsWorkspace({
       <FormDialog
         open={Boolean(settlementDebtId)}
         onOpenChange={(open) => !open && setSettlementDebtId(null)}
-        title="Settle debt"
-        description="Record a partial or full settlement against a live account."
+        title={t("dialogs.settleTitle")}
+        description={t("dialogs.settleDescription")}
       >
         {settlementDebtId ? (
           <DebtSettlementForm
@@ -237,10 +248,10 @@ export function DebtsWorkspace({
       <FormDialog
         open={Boolean(detailDebt)}
         onOpenChange={(open) => !open && setDetailDebtId(null)}
-        title={detailDebt ? detailDebt.counterpartyName : "Debt details"}
-        description="Review the remaining balance, status, and timing for this debt record."
+        title={detailDebt ? detailDebt.counterpartyName : t("dialogs.detailsFallbackTitle")}
+        description={t("dialogs.detailsDescription")}
       >
-        {detailDebt ? <DebtDetails debt={detailDebt} /> : null}
+        {detailDebt ? <DebtDetails debt={detailDebt} locale={locale} /> : null}
       </FormDialog>
     </div>
   )

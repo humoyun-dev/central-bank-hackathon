@@ -3,6 +3,7 @@ import "server-only"
 import { redirect } from "next/navigation"
 import { authSessionDtoSchema } from "@/features/auth/schemas/session.dto"
 import { mapSessionDtoToSession } from "@/features/auth/mappers/map-session-dto-to-session"
+import { getCurrentLocale } from "@/i18n/server"
 import { getMockSession } from "@/services/auth/mock-auth-store"
 import { readSessionCookie } from "@/services/auth/session-cookie"
 import { publicEnv } from "@/services/config/public-env"
@@ -32,7 +33,8 @@ export async function requireSession() {
   const session = await getSession()
 
   if (!session) {
-    redirect("/login")
+    const locale = await getCurrentLocale()
+    redirect(`/${locale}/login`)
   }
 
   return session

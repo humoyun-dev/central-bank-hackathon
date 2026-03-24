@@ -1,4 +1,5 @@
 import { ArrowRightLeft, ArrowUpRight, MinusCircle } from "lucide-react"
+import { useLocale, useTranslations } from "next-intl"
 import { SectionHeader } from "@/components/shared/section-header"
 import { TransactionKindBadge } from "@/features/transactions/components/transaction-kind-badge"
 import { formatDateLabel, formatTimeLabel } from "@/lib/format/date"
@@ -10,18 +11,17 @@ export function OverviewTransactionsPanel({
 }: {
   transactions: TransactionListItem[]
 }) {
+  const locale = useLocale()
+  const t = useTranslations("dashboard.activity")
   if (transactions.length === 0) {
     return (
       <section className="space-y-4">
         <SectionHeader
-          title="Transactions"
-          description="Latest mapped household activity across cards, bank accounts, and internal transfers."
+          title={t("title")}
+          description={t("description")}
         />
         <div className="surface-card rounded-[1.5rem] bg-white/88 p-6">
-          <p className="text-sm leading-6 text-slate-500">
-            Recent transaction activity will appear here once the household records
-            expense, income, or transfer entries.
-          </p>
+          <p className="text-sm leading-6 text-slate-500">{t("emptyDescription")}</p>
         </div>
       </section>
     )
@@ -30,8 +30,8 @@ export function OverviewTransactionsPanel({
   return (
     <section className="space-y-4">
       <SectionHeader
-        title="Transactions"
-        description="Latest mapped household activity across cards, bank accounts, and internal transfers."
+        title={t("title")}
+        description={t("description")}
       />
       <div className="space-y-3">
         {transactions.map((transaction) => {
@@ -60,17 +60,22 @@ export function OverviewTransactionsPanel({
                     <TransactionKindBadge kind={transaction.kind} />
                   </div>
                   <p className="text-sm text-slate-500">
-                    {transaction.categoryName} via {transaction.accountName}
+                    {t("details", {
+                      category: transaction.categoryName,
+                      account: transaction.accountName,
+                    })}
                   </p>
                 </div>
               </div>
               <div className="shrink-0 text-right">
                 <p className="text-financial text-sm font-semibold text-slate-950">
-                  {formatSignedMoney(transaction.signedAmountMinor, transaction.currencyCode)}
+                  {formatSignedMoney(transaction.signedAmountMinor, transaction.currencyCode, {
+                    locale,
+                  })}
                 </p>
                 <p className="text-xs text-slate-500">
-                  {formatDateLabel(transaction.occurredAtUtc)} ·{" "}
-                  {formatTimeLabel(transaction.occurredAtUtc)}
+                  {formatDateLabel(transaction.occurredAtUtc, locale)} ·{" "}
+                  {formatTimeLabel(transaction.occurredAtUtc, locale)}
                 </p>
               </div>
             </article>

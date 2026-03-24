@@ -1,3 +1,4 @@
+import { getTranslations } from "next-intl/server"
 import { ErrorState } from "@/components/shared/error-state"
 import { getAccounts } from "@/features/accounts/api/get-accounts"
 import { getBudgets } from "@/features/budgets/api/get-budgets"
@@ -12,6 +13,7 @@ export async function DashboardActionCenterSection({
 }: {
   household: HouseholdContext
 }) {
+  const t = await getTranslations("dashboard.actionCenter")
   let refs:
     | {
         accounts: Awaited<ReturnType<typeof getAccounts>>
@@ -44,9 +46,8 @@ export async function DashboardActionCenterSection({
     }
   } catch (error) {
     copy = getErrorPresentation(error, {
-      fallbackTitle: "Quick actions unavailable",
-      fallbackDescription:
-        "The dashboard could not prepare mutation references for this household.",
+      fallbackTitle: t("errorTitle"),
+      fallbackDescription: t("errorDescription"),
     })
   }
 

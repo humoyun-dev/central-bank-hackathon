@@ -1,4 +1,4 @@
-import Link from "next/link"
+import { useLocale, useTranslations } from "next-intl"
 import { AmountValue } from "@/components/shared/amount-value"
 import { EmptyState } from "@/components/shared/empty-state"
 import { PageHeader } from "@/components/shared/page-header"
@@ -9,6 +9,8 @@ import type {
   AnalyticsPeriod,
   AnalyticsSnapshot,
 } from "@/features/analytics/types/analytics"
+import { Link } from "@/i18n/navigation"
+import { formatCompactNumberByLocale } from "@/lib/format/number"
 import type { HouseholdContext } from "@/types/household"
 
 const periodOptions: AnalyticsPeriod[] = ["7d", "30d", "90d"]
@@ -20,6 +22,8 @@ export function AnalyticsScreen({
   household: HouseholdContext
   analytics: AnalyticsSnapshot
 }) {
+  const locale = useLocale()
+  const t = useTranslations("analytics")
   const maxTrendValue = Math.max(
     1,
     ...analytics.trend.flatMap((point) => [point.incomeMinor, point.expenseMinor]),
@@ -30,9 +34,9 @@ export function AnalyticsScreen({
   return (
     <div className="space-y-6">
       <PageHeader
-        eyebrow="Analytics"
-        title={`${household.name} financial signal`}
-        description="Summary cards, category concentration, and calendar intensity all read from the same server-owned transaction boundary."
+        eyebrow={t("eyebrow")}
+        title={t("title", { household: household.name })}
+        description={t("description")}
         actions={
           <div className="flex flex-wrap items-center gap-2">
             {periodOptions.map((option) => (
@@ -41,7 +45,9 @@ export function AnalyticsScreen({
                 asChild
                 variant={analytics.period === option ? "default" : "outline"}
               >
-                <Link href={`/${household.id}/analytics?period=${option}`}>{option}</Link>
+                <Link href={`/${household.id}/analytics?period=${option}`}>
+                  {t(`periods.${option}`)}
+                </Link>
               </Button>
             ))}
           </div>
@@ -49,39 +55,53 @@ export function AnalyticsScreen({
       />
 
       <div className="grid gap-4 md:grid-cols-3">
-        <SectionCard title="Income" description={`Last ${analytics.period}`}>
+        <SectionCard
+          title={t("summary.income")}
+          description={t("summary.lastPeriod", { period: t(`periods.${analytics.period}`) })}
+        >
           <AmountValue
             amountMinor={analytics.summary.incomeMinor}
             currencyCode={analytics.currencyCode}
             size="section"
+            locale={locale}
             className="text-success-foreground"
           />
         </SectionCard>
-        <SectionCard title="Expense" description={`Last ${analytics.period}`}>
+        <SectionCard
+          title={t("summary.expense")}
+          description={t("summary.lastPeriod", { period: t(`periods.${analytics.period}`) })}
+        >
           <AmountValue
             amountMinor={-analytics.summary.expenseMinor}
             currencyCode={analytics.currencyCode}
             size="section"
+            locale={locale}
           />
         </SectionCard>
-        <SectionCard title="Net change" description={`${analytics.summary.transactionCount} transactions`}>
+        <SectionCard
+          title={t("summary.netChange")}
+          description={t("summary.transactionCount", {
+            count: analytics.summary.transactionCount,
+          })}
+        >
           <AmountValue
             amountMinor={analytics.summary.netChangeMinor}
             currencyCode={analytics.currencyCode}
             size="section"
+            locale={locale}
           />
         </SectionCard>
       </div>
 
       <div className="grid gap-4 xl:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)]">
         <SectionCard
-          title="Flow trend"
-          description="Income and expense intensity over the selected period."
+          title={t("trend.title")}
+          description={t("trend.description")}
         >
           {analytics.trend.length === 0 ? (
             <EmptyState
-              title="No trend data"
-              description="Record transactions to populate analytics."
+              title={t("trend.emptyTitle")}
+              description={t("trend.emptyDescription")}
             />
           ) : (
             <div className="grid h-[22rem] grid-cols-[repeat(auto-fit,minmax(1.5rem,1fr))] items-end gap-2">
@@ -107,13 +127,13 @@ export function AnalyticsScreen({
         </SectionCard>
 
         <SectionCard
-          title="Category concentration"
-          description="Top expense groups across the selected period."
+          title={t("categories.title")}
+          description={t("categories.description")}
         >
           {analytics.categories.length === 0 ? (
             <EmptyState
-              title="No category breakdown"
-              description="Expense activity is required before category analytics can render."
+              title={t("categories.emptyTitle")}
+              description={t("categories.emptyDescription")}
             />
           ) : (
             <div className="space-y-4">
@@ -125,13 +145,16 @@ export function AnalyticsScreen({
                         {category.categoryName}
                       </p>
                       <p className="text-xs text-muted-foreground">
-                        {category.transactionCount} transactions
+                        {t("categories.transactionCount", {
+                          count: category.transactionCount,
+                        })}
                       </p>
                     </div>
                     <AmountValue
                       amountMinor={-category.spendMinor}
                       currencyCode={analytics.currencyCode}
                       size="compact"
+                      locale={locale}
                     />
                   </div>
                   <div className="h-2 rounded-full bg-muted">
@@ -153,13 +176,13 @@ export function AnalyticsScreen({
       </div>
 
       <SectionCard
-        title="Calendar intensity"
-        description="Recent daily expense concentration for quick anomaly scanning."
+        title={t("calendar.title")}
+        description={t("calendar.description")}
       >
         {analytics.calendar.length === 0 ? (
           <EmptyState
-            title="No calendar activity"
-            description="Analytics calendar will populate after household transactions arrive."
+            title={t("calendar.emptyTitle")}
+            description={t("calendar.emptyDescription")}
           />
         ) : (
           <div className="grid grid-cols-7 gap-2">
@@ -174,13 +197,20 @@ export function AnalyticsScreen({
                     backgroundColor: `rgba(82,122,188,${Math.max(0.08, intensity)})`,
                   }}
                 >
-                  <p className="text-xs font-semibold text-foreground">{day.date.slice(8)}</p>
+                  <p className="text-xs font-semibold text-foreground">{day.label}</p>
                   <p className="mt-3 text-[0.7rem] text-slate-700">
-                    {day.expenseMinor > 0 ? `${(day.expenseMinor / 100).toFixed(0)}` : "0"}
+                    {formatCompactNumberByLocale(day.expenseMinor / 100, {
+                      locale,
+                      maximumFractionDigits: 0,
+                    })}
                   </p>
                   {day.incomeMinor > 0 ? (
                     <Badge variant="neutral" className="mt-2">
-                      +{(day.incomeMinor / 100).toFixed(0)}
+                      +
+                      {formatCompactNumberByLocale(day.incomeMinor / 100, {
+                        locale,
+                        maximumFractionDigits: 0,
+                      })}
                     </Badge>
                   ) : null}
                 </div>

@@ -1,3 +1,4 @@
+import { useTranslations } from "next-intl"
 import { StatusBadge } from "@/components/shared/status-badge"
 import type { DebtStatus } from "@/features/debts/types/debt"
 
@@ -8,5 +9,12 @@ const debtStatusTone = {
 } as const
 
 export function DebtStatusBadge({ status }: { status: DebtStatus }) {
-  return <StatusBadge label={status} tone={debtStatusTone[status]} />
+  const t = useTranslations("debts.common.status")
+
+  return (
+    <StatusBadge
+      label={t(status.toLowerCase())}
+      tone={debtStatusTone[status]}
+    />
+  )
 }

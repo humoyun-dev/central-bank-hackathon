@@ -1,9 +1,8 @@
 "use client"
 
 import { ChevronDown, LogOut, RefreshCcw, Settings2 } from "lucide-react"
-import Link from "next/link"
-import { useRouter } from "next/navigation"
 import { useMutation } from "@tanstack/react-query"
+import { useTranslations } from "next-intl"
 import { toast } from "sonner"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import {
@@ -16,6 +15,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Button } from "@/components/ui/button"
 import { logout } from "@/features/auth/api/logout"
+import { Link, useRouter } from "@/i18n/navigation"
 
 export function UserMenu({
   fullName,
@@ -26,6 +26,7 @@ export function UserMenu({
   email: string
   householdId: string
 }) {
+  const t = useTranslations("auth.userMenu")
   const router = useRouter()
   const initials = fullName
     .split(" ")
@@ -37,7 +38,7 @@ export function UserMenu({
   const logoutMutation = useMutation({
     mutationFn: logout,
     onSuccess: () => {
-      toast.success("Session closed")
+      toast.success(t("sessionClosed"))
       router.push("/login")
       router.refresh()
     },
@@ -50,7 +51,7 @@ export function UserMenu({
           type="button"
           variant="outline"
           className="h-11 rounded-full border-slate-200 bg-white/85 px-2.5"
-          aria-label="Open user menu"
+          aria-label={t("open")}
         >
           <Avatar className="size-8">
             <AvatarFallback>{initials}</AvatarFallback>
@@ -63,17 +64,17 @@ export function UserMenu({
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        <DropdownMenuLabel>Session</DropdownMenuLabel>
+        <DropdownMenuLabel>{t("session")}</DropdownMenuLabel>
         <DropdownMenuItem asChild>
           <Link href="/select-household">
             <RefreshCcw className="size-4" aria-hidden="true" />
-            Switch household
+            {t("switchHousehold")}
           </Link>
         </DropdownMenuItem>
         <DropdownMenuItem asChild>
           <Link href={`/${householdId}/settings`}>
             <Settings2 className="size-4" aria-hidden="true" />
-            Household settings
+            {t("settings")}
           </Link>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
@@ -85,7 +86,7 @@ export function UserMenu({
           className="text-destructive focus:bg-destructive/10 focus:text-destructive"
         >
           <LogOut className="size-4" aria-hidden="true" />
-          {logoutMutation.isPending ? "Signing out..." : "Sign out"}
+          {logoutMutation.isPending ? t("signingOut") : t("signOut")}
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

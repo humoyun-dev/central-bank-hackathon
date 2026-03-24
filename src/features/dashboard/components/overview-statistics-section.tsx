@@ -1,10 +1,11 @@
-import Link from "next/link"
+import { getTranslations } from "next-intl/server"
 import { EmptyState } from "@/components/shared/empty-state"
 import { ErrorState } from "@/components/shared/error-state"
 import { SectionHeader } from "@/components/shared/section-header"
 import { Button } from "@/components/ui/button"
 import { getDashboardAnalyticsPreview } from "@/features/dashboard/api/get-dashboard-analytics-preview"
 import { StatisticsPanel } from "@/features/dashboard/components/statistics-panel"
+import { Link } from "@/i18n/navigation"
 import { getErrorPresentation } from "@/lib/error-presentation"
 
 export async function OverviewStatisticsSection({
@@ -12,6 +13,7 @@ export async function OverviewStatisticsSection({
 }: {
   householdId: string
 }) {
+  const t = await getTranslations("dashboard.statistics")
   let analyticsPreview:
     | {
         weekly: Awaited<ReturnType<typeof getDashboardAnalyticsPreview>>
@@ -30,22 +32,21 @@ export async function OverviewStatisticsSection({
     analyticsPreview = { weekly, monthly }
   } catch (error) {
     copy = getErrorPresentation(error, {
-      fallbackTitle: "Statistics preview unavailable",
-      fallbackDescription:
-        "The analytics summary could not be loaded for this household right now.",
+      fallbackTitle: t("errorTitle"),
+      fallbackDescription: t("errorDescription"),
     })
   }
 
   if (copy) {
     return (
       <section className="space-y-4">
-        <SectionHeader title="Statistics" />
+        <SectionHeader title={t("title")} />
         <ErrorState
           title={copy.title}
           description={copy.description}
           action={
             <Button asChild variant="outline" className="rounded-full bg-white/70">
-              <Link href={`/${householdId}/transactions`}>Inspect transactions</Link>
+              <Link href={`/${householdId}/transactions`}>{t("inspectTransactions")}</Link>
             </Button>
           }
         />
@@ -60,13 +61,13 @@ export async function OverviewStatisticsSection({
   ) {
     return (
       <section className="space-y-4">
-        <SectionHeader title="Statistics" />
+        <SectionHeader title={t("title")} />
         <EmptyState
-          title="No analytics available yet"
-          description="Analytics preview cards will become available once the household has enough recorded financial activity."
+          title={t("emptyTitle")}
+          description={t("emptyDescription")}
           action={
             <Button asChild variant="outline" className="rounded-full bg-white/70">
-              <Link href={`/${householdId}/transactions`}>Review transactions</Link>
+              <Link href={`/${householdId}/transactions`}>{t("reviewTransactions")}</Link>
             </Button>
           }
         />

@@ -1,10 +1,11 @@
-import Link from "next/link"
+import { getTranslations } from "next-intl/server"
 import { EmptyState } from "@/components/shared/empty-state"
 import { ErrorState } from "@/components/shared/error-state"
 import { SectionHeader } from "@/components/shared/section-header"
 import { Button } from "@/components/ui/button"
 import { getAccounts } from "@/features/accounts/api/get-accounts"
 import { OverviewAccountGlance } from "@/features/dashboard/components/overview-account-glance"
+import { Link } from "@/i18n/navigation"
 import { getErrorPresentation } from "@/lib/error-presentation"
 
 export async function OverviewWalletSection({
@@ -12,6 +13,7 @@ export async function OverviewWalletSection({
 }: {
   householdId: string
 }) {
+  const t = await getTranslations("dashboard.wallet")
   let accounts: Awaited<ReturnType<typeof getAccounts>> | null = null
   let copy:
     | ReturnType<typeof getErrorPresentation>
@@ -21,9 +23,8 @@ export async function OverviewWalletSection({
     accounts = await getAccounts(householdId)
   } catch (error) {
     copy = getErrorPresentation(error, {
-      fallbackTitle: "Wallet preview unavailable",
-      fallbackDescription:
-        "The account preview could not be loaded for this household right now.",
+      fallbackTitle: t("errorTitle"),
+      fallbackDescription: t("errorDescription"),
     })
   }
 
@@ -31,15 +32,15 @@ export async function OverviewWalletSection({
     return (
       <section className="space-y-4">
         <SectionHeader
-          title="Wallet"
-          description="Compact account cards shaped for scanability and fast action."
+          title={t("title")}
+          description={t("description")}
         />
         <ErrorState
           title={copy.title}
           description={copy.description}
           action={
             <Button asChild variant="outline" className="rounded-full bg-white/70">
-              <Link href={`/${householdId}/accounts`}>Open accounts</Link>
+              <Link href={`/${householdId}/accounts`}>{t("openAccounts")}</Link>
             </Button>
           }
         />
@@ -50,18 +51,18 @@ export async function OverviewWalletSection({
   return (
     <section className="space-y-4">
       <SectionHeader
-        title="Wallet"
-        description="Compact account cards shaped for scanability and fast action."
+        title={t("title")}
+        description={t("description")}
         action={
           <Button asChild variant="outline" className="rounded-full bg-white/70">
-            <Link href={`/${householdId}/accounts`}>View all</Link>
+            <Link href={`/${householdId}/accounts`}>{t("viewAll")}</Link>
           </Button>
         }
       />
       {accounts && accounts.length === 0 ? (
         <EmptyState
-          title="No accounts connected"
-          description="Connected household accounts will appear here after the first account is created or synced."
+          title={t("emptyTitle")}
+          description={t("emptyDescription")}
         />
       ) : (
         <div className="grid gap-4 sm:grid-cols-2">

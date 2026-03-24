@@ -2,17 +2,17 @@ import { z } from "zod"
 import { isValidMoneyInput } from "@/lib/format/money"
 
 export const createExpenseFormSchema = z.object({
-  accountId: z.string().min(1, "Choose the account the expense came from."),
-  categoryId: z.string().min(1, "Choose an expense category."),
+  accountId: z.string().min(1, "validation.transactions.accountId.required"),
+  categoryId: z.string().min(1, "validation.transactions.expenseCategoryId.required"),
   amount: z
     .string()
     .trim()
-    .min(1, "Enter the expense amount.")
-    .refine(isValidMoneyInput, "Enter a valid amount with up to two decimals."),
-  description: z.string().trim().max(120, "Keep the description within 120 characters.").optional(),
-  note: z.string().trim().max(240, "Keep the note within 240 characters.").optional(),
-  occurredAtLocal: z.string().min(1, "Choose when the expense happened."),
-  reference: z.string().trim().max(80, "Keep the reference within 80 characters.").optional(),
+    .min(1, "validation.transactions.expenseAmount.required")
+    .refine(isValidMoneyInput, "validation.money.invalidAmount"),
+  description: z.string().trim().max(120, "validation.transactions.description.max").optional(),
+  note: z.string().trim().max(240, "validation.transactions.note.max").optional(),
+  occurredAtLocal: z.string().min(1, "validation.transactions.occurredAt.required"),
+  reference: z.string().trim().max(80, "validation.transactions.reference.max").optional(),
 })
 
 export const createExpenseRequestSchema = z.object({

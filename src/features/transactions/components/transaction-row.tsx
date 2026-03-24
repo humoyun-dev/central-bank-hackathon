@@ -1,3 +1,4 @@
+import { useTranslations } from "next-intl"
 import type { ReactNode } from "react"
 import { ArrowRightLeft, ArrowUpRight, MinusCircle } from "lucide-react"
 import { StatusBadge } from "@/components/shared/status-badge"
@@ -25,12 +26,16 @@ const transactionMeta = {
 export function TransactionRow({
   transaction,
   compact = false,
+  locale,
   action,
 }: {
   transaction: TransactionListItem
   compact?: boolean
+  locale?: string | undefined
   action?: ReactNode
 }) {
+  const t = useTranslations("transactions.row")
+  const tStatus = useTranslations("transactions.status")
   const meta = transactionMeta[transaction.kind]
   const Icon = meta.icon
 
@@ -53,12 +58,15 @@ export function TransactionRow({
             <TransactionKindBadge kind={transaction.kind} />
           </div>
           <p className="text-sm text-muted-foreground">
-            {transaction.categoryName} via {transaction.accountName}
+            {t("details", {
+              category: transaction.categoryName,
+              account: transaction.accountName,
+            })}
           </p>
           {!compact ? (
             <p className="text-xs text-muted-foreground">
-              {formatDateLabel(transaction.occurredAtUtc)} ·{" "}
-              {formatRelativeDate(transaction.occurredAtUtc)}
+              {formatDateLabel(transaction.occurredAtUtc, locale)} ·{" "}
+              {formatRelativeDate(transaction.occurredAtUtc, locale)}
             </p>
           ) : null}
         </div>
@@ -72,16 +80,18 @@ export function TransactionRow({
                 : transaction.signedAmountMinor < 0
                   ? "-"
                   : ""}
-              {formatMoney(Math.abs(transaction.signedAmountMinor), transaction.currencyCode)}
+              {formatMoney(Math.abs(transaction.signedAmountMinor), transaction.currencyCode, {
+                locale,
+              })}
             </p>
             {compact ? (
               <p className="text-xs text-muted-foreground">
-                {formatRelativeDate(transaction.occurredAtUtc)}
+                {formatRelativeDate(transaction.occurredAtUtc, locale)}
               </p>
             ) : (
               <div className="mt-1 inline-flex justify-end">
                 <StatusBadge
-                  label={transaction.status}
+                  label={tStatus(transaction.status.toLowerCase())}
                   tone={transaction.status === "POSTED" ? "success" : "warning"}
                 />
               </div>

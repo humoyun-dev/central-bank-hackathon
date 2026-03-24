@@ -1,8 +1,9 @@
 "use client"
 
 import { zodResolver } from "@hookform/resolvers/zod"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
+import { useTranslations } from "next-intl"
 import { FormActions } from "@/components/shared/forms/form-actions"
 import { AmountField } from "@/components/shared/forms/amount-field"
 import { DateField } from "@/components/shared/forms/date-field"
@@ -28,14 +29,18 @@ import { formatDateTimeInputValue, parseDateTimeInputToUtc } from "@/lib/format/
 import { parseMoneyToMinor } from "@/lib/format/money"
 import { queryKeys } from "@/lib/query-keys"
 
-function getDefaultValues(accounts: Account[], categories: Category[]): CreateExpenseFormValues {
+function getDefaultValues(
+  accounts: Account[],
+  categories: Category[],
+  occurredAtLocal = "",
+): CreateExpenseFormValues {
   return {
     accountId: accounts[0]?.id ?? "",
     categoryId: categories[0]?.id ?? "",
     amount: "",
     description: "",
     note: "",
-    occurredAtLocal: formatDateTimeInputValue(new Date()),
+    occurredAtLocal,
     reference: "",
   }
 }
@@ -53,20 +58,29 @@ export function ExpenseForm({
   onCancel: () => void
   onSuccess: () => void
 }) {
+  const t = useTranslations("transactions.expenseForm")
   const [formError, setFormError] = useState("")
   const form = useForm<CreateExpenseFormValues>({
     resolver: zodResolver(createExpenseFormSchema),
     defaultValues: getDefaultValues(accounts, categories),
   })
 
+  useEffect(() => {
+    if (!form.getValues("occurredAtLocal")) {
+      form.setValue("occurredAtLocal", formatDateTimeInputValue(new Date()))
+    }
+  }, [form])
+
   const mutation = useHouseholdMutation({
     mutationFn: (payload: Parameters<typeof createExpense>[1], idempotencyKey) =>
       createExpense(householdId, payload, idempotencyKey),
     invalidateKeys: [queryKeys.household(householdId)],
-    successMessage: "Expense recorded",
+    successMessage: "transactions.toasts.expenseRecorded",
     idempotencyScope: "expense",
     onSuccess: () => {
-      form.reset(getDefaultValues(accounts, categories))
+      form.reset(
+        getDefaultValues(accounts, categories, formatDateTimeInputValue(new Date())),
+      )
       setFormError("")
       onSuccess()
     },
@@ -96,29 +110,29 @@ export function ExpenseForm({
     <form className="space-y-4" onSubmit={handleSubmit}>
       <InlineFormError message={formError} />
       <FormSection
-        title="Transaction source"
-        description="Choose where the household expense should be booked and categorized."
+        title={t("sections.source.title")}
+        description={t("sections.source.description")}
       >
         <div className="grid gap-4 md:grid-cols-2">
           <AccountSelect
             accounts={accounts}
             control={form.control}
             name="accountId"
-            label="Source account"
+            label={t("fields.accountId.label")}
             disabled={mutation.isPending}
           />
           <CategorySelect
             categories={categories}
             control={form.control}
             name="categoryId"
-            label="Expense category"
+            label={t("fields.categoryId.label")}
             disabled={mutation.isPending}
           />
         </div>
       </FormSection>
       <FormSection
-        title="Expense details"
-        description="Amounts are entered as decimals but submitted in backend-safe minor units."
+        title={t("sections.details.title")}
+        description={t("sections.details.description")}
       >
         <div className="grid gap-4 md:grid-cols-2">
           <AmountField
@@ -129,35 +143,35 @@ export function ExpenseForm({
           <DateField
             control={form.control}
             name="occurredAtLocal"
-            label="Occurred at"
+            label={t("fields.occurredAt.label")}
             disabled={mutation.isPending}
           />
         </div>
         <div className="space-y-2">
-          <Label htmlFor="expense-description">Description</Label>
+          <Label htmlFor="expense-description">{t("fields.description.label")}</Label>
           <Input
             id="expense-description"
-            placeholder="Weekly grocery restock"
+            placeholder={t("fields.description.placeholder")}
             disabled={mutation.isPending}
             {...form.register("description")}
           />
           <FormFieldError message={form.formState.errors.description?.message} />
         </div>
         <div className="space-y-2">
-          <Label htmlFor="expense-note">Note</Label>
+          <Label htmlFor="expense-note">{t("fields.note.label")}</Label>
           <Textarea
             id="expense-note"
-            placeholder="Optional note for the household activity log"
+            placeholder={t("fields.note.placeholder")}
             disabled={mutation.isPending}
             {...form.register("note")}
           />
           <FormFieldError message={form.formState.errors.note?.message} />
         </div>
         <div className="space-y-2">
-          <Label htmlFor="expense-reference">Reference</Label>
+          <Label htmlFor="expense-reference">{t("fields.reference.label")}</Label>
           <Input
             id="expense-reference"
-            placeholder="Optional merchant or receipt reference"
+            placeholder={t("fields.reference.placeholder")}
             disabled={mutation.isPending}
             {...form.register("reference")}
           />
@@ -167,16 +181,20 @@ export function ExpenseForm({
       <FormActions
         isSubmitting={mutation.isPending}
         onCancel={onCancel}
-        submitLabel="Record expense"
-        pendingLabel="Recording..."
+        submitLabel={t("actions.submit")}
+        pendingLabel={t("actions.pending")}
         secondaryAction={
           <Button
             type="button"
             variant="ghost"
             disabled={mutation.isPending}
-            onClick={() => form.reset(getDefaultValues(accounts, categories))}
+            onClick={() =>
+              form.reset(
+                getDefaultValues(accounts, categories, formatDateTimeInputValue(new Date())),
+              )
+            }
           >
-            Reset fields
+            {t("actions.reset")}
           </Button>
         }
       />
